@@ -8,7 +8,6 @@ function Point(x,y) {
 }
 
 function SimpleRecognizer() {
-    console.log("Creating SimpleRecognizer");
     this.points = [];
     this.result = "";
 }

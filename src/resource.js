@@ -1,7 +1,14 @@
 var res = {
-    HelloWorld_png : "res/HelloWorld.png",
-    CloseNormal_png : "res/CloseNormal.png",
-    CloseSelected_png : "res/CloseSelected.png"
+    EnemyBig_png : "res/enemy.png",
+    Enemy_png : "res/enemy_small.png",
+    Field_png : "res/field.png",
+    Player_png : "res/player.png",
+    Start_n_png : "res/start_n.png",
+    Start_s_png : "res/start_s.png",
+    BulletBig_png: "res/bullet.png",
+    Bullet_png: "res/bullet_small.png",
+    LifeBig_png : "res/life.png",
+    Life_png : "res/life_small.png"
 };
 
 var g_resources = [];
