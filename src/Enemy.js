@@ -46,7 +46,7 @@ var Enemy = cc.PhysicsSprite.extend({
     },
     attack: function( node) {
         node.addChild(this);
-        this.runAction(cc.MoveTo.create(this.speed, PiuPiuConsts.sourcePoint));
+        this.runAction(cc.MoveTo.create(this.speed, PiuPiuConsts.enemyMoveToPoint));
     },
 
     getShape:function () {
@@ -58,7 +58,6 @@ var Enemy = cc.PhysicsSprite.extend({
     },
 
     removeFromParent:function () {
-        this.getParent().removeObject(this.shape);
         this.space.removeShape(this.shape);
         this.space.removeBody(this.body);
         this.shape = null;

@@ -10,14 +10,6 @@ var PlayScene = cc.Scene.extend({
 
     initPhysics:function() {
         this.space = new cp.Space();
-        // Gravity
-        //this.space.gravity = cp.v(0, -350);
-        // set up Walls
-        //var wallBottom = new cp.SegmentShape(this.space.staticBody,
-        //    cp.v(0, g_groundHeight),// start point
-        //    cp.v(4294967295, g_groundHeight),// MAX INT:4294967295
-        //    0);// thickness of wall
-        //this.space.addStaticShape(wallBottom);
 
         this.space.addCollisionHandler(SpriteTag.Bullet, SpriteTag.Enemy,
             this.collisionBulletEnemy.bind(this), null, null, null);
@@ -59,11 +51,15 @@ var PlayScene = cc.Scene.extend({
         console.log("E P - found " + shapes.length + " shapes");
         //  shapes[1] is Zehavi
         this.shapesToRemove.push(shapes[0]);
+
+        var statusLayer = this.getChildByTag(TagOfLayer.Status);
+        statusLayer.removeLife();
     },
 
     update: function (dt) {
         // Simulation cpSpaceAddPostStepCallback
         for(var i = 0; i < this.shapesToRemove.length; i++) {
+            console.log("PlayScene: removing shape");
             var shape = this.shapesToRemove[i];
             this.gameLayer.getChildByTag(TagOfLayer.Game).removeObjectByShape(shape);
         }

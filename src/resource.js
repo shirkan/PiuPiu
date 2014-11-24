@@ -3,6 +3,7 @@ var res = {
     Enemy_png : "res/enemy_small.png",
     Field_png : "res/field.png",
     Player_png : "res/player.png",
+    Hands_png : "res/hands.png",
     Start_n_png : "res/start_n.png",
     Start_s_png : "res/start_s.png",
     BulletBig_png: "res/bullet.png",

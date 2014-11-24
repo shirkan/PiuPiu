@@ -6,12 +6,12 @@ var Player = cc.PhysicsSprite.extend({
     space:null,
     body:null,
     shape:null,
-    ctor: function(space) {
+    ctor: function( parentNode ) {
         this._super();
-        this.space = space;
-        this.init();
+        this.space = parentNode.space;
+        this.init( parentNode );
     },
-    init: function() {
+    init: function( parentNode ) {
         this._super(res.Player_png);
 
         var winSize = cc.director.getWinSize();
@@ -33,5 +33,7 @@ var Player = cc.PhysicsSprite.extend({
         this.shape.setCollisionType(SpriteTag.Player);
         this.space.addShape(this.shape);
 
+        parentNode.addChild(this);
     }
 });
+

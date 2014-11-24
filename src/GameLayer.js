@@ -6,6 +6,8 @@ var GameLayer = cc.Layer.extend({
     recognizer:null,
     space:null,
     objects:[],
+    player:null,
+    hands:null,
     ctor: function(space) {
         this._super();
 
@@ -13,8 +15,8 @@ var GameLayer = cc.Layer.extend({
         this.objects = [];
 
         //  Debug shapes
-        this._debugNode = new cc.PhysicsDebugNode(this.space);
-        this.addChild(this._debugNode, 10);
+        //this._debugNode = new cc.PhysicsDebugNode(this.space);
+        //this.addChild(this._debugNode, 10);
 
         this.init();
     },
@@ -34,8 +36,10 @@ var GameLayer = cc.Layer.extend({
         this.recognizer = new SimpleRecognizer();
 
         //  Place player on left side
-        var player = new Player(this.space);
-        this.addChild(player);
+        this.player = new Player(this);
+
+        //  Create rotating hands
+        this.hands = new Hands(this);
 
         this.scheduleUpdate();
     },
@@ -43,18 +47,27 @@ var GameLayer = cc.Layer.extend({
     onTouchBegan: function (touch, event) {
         var pos = touch.getLocation();
         var layerObj = event.getCurrentTarget();
-        var bullet = new Bullet( layerObj.space, pos.x, pos.y);
 
-        //  Only shoot if bullet created successfully
-        if (bullet) {
-            layerObj.objects.push(bullet);
-            bullet.visualize(layerObj);
-            bullet.shoot();
+        //  Angle limits - goes crazy beyond these angles
+        if (pos.x < PiuPiuConsts.handsAnchor.x) {
+            return;
         }
+
+        var data = calculateTrigonometry(pos);
+        var endPoint = data[0];
+        var bulletStartPoint = data[1];
+        var endAngle = data[2];
+
+        //console.log("clicked on " + pos.x + ", " + pos.y + "endangle: " + endAngle + " startPoint: " + bulletStartPoint.x + ", " + bulletStartPoint.y);
+        //return;
+
+        var bullet = new Bullet( layerObj, endPoint, bulletStartPoint, endAngle);
+        layerObj.objects.push(bullet);
+        layerObj.hands.rotateHands(endAngle);
     },
 
     update: function (dt) {
-        if (Math.random() < 0.001) {
+        if (Math.random() < 0.005) {
             var enemy = new Enemy(this.space);
             enemy.attack(this);
             this.objects.push(enemy);
@@ -64,7 +77,7 @@ var GameLayer = cc.Layer.extend({
     removeObject: function ( shape ) {
         for (var i = 0; i < this.objects.length; i++) {
             if (this.objects[i].getShape() == shape) {
-                
+
                 this.objects.splice(i, 1);
                 break;
             }
@@ -74,7 +87,7 @@ var GameLayer = cc.Layer.extend({
     removeObjectByShape:function (shape) {
         for (var i = 0; i < this.objects.length; i++) {
             if (this.objects[i].getShape() == shape) {
-                console.log("removed shape");
+                console.log("GameLayer: Removed shape");
                 this.objects[i].removeFromParent();
                 this.objects.splice(i, 1);
                 break;

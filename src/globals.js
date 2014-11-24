@@ -19,5 +19,8 @@ if(typeof SpriteTag == "undefined") {
 if (typeof PiuPiuConsts == "undefined") {
     var PiuPiuConsts = {};
     PiuPiuConsts.pointsPerEnemyKill = 7;
-    PiuPiuConsts.sourcePoint = cc.p(150, 300);
+    PiuPiuConsts.sourcePoint = cc.p(110, 255);
+    PiuPiuConsts.enemyMoveToPoint = cc.p(30,240);
+    PiuPiuConsts.handsAnchor = cc.p(30,245);
+    PiuPiuConsts.handsLength = 83;
 }
