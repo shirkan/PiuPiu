@@ -3,7 +3,6 @@
  */
 
 var GameLayer = cc.Layer.extend({
-    recognizer:null,
     space:null,
     objects:[],
     player:null,
@@ -31,9 +30,8 @@ var GameLayer = cc.Layer.extend({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: this.onTouchBegan,
-            onTouchMoved: "",
-            onTouchEnded: ""}, this);
-        this.recognizer = new SimpleRecognizer();
+            onTouchMoved: this.onTouchMoved,
+            onTouchEnded: this.onTouchEnded}, this);
 
         //  Place player on left side
         this.player = new Player(this);
@@ -41,7 +39,18 @@ var GameLayer = cc.Layer.extend({
         //  Create rotating hands
         this.hands = new Hands(this);
 
-        this.scheduleUpdate();
+        //var enemy = new Enemy(this);
+        this.schedule(this.addEnemy, 3);
+    },
+
+    addEnemy: function () {
+        if (PiuPiuGlobals.livesLeft <= 0) {
+            this.unschedule(this.addEnemy);
+            return;
+        }
+
+        var enemy = new Enemy(this);
+        this.objects.push(enemy);
     },
 
     onTouchBegan: function (touch, event) {
@@ -50,7 +59,7 @@ var GameLayer = cc.Layer.extend({
 
         //  Angle limits - goes crazy beyond these angles
         if (pos.x < PiuPiuConsts.handsAnchor.x) {
-            return;
+            return false;
         }
 
         var data = calculateTrigonometry(pos);
@@ -64,30 +73,28 @@ var GameLayer = cc.Layer.extend({
         var bullet = new Bullet( layerObj, endPoint, bulletStartPoint, endAngle);
         layerObj.objects.push(bullet);
         layerObj.hands.rotateHands(endAngle);
+
+        return true;
     },
 
-    update: function (dt) {
-        if (Math.random() < 0.005) {
-            var enemy = new Enemy(this.space);
-            enemy.attack(this);
-            this.objects.push(enemy);
-        }
+    onTouchMoved: function (touch, event) {
     },
 
-    removeObject: function ( shape ) {
+    onTouchEnded: function (touch, event) {
+    },
+
+    removeObject: function ( body ) {
         for (var i = 0; i < this.objects.length; i++) {
-            if (this.objects[i].getShape() == shape) {
-
+            if (this.objects[i].body == body) {
                 this.objects.splice(i, 1);
                 break;
             }
         }
     },
 
-    removeObjectByShape:function (shape) {
+    removeObjectByBody:function (body) {
         for (var i = 0; i < this.objects.length; i++) {
-            if (this.objects[i].getShape() == shape) {
-                console.log("GameLayer: Removed shape");
+            if (this.objects[i].body == body) {
                 this.objects[i].removeFromParent();
                 this.objects.splice(i, 1);
                 break;

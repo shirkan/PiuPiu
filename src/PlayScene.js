@@ -6,7 +6,7 @@ const pointsPerEnemyKill = 7;
 
 var PlayScene = cc.Scene.extend({
     space:null,
-    shapesToRemove:[],
+    bodiesToRemove:[],
 
     initPhysics:function() {
         this.space = new cp.Space();
@@ -15,6 +15,8 @@ var PlayScene = cc.Scene.extend({
             this.collisionBulletEnemy.bind(this), null, null, null);
         this.space.addCollisionHandler(SpriteTag.Enemy, SpriteTag.Player,
             this.collisionEnemyPlayer.bind(this), null, null, null);
+        this.space.addCollisionHandler(SpriteTag.Bullet, SpriteTag.EnemyHead,
+            this.collisionBulletEnemyHead.bind(this), null, null, null);
     },
 
     onEnter:function () {
@@ -40,29 +42,39 @@ var PlayScene = cc.Scene.extend({
         statusLayer.updatePoints(PiuPiuConsts.pointsPerEnemyKill);
 
         var shapes = arbiter.getShapes();
-        console.log("B E - found " + shapes.length + " shapes");
-        this.shapesToRemove.push(shapes[0], shapes[1]);
+        this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
+
+    },
+
+    collisionBulletEnemyHead: function (arbiter, space) {
+
+        var statusLayer = this.getChildByTag(TagOfLayer.Status);
+        statusLayer.updatePoints(PiuPiuConsts.pointsPerEnemyHeadShot);
+        statusLayer.displayHeadShot();
+
+        var shapes = arbiter.getShapes();
+        this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
 
     },
 
     collisionEnemyPlayer: function (arbiter, space) {
 
         var shapes = arbiter.getShapes();
-        console.log("E P - found " + shapes.length + " shapes");
         //  shapes[1] is Zehavi
-        this.shapesToRemove.push(shapes[0]);
+        this.bodiesToRemove.push(shapes[0].body);
 
         var statusLayer = this.getChildByTag(TagOfLayer.Status);
         statusLayer.removeLife();
     },
 
     update: function (dt) {
+        this.space.step(dt);
+
         // Simulation cpSpaceAddPostStepCallback
-        for(var i = 0; i < this.shapesToRemove.length; i++) {
-            console.log("PlayScene: removing shape");
-            var shape = this.shapesToRemove[i];
-            this.gameLayer.getChildByTag(TagOfLayer.Game).removeObjectByShape(shape);
+        for(var i = 0; i < this.bodiesToRemove.length; i++) {
+            var shape = this.bodiesToRemove[i];
+            this.gameLayer.getChildByTag(TagOfLayer.Game).removeObjectByBody(shape);
         }
-        this.shapesToRemove = [];
+        this.bodiesToRemove = [];
     }
 });

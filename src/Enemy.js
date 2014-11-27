@@ -2,26 +2,26 @@
  * Created by shirkan on 11/17/14.
  */
 
-var Enemy = cc.PhysicsSprite.extend({
+var Enemy = cc.Class.extend({
     space:null,
     startX:null,
     startY:null,
     speed:null,
+    sprite:null,
     body:null,
-    shape:null,
-    ctor: function(space) {
-        this._super();
-        this.space = space;
-        this.init();
-    },
-    init: function() {
-        this._super(res.Enemy_png);
+    shapeBody:null,
+    shapeHead:null,
+    ctor: function( parentNode ) {
+        this.space = parentNode.space;
+        this.sprite = new cc.PhysicsSprite(res.Enemy_png);
 
         var winSize = cc.director.getWinSize();
 
         //  Set starting position
-        this.startX = winSize.width + this.width;
-        this.startY = Math.random() * (winSize.height * 3 ) - (winSize.height * 1.5);
+        this.startX = winSize.width + this.sprite.width;
+        //this.startX = winSize.width/2;
+        this.startY = Math.random() * (winSize.height * 2 ) - (winSize.height * 0.5); + this.sprite.width;
+        //this.startY = winSize.height / 2;
         var startingPoint = cc.p(this.startX, this.startY);
 
         //  Set speed
@@ -30,38 +30,44 @@ var Enemy = cc.PhysicsSprite.extend({
         // init physics
         this.body = new cp.Body(1,1);
         this.body.setPos(startingPoint);
-        this.setBody(this.body);
-
-        //this.setPhysicsBody(this.body);
+        this.sprite.setBody(this.body);
         this.space.addBody(this.body);
 
-        var contentSize = this.getContentSize();
-        this.shape = new cp.BoxShape(this.body, contentSize.width -5 , contentSize.height - 5);
-        this.shape.setCollisionType(SpriteTag.Enemy);
-        this.shape.setSensor(true);
-        this.space.addShape(this.shape);
+        //  Calculate body shape
+        var contentSize = this.sprite.getContentSize();
+        var bodyX = contentSize.width/2;
+        var bodyY = contentSize.height/2;
+        var verts = [-bodyX,-bodyY, -bodyX, bodyY-20, bodyX, bodyY-20, bodyX, -bodyY];
+        this.shapeBody = new cp.PolyShape(this.body, verts, cp.v(0,0));
+        //this.shape = new cp.BoxShape(this.body, contentSize.width - 5 , contentSize.height - 15);
+        this.shapeBody.setCollisionType(SpriteTag.Enemy);
+        this.shapeBody.setSensor(true);
+        this.space.addShape(this.shapeBody);
 
-        this.scheduleUpdate();
+        //  Calculate head shape
+        this.shapeHead = new cp.CircleShape(this.body, PiuPiuConsts.enemyHeadRadius, PiuPiuConsts.enemyHeadOffset);
+        this.shapeHead.setCollisionType(SpriteTag.EnemyHead);
+        this.shapeHead.setSensor(true);
+        this.space.addShape(this.shapeHead);
 
-    },
-    attack: function( node) {
-        node.addChild(this);
-        this.runAction(cc.MoveTo.create(this.speed, PiuPiuConsts.enemyMoveToPoint));
-    },
+        parentNode.addChild(this.sprite);
 
-    getShape:function () {
-        return this.shape;
-    },
-
-    update: function (dt) {
-        this.space.step(dt);
+        this.sprite.runAction(cc.MoveTo.create(this.speed, PiuPiuConsts.enemyMoveToPoint));
     },
 
     removeFromParent:function () {
-        this.space.removeShape(this.shape);
+        this.space.removeShape(this.shapeBody);
+        this.shapeBody = null;
+        this.space.removeShape(this.shapeHead);
+        this.shapeHead = null;
         this.space.removeBody(this.body);
-        this.shape = null;
-        this._super();
+        this.body = null;
+        this.sprite.removeFromParent();
+        this.sprite = null;
+    },
+
+    onExit:function () {
+        console.log("enemy exit");
     }
 
 });

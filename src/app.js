@@ -8,21 +8,21 @@ var MenuLayer = cc.Layer.extend({
         //call super class's super function
         this._super();
 
-        //2. get the screen size of your game canvas
-        var winSize = cc.director.getWinSize();
+        //  Check for highscore
+        if (cc.sys.localStorage.highScore) {
+            PiuPiuGlobals.highScore = cc.sys.localStorage.highScore;
+        }
 
-        //3. calculate the center point
+        var winSize = cc.director.getWinSize();
         var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
 
-        //4. create a background image and set it's position at the center of the screen
-        var spritebg = new cc.Sprite(res.Field_png);
-        spritebg.setPosition(centerpos);
+        //  Add background
+        var spritebg = new cc.TMXTiledMap(res.grass9_tmx);
         this.addChild(spritebg);
 
-        //5.
+        //  Setup menu items
         cc.MenuItemFont.setFontSize(60);
 
-        //6.create a menu and assign onPlay event callback to it
         var menuItemPlay= new cc.MenuItemSprite(
             new cc.Sprite(res.Start_n_png), // normal state image
             new cc.Sprite(res.Start_s_png), //select state image
@@ -30,11 +30,23 @@ var MenuLayer = cc.Layer.extend({
         var menu = new cc.Menu(menuItemPlay);  //7. create the menu
         menu.setPosition(centerpos);
         this.addChild(menu);
+
+
+        //  Show highscore
+        labelHishScore = new cc.LabelTTF("High Score: " + PiuPiuGlobals.highScore, "Helvetica", fontSize);
+        labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
+        labelHishScore.setPosition(winSize.width / 2, winSize.height / 2 - 40);
+        this.addChild(labelHishScore);
     },
 
     onPlay : function(){
         cc.log("==onplay clicked");
+
+        //var audioEngine = cc.AudioEngine.getInstance();
+        cc.audioEngine.playEffect(s_music_hineZeBa);
+
         cc.director.runScene(new PlayScene());
+
     }
 });
 

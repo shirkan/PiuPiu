@@ -4,6 +4,7 @@
 
 
 var BackgroundLayer = cc.Layer.extend({
+    map:null,
     ctor: function() {
         this._super();
         this.init();
@@ -13,10 +14,25 @@ var BackgroundLayer = cc.Layer.extend({
         this._super();
 
         //  Set field as BG
-        var winSize = cc.director.getWinSize();
-        var centerPos = cc.p(winSize.width / 2, winSize.height / 2);
-        var spriteBG = new cc.Sprite(res.Field_png);
-        spriteBG.setPosition(centerPos);
-        this.addChild(spriteBG);
+        var mapNum = Math.floor(Math.random() * 10) + 1;
+        var mapTMX = res["grass" + mapNum + "_tmx"];
+
+        this.map = new cc.TMXTiledMap(mapTMX);
+        //this.map = new cc.Sprite("res/grass4.png");
+        this.addChild(this.map);
+
+
+        var children = this.map.getChildren();
+
+        for (var c in children) {
+            children[c].getTexture().setAntiAliasTexParameters();
+        }
+
+
+        //var winSize = cc.director.getWinSize();
+        //var centerPos = cc.p(winSize.width / 2, winSize.height / 2);
+        //var spriteBG = new cc.Sprite(res.Field_png);
+        //spriteBG.setPosition(centerPos);
+        //this.addChild(spriteBG);
     }
 })

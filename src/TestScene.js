@@ -17,15 +17,15 @@ var TestScene = cc.Scene.extend({
             var testString = "this." + test + "()";
             var res = eval(testString);
             if (res == 1) {
-                this.labelPoints = new cc.LabelTTF(test + " passed", "Helvetica", 20);
-                this.labelPoints.setColor(cc.color(0, 255, 0)); //  Green
+                this.labelHishScore = new cc.LabelTTF(test + " passed", "Helvetica", 20);
+                this.labelHishScore.setColor(cc.color(0, 255, 0)); //  Green
             } else {
-                this.labelPoints = new cc.LabelTTF(test + " failed", "Helvetica", 20);
-                this.labelPoints.setColor(cc.color(255, 0, 0)); //  Red
+                this.labelHishScore = new cc.LabelTTF(test + " failed", "Helvetica", 20);
+                this.labelHishScore.setColor(cc.color(255, 0, 0)); //  Red
 
             }
-            this.labelPoints.setPosition(320, 240);
-            this.addChild(this.labelPoints);
+            this.labelHishScore.setPosition(320, 240);
+            this.addChild(this.labelHishScore);
         }
     },
 

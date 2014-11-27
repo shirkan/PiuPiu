@@ -11,8 +11,7 @@ var StatusLayer = cc.Scene.extend({
     labelPoints:null,
     livesSprites:[],
     points:0,
-    lives:0,
-
+    winSize:null,
     ctor: function() {
         this._super();
         this.init();
@@ -21,16 +20,16 @@ var StatusLayer = cc.Scene.extend({
     init: function() {
         this._super();
 
-        var winSize = cc.director.getWinSize();
+        this.winSize = cc.director.getWinSize();
 
         //  Create label for points
-        this.labelPoints = new cc.LabelTTF("ניקוד: 0", "Helvetica", fontSize);
-        this.labelPoints.setColor(cc.color(255,255,0)); //  Yellow
-        this.labelPoints.setPosition(winSize.width - xGap, winSize.height - yGap);
-        this.addChild(this.labelPoints);
+        this.labelHishScore = new cc.LabelTTF("Score: 0", "Helvetica", fontSize);
+        this.labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
+        this.labelHishScore.setPosition(this.winSize.width - xGap, this.winSize.height - yGap);
+        this.addChild(this.labelHishScore);
 
-        //  Add 3 lives for start
-        for (var i=0; i<3; i++) {
+        //  Add lives for start
+        for (var i=0; i<PiuPiuConsts.livesOnGameStart; i++) {
             this.addLife();
         }
 
@@ -38,16 +37,14 @@ var StatusLayer = cc.Scene.extend({
 
     updatePoints: function ( pointsToAdd ) {
         this.points += pointsToAdd;
-        this.labelPoints.setString("ניקוד: " + this.points);
+        this.labelHishScore.setString("Score: " + this.points);
     },
 
     addLife: function () {
-        var winSize = cc.director.getWinSize();
-
-        this.lives++;
+        PiuPiuGlobals.livesLeft++;
 
         var newSprite = new cc.Sprite(res.Life_png);
-        var newPos = cc.p(yGap + (this.lives * (newSprite.width + gapBetweenLives)), winSize.height - yGap);
+        var newPos = cc.p(yGap + (PiuPiuGlobals.livesLeft * (newSprite.width + gapBetweenLives)), this.winSize.height - yGap);
         newSprite.setPosition(newPos);
         this.addChild(newSprite);
 
@@ -58,9 +55,25 @@ var StatusLayer = cc.Scene.extend({
         var spriteToRemove = this.livesSprites.pop();
         this.removeChild(spriteToRemove);
 
-        this.lives--;
-        if (this.lives == 0) {
-            console.log("Game Over Eran");
+        PiuPiuGlobals.livesLeft--;
+        if (PiuPiuGlobals.livesLeft == 0) {
+            var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", fontSize);
+            gameOverSprite.setColor(cc.color(255,0,0)); //  Red
+            gameOverSprite.setPosition(this.winSize.width / 2, this.winSize.height - yGap);
+            this.addChild(gameOverSprite);
+
+            //  Check for high score update
+            if (this.points > PiuPiuGlobals.highScore) {
+                cc.sys.localStorage.highScore = PiuPiuGlobals.highScore = this.points;
+            }
         }
+    },
+
+    displayHeadShot: function() {
+        var headShotSprite = new cc.LabelTTF("Head shot!", "Helvetica", fontSize);
+        headShotSprite.setColor(cc.color(255,0,0)); //  Red
+        headShotSprite.setPosition(this.winSize.width / 2, this.winSize.height - yGap);
+        this.addChild(headShotSprite);
+        headShotSprite.runAction(cc.FadeOut.create(0.5));
     }
 })
