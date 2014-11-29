@@ -2,8 +2,6 @@
  * Created by shirkan on 11/17/14.
  */
 
-const pointsPerEnemyKill = 7;
-
 var PlayScene = cc.Scene.extend({
     space:null,
     bodiesToRemove:[],

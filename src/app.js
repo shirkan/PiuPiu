@@ -13,6 +13,9 @@ var MenuLayer = cc.Layer.extend({
             PiuPiuGlobals.highScore = cc.sys.localStorage.highScore;
         }
 
+        ////  Set game state as menu
+        //PiuPiuGlobals.gameState = GameStates.Menu;
+
         var winSize = cc.director.getWinSize();
         var centerpos = cc.p(winSize.width / 2, winSize.height / 2);
 
@@ -31,7 +34,6 @@ var MenuLayer = cc.Layer.extend({
         menu.setPosition(centerpos);
         this.addChild(menu);
 
-
         //  Show highscore
         labelHishScore = new cc.LabelTTF("High Score: " + PiuPiuGlobals.highScore, "Helvetica", fontSize);
         labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
@@ -42,11 +44,8 @@ var MenuLayer = cc.Layer.extend({
     onPlay : function(){
         cc.log("==onplay clicked");
 
-        //var audioEngine = cc.AudioEngine.getInstance();
         cc.audioEngine.playEffect(s_music_hineZeBa);
-
         cc.director.runScene(new PlayScene());
-
     }
 });
 

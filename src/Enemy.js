@@ -18,9 +18,9 @@ var Enemy = cc.Class.extend({
         var winSize = cc.director.getWinSize();
 
         //  Set starting position
-        this.startX = winSize.width + this.sprite.width;
+        this.startX = winSize.width;
         //this.startX = winSize.width/2;
-        this.startY = Math.random() * (winSize.height * 2 ) - (winSize.height * 0.5); + this.sprite.width;
+        this.startY = Math.random() * (winSize.height);
         //this.startY = winSize.height / 2;
         var startingPoint = cc.p(this.startX, this.startY);
 
@@ -67,6 +67,7 @@ var Enemy = cc.Class.extend({
     },
 
     onExit:function () {
+        this._super();
         console.log("enemy exit");
     }
 

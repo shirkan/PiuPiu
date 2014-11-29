@@ -1,0 +1,7 @@
+// Created by shirkan on 11/29/14
+
+{
+  totalEnemies: 5,
+  interval: 3,
+  intervalType: "fixed",
+}

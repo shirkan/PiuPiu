@@ -23,7 +23,8 @@ var GameLayer = cc.Layer.extend({
     init:function () {
         this._super();
 
-        var winSize = cc.director.getWinSize();
+        //  Set game state to playing
+        PiuPiuGlobals.gameState = GameStates.Playing;
 
         //  Touch handler
         cc.eventManager.addListener({
@@ -44,7 +45,7 @@ var GameLayer = cc.Layer.extend({
     },
 
     addEnemy: function () {
-        if (PiuPiuGlobals.livesLeft <= 0) {
+        if (PiuPiuGlobals.gameState != GameStates.Playing) {
             this.unschedule(this.addEnemy);
             return;
         }
@@ -54,6 +55,13 @@ var GameLayer = cc.Layer.extend({
     },
 
     onTouchBegan: function (touch, event) {
+        //  If game over state, return to menu
+        if (PiuPiuGlobals.gameState == GameStates.GameOver) {
+            var transition = new cc.TransitionFade(1, new MenuScene());
+            cc.director.runScene(transition);
+            return true;
+        }
+
         var pos = touch.getLocation();
         var layerObj = event.getCurrentTarget();
 
@@ -100,4 +108,9 @@ var GameLayer = cc.Layer.extend({
                 break;
             }
         }
-    }});
+    },
+    onEnter: function () {
+        this._super();
+        PiuPiuGlobals.gameState = GameStates.Playing;
+    }
+});

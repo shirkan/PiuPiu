@@ -57,10 +57,15 @@ var StatusLayer = cc.Scene.extend({
 
         PiuPiuGlobals.livesLeft--;
         if (PiuPiuGlobals.livesLeft == 0) {
-            var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", fontSize);
+
+            //  Add game over label
+            var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", fontSize * 3);
             gameOverSprite.setColor(cc.color(255,0,0)); //  Red
-            gameOverSprite.setPosition(this.winSize.width / 2, this.winSize.height - yGap);
+            gameOverSprite.setPosition(this.winSize.width / 2, this.winSize.height / 2);
             this.addChild(gameOverSprite);
+
+            //  Change game state
+            PiuPiuGlobals.gameState = GameStates.GameOver;
 
             //  Check for high score update
             if (this.points > PiuPiuGlobals.highScore) {

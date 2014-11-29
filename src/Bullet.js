@@ -12,6 +12,14 @@ var Bullet = cc.Class.extend({
     ctor: function( parentNode, endPoint, bulletStartPoint, endAngle ) {
         this.space = parentNode.space;
         this.parentNode = parentNode;
+        //this._super();
+        this.init(endPoint, bulletStartPoint, endAngle);
+    },
+
+    init: function( endPoint, bulletStartPoint, endAngle ) {
+        //this.space = parentNode.space;
+        //this.parentNode = parentNode;
+
         //  Init sprite
         this.sprite = new cc.PhysicsSprite(res.Bullet_png);
 
@@ -32,8 +40,11 @@ var Bullet = cc.Class.extend({
         //  Visualize
         this.parentNode.addChild(this.sprite);
 
+        //  Calculate how much time it should take the bullet to complete the action (so velocity will be the same for all bullets)
+        var moveDuration = calculateLineLength(bulletStartPoint, endPoint) / PiuPiuConsts.framesPerSeconds;
+
         //  Shooting bullet
-        var moveAction = cc.MoveTo.create(1, endPoint);
+        var moveAction = cc.MoveTo.create(moveDuration, endPoint);
         var seq = new cc.Sequence(moveAction, new cc.CallFunc (this.reachedBounds, this));
 
         this.sprite.runAction(seq);
@@ -55,6 +66,7 @@ var Bullet = cc.Class.extend({
     },
 
     onExit:function () {
+        this._super();
         console.log("bullet exit");
     }
 });

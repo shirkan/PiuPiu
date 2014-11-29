@@ -14,19 +14,19 @@ var BackgroundLayer = cc.Layer.extend({
         this._super();
 
         //  Set field as BG
-        var mapNum = Math.floor(Math.random() * 10) + 1;
+        var mapNum = Math.floor(Math.random() * 6) + 1;
         var mapTMX = res["grass" + mapNum + "_tmx"];
 
         this.map = new cc.TMXTiledMap(mapTMX);
         //this.map = new cc.Sprite("res/grass4.png");
         this.addChild(this.map);
 
-
-        var children = this.map.getChildren();
-
-        for (var c in children) {
-            children[c].getTexture().setAntiAliasTexParameters();
-        }
+        //
+        //var children = this.map.getChildren();
+        //
+        //for (var c in children) {
+        //    children[c].getTexture().setAntiAliasTexParameters();
+        //}
 
 
         //var winSize = cc.director.getWinSize();
