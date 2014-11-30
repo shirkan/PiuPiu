@@ -24,20 +24,41 @@ var MenuLayer = cc.Layer.extend({
         this.addChild(spritebg);
 
         //  Setup menu items
-        cc.MenuItemFont.setFontSize(60);
+        var menuItems = [];
+        cc.MenuItemFont.setFontSize(44);
 
-        var menuItemPlay= new cc.MenuItemSprite(
-            new cc.Sprite(res.Start_n_png), // normal state image
-            new cc.Sprite(res.Start_s_png), //select state image
+        //var menuItemPlay = new cc.MenuItemSprite(
+        //    new cc.Sprite(res.Start_n_png), // normal state image
+        //    new cc.Sprite(res.Start_s_png), //select state image
+        //    this.onPlay, this);
+
+        var labelStart = new cc.LabelTTF("Start", "Helvetica", 44);
+        labelStart.setColor(cc.color(255,255,0)); //Yellow
+
+        var menuItemPlay = new cc.MenuItemLabel(
+            labelStart,
             this.onPlay, this);
-        var menu = new cc.Menu(menuItemPlay);  //7. create the menu
+        menuItems.push(menuItemPlay);
+
+        var labelExit = new cc.LabelTTF("Exit", "Helvetica", 44);
+        labelExit.setColor(cc.color(255,255,0)); //Yellow
+
+        var menuItemExit = new cc.MenuItemLabel(
+            labelExit,
+            this.onExitClicked, this);
+        menuItems.push(menuItemExit);
+
+        var menu = new cc.Menu(menuItems);  //7. create the menu
+
+        //menu.alignItemsInRows(2);
+        menu.alignItemsVertically();
         menu.setPosition(centerpos);
         this.addChild(menu);
 
         //  Show highscore
         labelHishScore = new cc.LabelTTF("High Score: " + PiuPiuGlobals.highScore, "Helvetica", fontSize);
         labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
-        labelHishScore.setPosition(winSize.width / 2, winSize.height / 2 - 40);
+        labelHishScore.setPosition(winSize.width / 2, 40);
         this.addChild(labelHishScore);
     },
 
@@ -46,6 +67,10 @@ var MenuLayer = cc.Layer.extend({
 
         cc.audioEngine.playEffect(s_music_hineZeBa);
         cc.director.runScene(new PlayScene());
+    },
+
+    onExitClicked : function () {
+        cc.director.end();
     }
 });
 

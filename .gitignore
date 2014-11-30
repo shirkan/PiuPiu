@@ -2,3 +2,5 @@ frameworks/*
 tools/*
 runtime/*
 .idea/*
+publish/*
+shirkan.keystore

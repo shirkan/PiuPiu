@@ -40,7 +40,6 @@ var GameLayer = cc.Layer.extend({
         //  Create rotating hands
         this.hands = new Hands(this);
 
-        //var enemy = new Enemy(this);
         this.schedule(this.addEnemy, 3);
     },
 

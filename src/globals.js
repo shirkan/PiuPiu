@@ -56,6 +56,7 @@ if (typeof PiuPiuGlobals == "undefined") {
     PiuPiuGlobals.livesLeft = 0;
     PiuPiuGlobals.highScore = 0;
     PiuPiuGlobals.gameState = GameStates.Menu;
+    PiuPiuGlobals.currentLevel = 0;
 
     //  Level vars
     PiuPiuGlobals.totalEnemies = 0;
