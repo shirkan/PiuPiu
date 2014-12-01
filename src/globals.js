@@ -35,7 +35,7 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.sourcePoint = cc.p(110, 255);
 
     //  Bullet
-    PiuPiuConsts.framesPerSeconds = 640;
+    PiuPiuConsts.framesPerSeconds = 1000;
 
     //  Enemy
     PiuPiuConsts.enemyMoveToPoint = cc.p(30,240);
@@ -43,7 +43,9 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.enemyHeadOffset = cp.v(-6,22);
 
     //  Player
-    PiuPiuConsts.handsAnchor = cc.p(30,245);
+    // 640 x 480:
+    //PiuPiuConsts.handsAnchor = cc.p(30,245);
+    PiuPiuConsts.handsAnchor = cc.p(30,184);
     PiuPiuConsts.handsLength = 83;
     PiuPiuConsts.livesOnGameStart = 3;
     PiuPiuConsts.maxLives = 5;
@@ -52,11 +54,15 @@ if (typeof PiuPiuConsts == "undefined") {
 if (typeof PiuPiuGlobals == "undefined") {
     var PiuPiuGlobals = {};
 
+    //  Application vars
+    PiuPiuGlobals.winSize = "";
+
     //  Game vars
     PiuPiuGlobals.livesLeft = 0;
     PiuPiuGlobals.highScore = 0;
     PiuPiuGlobals.gameState = GameStates.Menu;
     PiuPiuGlobals.currentLevel = 0;
+    PiuPiuGlobals.commonGrassMap = "";
 
     //  Level vars
     PiuPiuGlobals.totalEnemies = 0;

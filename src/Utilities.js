@@ -7,8 +7,6 @@ function calculateTrigonometry ( point ) {
     var bulletStartPoint = cc.p();
     var endAngle = 0;
 
-    var winSize = cc.director.getWinSize();
-
     var dx = point.x - PiuPiuConsts.handsAnchor.x;
     var dy = point.y - PiuPiuConsts.handsAnchor.y;
 
@@ -19,16 +17,16 @@ function calculateTrigonometry ( point ) {
     //  Calculating end point
     if (a==0) {
         //  very rare, end point is right ahead after right border
-        endPoint.x = winSize.width;
+        endPoint.x = PiuPiuGlobals.winSize.width;
         endPoint.y = point.y;
     } else {
         //  Calculate intersection of ax+b with x=winSize.width
-        var xBorderEndX = winSize.width;
+        var xBorderEndX = PiuPiuGlobals.winSize.width;
         var xBorderEndY = a * xBorderEndX + b;
 
         //  Calculate intersection of ax+b with y=0 or y=winSize.height
         if (a>0) {
-            var yBorderEndY = winSize.height;
+            var yBorderEndY = PiuPiuGlobals.winSize.height;
         } else {
             var yBorderEndY = 0;
         }

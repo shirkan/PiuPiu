@@ -14,9 +14,7 @@ var Player = cc.Class.extend({
     init: function( parentNode ) {
         this.sprite = new cc.PhysicsSprite(res.Player_png);
 
-        var winSize = cc.director.getWinSize();
-
-        var leftCenterPos = cc.p(this.sprite.width / 2, winSize.height / 2);
+        var leftCenterPos = cc.p(this.sprite.width / 2, PiuPiuGlobals.winSize.height / 2);
         //this.setPosition(leftCenterPos);
 
         // init physics

@@ -29,8 +29,7 @@ var BackgroundLayer = cc.Layer.extend({
         //}
 
 
-        //var winSize = cc.director.getWinSize();
-        //var centerPos = cc.p(winSize.width / 2, winSize.height / 2);
+        //var centerPos = cc.p(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
         //var spriteBG = new cc.Sprite(res.Field_png);
         //spriteBG.setPosition(centerPos);
         //this.addChild(spriteBG);

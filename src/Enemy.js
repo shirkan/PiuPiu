@@ -15,12 +15,10 @@ var Enemy = cc.Class.extend({
         this.space = parentNode.space;
         this.sprite = new cc.PhysicsSprite(res.Enemy_png);
 
-        var winSize = cc.director.getWinSize();
-
         //  Set starting position
-        this.startX = winSize.width;
+        this.startX = PiuPiuGlobals.winSize.width;
         //this.startX = winSize.width/2;
-        this.startY = Math.random() * (winSize.height);
+        this.startY = Math.random() * (PiuPiuGlobals.winSize.height);
         //this.startY = winSize.height / 2;
         var startingPoint = cc.p(this.startX, this.startY);
 
