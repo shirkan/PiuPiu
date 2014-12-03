@@ -61,3 +61,34 @@ function calculateTrigonometry ( point ) {
 function calculateLineLength( p1, p2) {
     return Math.sqrt( Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
 }
+
+function initGlobals() {
+    PiuPiuGlobals.winSize = cc.director.getWinSize();
+    PiuPiuGlobals.commonGrassMap = res.grass9_tmx;
+    PiuPiuGlobals.soundEnabled = parseInt(cc.sys.localStorage.soundEnabled);
+    if (PiuPiuGlobals.soundEnabled === undefined) {
+        PiuPiuGlobals.soundEnabled = 1;
+    }
+}
+
+function loadStats () {
+    for (var i in PiuPiuGlobals.statsNames) {
+        var val = parseInt(cc.sys.localStorage.getItem(PiuPiuGlobals.statsNames[i]));
+        if (val != null && !isNaN(val)) {
+            eval("PiuPiuGlobals." + PiuPiuGlobals.statsNames[i] +"= val");
+        }
+    }
+}
+
+function updateStats() {
+    for (var i in PiuPiuGlobals.statsNames) {
+        var val = eval("PiuPiuGlobals." + PiuPiuGlobals.statsNames[i]);
+        cc.sys.localStorage.setItem(PiuPiuGlobals.statsNames[i], val);
+    }
+}
+
+function playSound ( sound ) {
+    if (PiuPiuGlobals.soundEnabled) {
+        cc.audioEngine.playEffect(sound);
+    }
+}

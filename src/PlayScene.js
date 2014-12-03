@@ -8,8 +8,10 @@ var PlayScene = cc.Scene.extend({
     statusLayer:null,
     gameLayer:null,
     backgroundLayer:null,
+    points:0,
+    clearAllObjectsFlag:false,
 
-    initPhysics:function() {
+initPhysics:function() {
         this.space = new cp.Space();
 
         this.space.addCollisionHandler(SpriteTag.Bullet, SpriteTag.Enemy,
@@ -49,7 +51,7 @@ var PlayScene = cc.Scene.extend({
             onKeyReleased: function(keyCode, event){
                 if(keyCode == cc.KEY.back || keyCode == cc.KEY.backspace)
                 {
-                    event.getCurrentTarget().backToMainMenu();
+                    event.getCurrentTarget().endGame( false, true);
                 }
             }
         }, this);
@@ -67,11 +69,6 @@ var PlayScene = cc.Scene.extend({
 
         //  Update space
         this.scheduleUpdate();
-    },
-
-    backToMainMenu : function () {
-        var transition = new cc.TransitionFade(1, new MenuScene());
-        cc.director.runScene(transition);
     },
 
     //  Gameplay handling
@@ -94,18 +91,32 @@ var PlayScene = cc.Scene.extend({
 
         PiuPiuGlobals.livesLeft--;
         if (PiuPiuGlobals.livesLeft == 0) {
-            this.gameOver();
+            this.endGame( true, false);
         }
     },
 
-    gameOver : function () {
+    endGame : function ( showGameOverBanner, transitToMainMenu) {
+        //  Set flag to remove all objects on next step
+        this.clearAllObjectsFlag = true;
+
         //  Change game state
         PiuPiuGlobals.gameState = GameStates.GameOver;
 
         //  Show game over banner
-        this.statusLayer.showGameOver();
+        if (showGameOverBanner) {
+            this.statusLayer.showGameOver();
+        }
 
-        //  Check for high score update
+        this.updateHighScore();
+        updateStats();
+
+        if (transitToMainMenu) {
+            var transition = new cc.TransitionFade(1, new MenuScene());
+            cc.director.runScene(transition);
+        }
+    },
+
+    updateHighScore : function() {
         if (this.points > PiuPiuGlobals.highScore) {
             cc.sys.localStorage.highScore = PiuPiuGlobals.highScore = this.points;
         }
@@ -131,6 +142,7 @@ var PlayScene = cc.Scene.extend({
         var data = calculateTrigonometry(pos);
 
         playScene.gameLayer.addBullet(data);
+        PiuPiuGlobals.totalBulletsFired++;
         return true;
     },
 
@@ -143,21 +155,41 @@ var PlayScene = cc.Scene.extend({
     //  Collisions handling
     collisionBulletEnemy: function (arbiter, space) {
 
-        this.statusLayer.updatePoints(PiuPiuConsts.pointsPerEnemyKill);
-
         var shapes = arbiter.getShapes();
+
+        //  Bug fix: sometimes the bullet already touched the head and we still get here
+        for (var i = 0; i < this.bodiesToRemove.length; i++) {
+            if (this.bodiesToRemove[i] == shapes[0].body ||
+                this.bodiesToRemove[i] == shapes[1].body ) {
+                return;
+            }
+        }
+
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
 
+        this.points += PiuPiuConsts.pointsPerEnemyKill;
+        this.statusLayer.updatePoints(this.points);
+
+        //  Update stats
+        PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyKill;
+        PiuPiuGlobals.totalHits++;
+        PiuPiuGlobals.totalEnemyKilled++;
     },
 
     collisionBulletEnemyHead: function (arbiter, space) {
 
-        this.statusLayer.updatePoints(PiuPiuConsts.pointsPerEnemyHeadShot);
+        this.points += PiuPiuConsts.pointsPerEnemyHeadShot;
+        this.statusLayer.updatePoints(this.points);
         this.statusLayer.displayHeadShot();
 
         var shapes = arbiter.getShapes();
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
 
+        //  Update stats
+        PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyHeadShot;
+        PiuPiuGlobals.totalHits;
+        PiuPiuGlobals.totalEnemyKilled++;
+        PiuPiuGlobals.totalHeadShots++;
     },
 
     collisionEnemyPlayer: function (arbiter, space) {
@@ -170,7 +202,19 @@ var PlayScene = cc.Scene.extend({
     },
 
     update: function (dt) {
+
+        if (this.clearAllObjectsFlag) {
+            this.gameLayer.removeAllObjects();
+
+            //  Stop updating mechanism
+            this.unscheduleUpdate();
+            this.unschedule(this.spawnEnemy);
+
+            return;
+        }
+
         this.space.step(dt);
+        console.log("ping " + dt);
 
         // Simulation cpSpaceAddPostStepCallback
         for(var i = 0; i < this.bodiesToRemove.length; i++) {

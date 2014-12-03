@@ -1,5 +1,6 @@
 
 var MenuLayer = cc.Layer.extend({
+    labelSound:null,
     ctor : function(){
         //1. call super class's ctor function
         this._super();
@@ -22,33 +23,51 @@ var MenuLayer = cc.Layer.extend({
 
         //  Setup menu items
         this.createMenu();
-
-        //  Show highscore
-        labelHishScore = new cc.LabelTTF("High Score: " + PiuPiuGlobals.highScore, "Helvetica", fontSize);
-        labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
-        labelHishScore.setPosition(PiuPiuGlobals.winSize.width / 2, 40);
-        this.addChild(labelHishScore);
     },
 
     createMenu : function () {
         var menuItems = [];
 
-        //var menuItemPlay = new cc.MenuItemSprite(
-        //    new cc.Sprite(res.Start_n_png), // normal state image
-        //    new cc.Sprite(res.Start_s_png), //select state image
-        //    this.onPlay, this);
-
         //  Start
         var labelStart = new cc.LabelTTF("Start", "Helvetica", 44);
         labelStart.setColor(cc.color(255,255,0)); //Yellow
+        //labelStart.enableOutline((255,0,0),5);
+        labelStart.enableStroke(cc.color(0,0,255), 2); //Blue
 
         var menuItemPlay = new cc.MenuItemLabel(
             labelStart,
             this.onPlay, this);
         menuItems.push(menuItemPlay);
 
+        //  Sound on/off
+        this.labelSound = new cc.LabelTTF("Sound on", "Helvetica", 44);
+        this.labelSound.setColor(cc.color(255,255,0)); //Yellow
+        //labelStart.enableOutline((255,0,0),5);
+        this.labelSound.enableStroke(cc.color(0,0,255), 2); //Blue
+
+        if (PiuPiuGlobals.soundEnabled == 0) {
+            this.labelSound.setString("Sound off");
+        }
+
+        var menuItemSound = new cc.MenuItemLabel(
+            this.labelSound,
+            this.onModifySound, this);
+        menuItems.push(menuItemSound);
+
+        //  Statistics
+        var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", 44);
+        labelStatistics.setColor(cc.color(255,255,0)); //Yellow
+        labelStatistics.enableStroke(cc.color(0,0,255), 2); //Blue
+
+        var menuItemStatistics = new cc.MenuItemLabel(
+            labelStatistics,
+            this.onStatistics, this);
+        menuItems.push(menuItemStatistics);
+
+        //  Achievements
         var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", 44);
         labelAchievements.setColor(cc.color(255,255,0)); //Yellow
+        labelAchievements.enableStroke(cc.color(0,0,255), 2); //Blue
 
         var menuItemAchievements = new cc.MenuItemLabel(
             labelAchievements,
@@ -58,6 +77,7 @@ var MenuLayer = cc.Layer.extend({
         //  Exit
         var labelExit = new cc.LabelTTF("Exit", "Helvetica", 44);
         labelExit.setColor(cc.color(255,255,0)); //Yellow
+        labelExit.enableStroke(cc.color(0,0,255), 2); //Blue
 
         var menuItemExit = new cc.MenuItemLabel(
             labelExit,
@@ -77,7 +97,7 @@ var MenuLayer = cc.Layer.extend({
     onPlay : function(){
         cc.log("==onplay clicked");
 
-        cc.audioEngine.playEffect(s_music_hineZeBa);
+        playSound(s_music_hineZeBa);
         cc.director.runScene(new PlayScene());
     },
 
@@ -87,6 +107,20 @@ var MenuLayer = cc.Layer.extend({
 
     onAchievements : function () {
         console.log("achievements clicked");
+    },
+
+    onStatistics : function () {
+        var transition = new cc.TransitionFade(1, new StatsScene());
+        cc.director.runScene(transition);
+    },
+
+    onModifySound : function () {
+        cc.sys.localStorage.soundEnabled = PiuPiuGlobals.soundEnabled = 1 - PiuPiuGlobals.soundEnabled;
+        if (PiuPiuGlobals.soundEnabled == 0) {
+            this.labelSound.setString("Sound off");
+        } else {
+            this.labelSound.setString("Sound on");
+        }
     }
 
 });

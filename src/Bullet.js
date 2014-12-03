@@ -61,7 +61,7 @@ var Bullet = cc.Class.extend({
     },
 
     reachedBounds: function () {
-        this.parentNode.removeObject(this.shape);
+        this.parentNode.removeObject(this.body);
         this.removeFromParent();
     },
 

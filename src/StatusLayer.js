@@ -10,7 +10,6 @@ const fontSize = 20;
 var StatusLayer = cc.Scene.extend({
     labelPoints:null,
     livesSprites:[],
-    points:0,
     ctor: function() {
         this._super();
         this.init();
@@ -27,9 +26,8 @@ var StatusLayer = cc.Scene.extend({
 
     },
 
-    updatePoints: function ( pointsToAdd ) {
-        this.points += pointsToAdd;
-        this.labelHishScore.setString("Score: " + this.points);
+    updatePoints: function ( points ) {
+        this.labelHishScore.setString("Score: " + points);
     },
 
     addLife: function () {

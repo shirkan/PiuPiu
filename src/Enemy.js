@@ -17,9 +17,7 @@ var Enemy = cc.Class.extend({
 
         //  Set starting position
         this.startX = PiuPiuGlobals.winSize.width;
-        //this.startX = winSize.width/2;
         this.startY = Math.random() * (PiuPiuGlobals.winSize.height);
-        //this.startY = winSize.height / 2;
         var startingPoint = cc.p(this.startX, this.startY);
 
         //  Set speed
@@ -37,7 +35,6 @@ var Enemy = cc.Class.extend({
         var bodyY = contentSize.height/2;
         var verts = [-bodyX,-bodyY, -bodyX, bodyY-20, bodyX, bodyY-20, bodyX, -bodyY];
         this.shapeBody = new cp.PolyShape(this.body, verts, cp.v(0,0));
-        //this.shape = new cp.BoxShape(this.body, contentSize.width - 5 , contentSize.height - 15);
         this.shapeBody.setCollisionType(SpriteTag.Enemy);
         this.shapeBody.setSensor(true);
         this.space.addShape(this.shapeBody);

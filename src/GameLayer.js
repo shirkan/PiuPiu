@@ -43,9 +43,6 @@ var GameLayer = cc.Layer.extend({
         var bulletStartPoint = data[1];
         var endAngle = data[2];
 
-        //console.log("clicked on " + pos.x + ", " + pos.y + "endangle: " + endAngle + " startPoint: " + bulletStartPoint.x + ", " + bulletStartPoint.y);
-        //return;
-
         var bullet = new Bullet( this, endPoint, bulletStartPoint, endAngle);
         this.objects.push(bullet);
         this.hands.rotateHands(endAngle);
@@ -69,6 +66,14 @@ var GameLayer = cc.Layer.extend({
             }
         }
     },
+
+    removeAllObjects : function () {
+        for (var i = 0; i < this.objects.length; i++) {
+            this.objects[i].removeFromParent();
+        }
+        this.objects = [];
+    },
+
     onEnter: function () {
         this._super();
         PiuPiuGlobals.gameState = GameStates.Playing;

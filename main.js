@@ -51,9 +51,11 @@ cc.game.onStart = function(){
     cc.view.adjustViewPort(true);
     cc.view.setDesignResolutionSize(640, 360, cc.ResolutionPolicy.SHOW_ALL);
 
-    //  Set afterload globals
-    PiuPiuGlobals.winSize = cc.director.getWinSize();
-    PiuPiuGlobals.commonGrassMap = res.grass9_tmx;
+    //  Init globals
+    initGlobals();
+
+    //  Load stats
+    loadStats();
 
     cc.view.resizeWithBrowserSize(true);
     //load resources

@@ -63,6 +63,13 @@ if (typeof PiuPiuGlobals == "undefined") {
     PiuPiuGlobals.gameState = GameStates.Menu;
     PiuPiuGlobals.currentLevel = 0;
     PiuPiuGlobals.commonGrassMap = "";
+    PiuPiuGlobals.soundEnabled = 1;
+
+    //  Stats vars
+    PiuPiuGlobals.statsNames = ["totalBulletsFired", "totalHits", "totalPowerUps", "totalEnemyKilled", "totalHeadShots", "totalPoints"];
+    for (var i in PiuPiuGlobals.statsNames) {
+        eval("PiuPiuGlobals." + PiuPiuGlobals.statsNames[i] + " = 0");
+    }
 
     //  Level vars
     PiuPiuGlobals.totalEnemies = 0;
