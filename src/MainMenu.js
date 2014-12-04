@@ -54,7 +54,7 @@ var MenuLayer = cc.Layer.extend({
         //  Statistics
         var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", 44);
         labelStatistics.setColor(cc.color(255,255,0)); //Yellow
-        labelStatistics.enableStroke(cc.color("0000ff"), 4);
+        labelStatistics.enableStroke(cc.color(0,0,255), 2);
 
         var menuItemStatistics = new cc.MenuItemLabel(
             labelStatistics,
@@ -129,6 +129,7 @@ var MenuScene = cc.Scene.extend({
 
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.Menu;
+        PiuPiuGlobals.currentLevel = 0;
 
         //  Setup back button to exit for android
         cc.eventManager.addListener({

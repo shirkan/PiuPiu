@@ -79,7 +79,7 @@ if (typeof PiuPiuLevelSettings == "undefined") {
 
     //  Level vars
     PiuPiuLevelSettings.totalEnemiesToSpawn = 0;
-    PiuPiuLevelSettings.enemiesKilled = 0;
+    PiuPiuLevelSettings.enemiesVanished = 0;
     PiuPiuLevelSettings.specialNotations = [];
     PiuPiuLevelSettings.enemiesSpawnInterval = 0;
     PiuPiuLevelSettings.enemiesSpawnIntervalMin = 0;

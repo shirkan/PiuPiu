@@ -1,6 +1,6 @@
 {
   "totalEnemies": 20,
-  "intervalMin": 2,
-  "intervalMax": 3,
+  "intervalMin": 0.5,
+  "intervalMax": 1,
   "intervalType": "random"
 }

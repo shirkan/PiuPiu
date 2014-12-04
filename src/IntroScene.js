@@ -70,6 +70,9 @@ var IntroScene = cc.Scene.extend({
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.Intro;
 
+        //  Load level settings
+        loadLevelSettings();
+
         //  Setup back button to exit for android
         cc.eventManager.addListener({
             event: cc.EventListener.KEYBOARD,

@@ -101,20 +101,27 @@ function stopAllSounds () {
 function loadLevelSettings() {
     var fileName = "levels/level" + PiuPiuGlobals.currentLevel + ".json";
     cc.loader.loadJson(fileName, function(error, data){
-        console.log("start");
         //  Enemies to spawn
         PiuPiuLevelSettings.totalEnemiesToKill = PiuPiuLevelSettings.totalEnemiesToSpawn = data["totalEnemies"];
-        PiuPiuLevelSettings.enemiesKilled = 0;
-        PiuPiuLevelSettings.enemiesSpawnInterval = 2;
-        PiuPiuLevelSettings.enemiesSpawnIntervalMin = 0;
-        PiuPiuLevelSettings.enemiesSpawnIntervalMax = 0;
-        PiuPiuLevelSettings.enemiesSpawnIntervalType = "";
+        PiuPiuLevelSettings.enemiesVanished = 0;
+        PiuPiuLevelSettings.enemiesSpawnInterval = data["enemiesSpawnInterval"] || 2;
+        PiuPiuLevelSettings.enemiesSpawnIntervalMin = data["enemiesSpawnIntervalMin"] || 0;
+        PiuPiuLevelSettings.enemiesSpawnIntervalMax = data["enemiesSpawnIntervalMax"] || 0;
+        PiuPiuLevelSettings.enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "";
 
         //  Power ups policy
 
         //  Special notations
-        PiuPiuLevelSettings.specialNotations = [];
-
-        console.log("done");
+        PiuPiuLevelSettings.specialNotations = data["specialNotations"] || [];
     });
+}
+
+function specialNotationDoesContain( item ) {
+    var i = PiuPiuLevelSettings.specialNotations.length;
+    while (i--) {
+        if (PiuPiuLevelSettings.specialNotations[i] === item) {
+            return true;
+        }
+    }
+    return false;
 }

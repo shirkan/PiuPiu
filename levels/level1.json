@@ -1,5 +1,5 @@
 {
   "totalEnemies": 3,
-  "enemiesSpawnInterval": 1,
+  "enemiesSpawnInterval": 0.3,
   "specialNotations": ["center"]
 }

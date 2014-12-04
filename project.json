@@ -11,13 +11,14 @@
     "modules" : ["cocos2d","chipmunk"],
 
     "jsList" : [
-        "src/MainMenu.js",
         "src/Utilities.js",
+        "src/MainMenu.js",
         "src/BackgroundLayer.js",
         "src/GameLayer.js",
         "src/StatusLayer.js",
         "src/PlayScene.js",
         "src/IntroScene.js",
+        "src/LevelCutScene.js",
         "src/Player.js",
         "src/Hands.js",
         "src/Bullet.js",

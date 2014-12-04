@@ -17,7 +17,11 @@ var Enemy = cc.Class.extend({
 
         //  Set starting position
         this.startX = PiuPiuGlobals.winSize.width;
-        this.startY = Math.random() * (PiuPiuGlobals.winSize.height);
+        if (specialNotationDoesContain("center")) {
+            this.startY = PiuPiuGlobals.winSize.height / 2;
+        } else {
+            this.startY = Math.random() * (PiuPiuGlobals.winSize.height);
+        }
         var startingPoint = cc.p(this.startX, this.startY);
 
         //  Set speed
