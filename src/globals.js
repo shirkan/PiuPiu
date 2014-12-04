@@ -23,6 +23,8 @@ if(typeof GameStates == "undefined") {
     GameStates.Intro = 1;
     GameStates.Playing = 2;
     GameStates.GameOver = 3;
+    GameStates.CutScene = 4;
+    GameStates.LevelCompleted = 4;
 }
 
 if (typeof PiuPiuConsts == "undefined") {
@@ -66,16 +68,22 @@ if (typeof PiuPiuGlobals == "undefined") {
     PiuPiuGlobals.soundEnabled = 1;
 
     //  Stats vars
-    PiuPiuGlobals.statsNames = ["totalBulletsFired", "totalHits", "totalPowerUps", "totalEnemyKilled", "totalHeadShots", "totalPoints"];
+    PiuPiuGlobals.statsNames = ["totalBulletsFired", "totalPowerUps", "totalEnemyKilled", "totalHeadShots", "totalPoints"];
     for (var i in PiuPiuGlobals.statsNames) {
         eval("PiuPiuGlobals." + PiuPiuGlobals.statsNames[i] + " = 0");
     }
+}
+
+if (typeof PiuPiuLevelSettings == "undefined") {
+    var PiuPiuLevelSettings = {};
 
     //  Level vars
-    PiuPiuGlobals.totalEnemies = 0;
-    PiuPiuGlobals.specialNotations = [];
-    PiuPiuGlobals.interval = 0;
-    PiuPiuGlobals.intervalMin = 0;
-    PiuPiuGlobals.intervalMax = 0;
-    PiuPiuGlobals.intervalType = "";
+    PiuPiuLevelSettings.totalEnemiesToSpawn = 0;
+    PiuPiuLevelSettings.enemiesKilled = 0;
+    PiuPiuLevelSettings.specialNotations = [];
+    PiuPiuLevelSettings.enemiesSpawnInterval = 0;
+    PiuPiuLevelSettings.enemiesSpawnIntervalMin = 0;
+    PiuPiuLevelSettings.enemiesSpawnIntervalMax = 0;
+    PiuPiuLevelSettings.enemiesSpawnIntervalType = "";
+
 }

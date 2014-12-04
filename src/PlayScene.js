@@ -11,6 +11,8 @@ var PlayScene = cc.Scene.extend({
     points:0,
     clearAllObjectsFlag:false,
 
+    //  Level settings
+
 initPhysics:function() {
         this.space = new cp.Space();
 
@@ -24,6 +26,8 @@ initPhysics:function() {
 
     onEnter:function () {
         this._super();
+        //  Load level settings
+        loadLevelSettings();
 
         //  Init physics matters
         this.initPhysics();
@@ -57,15 +61,24 @@ initPhysics:function() {
         }, this);
 
         //  Game setup
-        PiuPiuGlobals.livesLeft = 0;
+            //  Game beginning initialization, occurs only on level 1
+            if (PiuPiuGlobals.currentLevel == 1) {
+                PiuPiuGlobals.livesLeft = 0;
 
-        //  Add lives for start
-        for (var i=0; i<PiuPiuConsts.livesOnGameStart; i++) {
-            this.addLife();
-        }
+                //  Add lives for start
+                for (var i=0; i<PiuPiuConsts.livesOnGameStart; i++) {
+                    this.addLife();
+                }
+                playSound(res.sound_ohedNichnasLamigrash);
+            } else {
+                for (var i=0; i<PiuPiuGlobals.livesLeft; i++) {
+                    this.addLife();
+                }
+            }
 
-        //  Run level
-        this.schedule(this.spawnEnemy, 1.5);
+        //  Run level, wait 1 second before actually starting the level
+        this.schedule(this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnInterval, PiuPiuLevelSettings.totalEnemiesToKill - 1, 1);
+        PiuPiuGlobals.gameState = GameStates.Playing;
 
         //  Update space
         this.scheduleUpdate();
@@ -79,6 +92,12 @@ initPhysics:function() {
         }
 
         this.gameLayer.addEnemy();
+
+        //  Check if need to spawn more enemies
+        PiuPiuLevelSettings.totalEnemiesToSpawn--;
+        if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0) {
+            this.unschedule(this.spawnEnemy);
+        }
     },
 
     addLife : function () {
@@ -92,6 +111,14 @@ initPhysics:function() {
         PiuPiuGlobals.livesLeft--;
         if (PiuPiuGlobals.livesLeft == 0) {
             this.endGame( true, false);
+        }
+    },
+
+    checkLevelComplete : function () {
+        if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0 &&
+            PiuPiuLevelSettings.enemiesKilled == PiuPiuLevelSettings.totalEnemiesToKill) {
+            PiuPiuGlobals.gameState = GameStates.LevelCompleted;
+            this.statusLayer.showLevelCompleted();
         }
     },
 
@@ -127,6 +154,13 @@ initPhysics:function() {
         //  If game over state, return to menu
         if (PiuPiuGlobals.gameState == GameStates.GameOver) {
             var transition = new cc.TransitionFade(1, new MenuScene());
+            cc.director.runScene(transition);
+            return true;
+        }
+
+        //  If level completed, continue to cut scene of next level
+        if (PiuPiuGlobals.gameState == GameStates.LevelCompleted) {
+            var transition = new cc.TransitionFade(1, new CutScene());
             cc.director.runScene(transition);
             return true;
         }
@@ -170,10 +204,14 @@ initPhysics:function() {
         this.points += PiuPiuConsts.pointsPerEnemyKill;
         this.statusLayer.updatePoints(this.points);
 
+        //  Update level settings
+        PiuPiuLevelSettings.enemiesKilled++;
+
         //  Update stats
         PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyKill;
-        PiuPiuGlobals.totalHits++;
         PiuPiuGlobals.totalEnemyKilled++;
+
+        this.checkLevelComplete();
     },
 
     collisionBulletEnemyHead: function (arbiter, space) {
@@ -185,11 +223,15 @@ initPhysics:function() {
         var shapes = arbiter.getShapes();
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
 
+        //  Update level settings
+        PiuPiuLevelSettings.enemiesKilled++;
+
         //  Update stats
         PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyHeadShot;
-        PiuPiuGlobals.totalHits;
         PiuPiuGlobals.totalEnemyKilled++;
         PiuPiuGlobals.totalHeadShots++;
+
+        this.checkLevelComplete();
     },
 
     collisionEnemyPlayer: function (arbiter, space) {
@@ -214,7 +256,6 @@ initPhysics:function() {
         }
 
         this.space.step(dt);
-        console.log("ping " + dt);
 
         // Simulation cpSpaceAddPostStepCallback
         for(var i = 0; i < this.bodiesToRemove.length; i++) {

@@ -23,14 +23,13 @@ var GameLayer = cc.Layer.extend({
     init:function () {
         this._super();
 
-        //  Set game state to playing
-        PiuPiuGlobals.gameState = GameStates.Playing;
-
         //  Place player on left side
         this.player = new Player(this);
 
         //  Create rotating hands
         this.hands = new Hands(this);
+
+        //this.schedule(this.printSize, 1);
     },
 
     addEnemy: function () {
@@ -74,8 +73,7 @@ var GameLayer = cc.Layer.extend({
         this.objects = [];
     },
 
-    onEnter: function () {
-        this._super();
-        PiuPiuGlobals.gameState = GameStates.Playing;
+    printSize : function () {
+        console.log("size is " + this.objects.length);
     }
 });

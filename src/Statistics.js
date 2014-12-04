@@ -35,7 +35,8 @@ var StatsLayer = cc.Layer.extend({
         labelTotalHits.setPosition(cc.p(30, PiuPiuGlobals.winSize.height - 85));
         this.addChild(labelTotalHits);
 
-        var totalHits = new cc.LabelTTF(PiuPiuGlobals.totalHits.toString(), "Helvetica", 30);
+        var totalHitsValue = PiuPiuGlobals.totalEnemyKilled + PiuPiuGlobals.totalPowerUps;
+        var totalHits = new cc.LabelTTF(totalHitsValue.toString(), "Helvetica", 30);
         totalHits.setColor(cc.color(255,255,0)); //Yellow
         totalHits.anchorX = 0;
         totalHits.setPosition(cc.p(PiuPiuGlobals.winSize.width - 150, PiuPiuGlobals.winSize.height - 85));
@@ -47,24 +48,12 @@ var StatsLayer = cc.Layer.extend({
         labelhitRate.setPosition(cc.p(30, PiuPiuGlobals.winSize.height - 115));
         this.addChild(labelhitRate);
 
-        var actualHitRate = (PiuPiuGlobals.totalBulletsFired ? (PiuPiuGlobals.totalHits / PiuPiuGlobals.totalBulletsFired * 100).toFixed(0) : 0)
+        var actualHitRate = (PiuPiuGlobals.totalBulletsFired ? (totalHitsValue / PiuPiuGlobals.totalBulletsFired * 100).toFixed(0) : 0)
         var hitRate = new cc.LabelTTF(actualHitRate.toString() + "%", "Helvetica", 30);
         hitRate.setColor(cc.color(255,255,0)); //Yellow
         hitRate.anchorX = 0;
         hitRate.setPosition(cc.p(PiuPiuGlobals.winSize.width - 150, PiuPiuGlobals.winSize.height - 115));
         this.addChild(hitRate);
-
-        var labelTotalPowerUps = new cc.LabelTTF("Total power ups", "Helvetica", 30);
-        labelTotalPowerUps.setColor(cc.color(255,255,0)); //Yellow
-        labelTotalPowerUps.anchorX = 0;
-        labelTotalPowerUps.setPosition(cc.p(30, PiuPiuGlobals.winSize.height - 150));
-        this.addChild(labelTotalPowerUps);
-
-        var totalPowerUps = new cc.LabelTTF(PiuPiuGlobals.totalPowerUps.toString(), "Helvetica", 30);
-        totalPowerUps.setColor(cc.color(255,255,0)); //Yellow
-        totalPowerUps.anchorX = 0;
-        totalPowerUps.setPosition(cc.p(PiuPiuGlobals.winSize.width - 150, PiuPiuGlobals.winSize.height - 150));
-        this.addChild(totalPowerUps);
 
         var labelTotalEnemyKilled = new cc.LabelTTF("Total enemies killed", "Helvetica", 30);
         labelTotalEnemyKilled.setColor(cc.color(255,255,0)); //Yellow
@@ -89,6 +78,18 @@ var StatsLayer = cc.Layer.extend({
         totalHeadShots.anchorX = 0;
         totalHeadShots.setPosition(cc.p(PiuPiuGlobals.winSize.width - 150, PiuPiuGlobals.winSize.height - 220));
         this.addChild(totalHeadShots);
+
+        var labelTotalPowerUps = new cc.LabelTTF("Total power ups", "Helvetica", 30);
+        labelTotalPowerUps.setColor(cc.color(255,255,0)); //Yellow
+        labelTotalPowerUps.anchorX = 0;
+        labelTotalPowerUps.setPosition(cc.p(30, PiuPiuGlobals.winSize.height - 150));
+        this.addChild(labelTotalPowerUps);
+
+        var totalPowerUps = new cc.LabelTTF(PiuPiuGlobals.totalPowerUps.toString(), "Helvetica", 30);
+        totalPowerUps.setColor(cc.color(255,255,0)); //Yellow
+        totalPowerUps.anchorX = 0;
+        totalPowerUps.setPosition(cc.p(PiuPiuGlobals.winSize.width - 150, PiuPiuGlobals.winSize.height - 150));
+        this.addChild(totalPowerUps);
 
         var labelTotalPoints = new cc.LabelTTF("Total points", "Helvetica", 30);
         labelTotalPoints.setColor(cc.color(255,255,0)); //Yellow

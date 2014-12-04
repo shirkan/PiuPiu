@@ -65,9 +65,10 @@ function calculateLineLength( p1, p2) {
 function initGlobals() {
     PiuPiuGlobals.winSize = cc.director.getWinSize();
     PiuPiuGlobals.commonGrassMap = res.grass9_tmx;
+    PiuPiuGlobals.currentLevel = 0;
     PiuPiuGlobals.soundEnabled = parseInt(cc.sys.localStorage.soundEnabled);
-    if (PiuPiuGlobals.soundEnabled === undefined) {
-        PiuPiuGlobals.soundEnabled = 1;
+    if (PiuPiuGlobals.soundEnabled === undefined || isNaN(PiuPiuGlobals.soundEnabled)) {
+        cc.sys.localStorage.soundEnabled = PiuPiuGlobals.soundEnabled = 1;
     }
 }
 
@@ -91,4 +92,29 @@ function playSound ( sound ) {
     if (PiuPiuGlobals.soundEnabled) {
         cc.audioEngine.playEffect(sound);
     }
+}
+
+function stopAllSounds () {
+    cc.audioEngine.stopAllEffects();
+}
+
+function loadLevelSettings() {
+    var fileName = "levels/level" + PiuPiuGlobals.currentLevel + ".json";
+    cc.loader.loadJson(fileName, function(error, data){
+        console.log("start");
+        //  Enemies to spawn
+        PiuPiuLevelSettings.totalEnemiesToKill = PiuPiuLevelSettings.totalEnemiesToSpawn = data["totalEnemies"];
+        PiuPiuLevelSettings.enemiesKilled = 0;
+        PiuPiuLevelSettings.enemiesSpawnInterval = 2;
+        PiuPiuLevelSettings.enemiesSpawnIntervalMin = 0;
+        PiuPiuLevelSettings.enemiesSpawnIntervalMax = 0;
+        PiuPiuLevelSettings.enemiesSpawnIntervalType = "";
+
+        //  Power ups policy
+
+        //  Special notations
+        PiuPiuLevelSettings.specialNotations = [];
+
+        console.log("done");
+    });
 }

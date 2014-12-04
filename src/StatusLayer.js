@@ -46,7 +46,8 @@ var StatusLayer = cc.Scene.extend({
 
     displayHeadShot: function() {
         var headShotSprite = new cc.LabelTTF("Head shot!", "Helvetica", fontSize);
-        headShotSprite.setColor(cc.color(255,0,0)); //  Red
+        headShotSprite.setColor(cc.color(255,255,0)); //  Yellow
+        headShotSprite.enableStroke(cc.color(0,0,255), 2); //Blue
         headShotSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - yGap);
         this.addChild(headShotSprite);
         headShotSprite.runAction(cc.FadeOut.create(0.5));
@@ -55,7 +56,18 @@ var StatusLayer = cc.Scene.extend({
     showGameOver : function () {
         var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", fontSize * 3);
         gameOverSprite.setColor(cc.color(255,0,0)); //  Red
+        gameOverSprite.enableStroke(cc.color(255,255,255), 5); //White
         gameOverSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
+        var gameOverAnimation = cc.RepeatForever.create(new cc.Sequence(cc.ScaleBy.create(2, 1.5), cc.ScaleBy.create(2, 1/1.5)));
         this.addChild(gameOverSprite);
+        gameOverSprite.runAction(gameOverAnimation);
+    },
+
+    showLevelCompleted: function () {
+        var levelCompletedSprite = new cc.LabelTTF("Level Completed!", "Helvetica", fontSize * 3);
+        levelCompletedSprite.setColor(cc.color(255,255,0)); //  Yellow
+        levelCompletedSprite.enableStroke(cc.color(0,0,255), 2); //Blue
+        levelCompletedSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
+        this.addChild(levelCompletedSprite);
     }
 })

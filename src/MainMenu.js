@@ -14,12 +14,9 @@ var MenuLayer = cc.Layer.extend({
             PiuPiuGlobals.highScore = cc.sys.localStorage.highScore;
         }
 
-        //  Set game state as menu
-        PiuPiuGlobals.gameState = GameStates.Menu;
-
         //  Add background
-        var spritebg = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
-        this.addChild(spritebg);
+        var spriteBG = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
+        this.addChild(spriteBG);
 
         //  Setup menu items
         this.createMenu();
@@ -57,7 +54,7 @@ var MenuLayer = cc.Layer.extend({
         //  Statistics
         var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", 44);
         labelStatistics.setColor(cc.color(255,255,0)); //Yellow
-        labelStatistics.enableStroke(cc.color(0,0,255), 2); //Blue
+        labelStatistics.enableStroke(cc.color("0000ff"), 4);
 
         var menuItemStatistics = new cc.MenuItemLabel(
             labelStatistics,
@@ -95,10 +92,8 @@ var MenuLayer = cc.Layer.extend({
     },
 
     onPlay : function(){
-        cc.log("==onplay clicked");
-
-        playSound(s_music_hineZeBa);
-        cc.director.runScene(new PlayScene());
+        PiuPiuGlobals.currentLevel++;
+        cc.director.runScene(new IntroScene());
     },
 
     onExitClicked : function () {
@@ -131,6 +126,9 @@ var MenuScene = cc.Scene.extend({
         var layer = new MenuLayer();
         layer.init();
         this.addChild(layer);
+
+        //  Set game state as menu
+        PiuPiuGlobals.gameState = GameStates.Menu;
 
         //  Setup back button to exit for android
         cc.eventManager.addListener({

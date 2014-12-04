@@ -48,7 +48,7 @@ var Bullet = cc.Class.extend({
         var seq = new cc.Sequence(moveAction, new cc.CallFunc (this.reachedBounds, this));
 
         this.sprite.runAction(seq);
-
+        playSound(res.sound_piu);
     },
 
     removeFromParent:function () {
