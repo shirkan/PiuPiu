@@ -9,6 +9,7 @@ const fontSize = 20;
 
 var StatusLayer = cc.Scene.extend({
     labelPoints:null,
+    labelHighScore:null,
     labelLevelCompleted:null,
     livesSprites:[],
     ctor: function() {
@@ -24,14 +25,6 @@ var StatusLayer = cc.Scene.extend({
         this.labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
         this.labelHishScore.setPosition(PiuPiuGlobals.winSize.width - xGap, PiuPiuGlobals.winSize.height - yGap);
         this.addChild(this.labelHishScore);
-
-        //  Create level complete label
-
-        this.labelLevelCompleted = new cc.LabelTTF("Level Completed!", "Helvetica", fontSize * 3);
-        this.labelLevelCompleted.setColor(cc.color(255,255,0)); //  Yellow
-        this.labelLevelCompleted.enableStroke(cc.color(0,0,255), 2); //Blue
-        this.labelLevelCompleted.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
-
     },
 
     updatePoints: function ( points ) {
@@ -72,7 +65,11 @@ var StatusLayer = cc.Scene.extend({
     },
 
     showLevelCompleted: function () {
-        this.addChild(this.labelLevelCompleted);
+        this.labelLevelCompleted = new cc.LabelTTF("Level Completed!", "Helvetica", fontSize * 3);
+        this.labelLevelCompleted.setColor(cc.color(255,255,0)); //  Yellow
+        this.labelLevelCompleted.enableStroke(cc.color(0,0,255), 2); //Blue
+        this.labelLevelCompleted.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
+        this.addChild(this.labelLevelCompleted, 0, PiuPiuConsts.levelCompletedTag);
     },
 
     hideLevelCompleted: function () {

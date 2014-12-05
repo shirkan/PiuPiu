@@ -60,9 +60,6 @@ var PlayScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
 
-        //  Hide level completed label from previous level
-        this.statusLayer.hideLevelCompleted();
-
         //  Game setup
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
@@ -171,6 +168,10 @@ var PlayScene = cc.Scene.extend({
         //  If level completed, continue to cut scene of next level
         if (PiuPiuGlobals.gameState == GameStates.LevelCompleted) {
             PiuPiuGlobals.currentLevel++;
+
+            //  Hide level completed label from previous level
+            event.getCurrentTarget().statusLayer.hideLevelCompleted();
+
             var transition = new cc.TransitionFade(1, new LevelCutScene());
             cc.director.pushScene(transition);
             return true;

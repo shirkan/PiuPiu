@@ -99,7 +99,7 @@ function stopAllSounds () {
 }
 
 function loadLevelSettings() {
-    var fileName = "levels/level" + PiuPiuGlobals.currentLevel + ".json";
+    var fileName = "src/levels/level" + PiuPiuGlobals.currentLevel + ".json";
     cc.loader.loadJson(fileName, function(error, data){
         //  Enemies to spawn
         PiuPiuLevelSettings.totalEnemiesToKill = PiuPiuLevelSettings.totalEnemiesToSpawn = data["totalEnemies"];

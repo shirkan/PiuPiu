@@ -51,6 +51,9 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.handsLength = 83;
     PiuPiuConsts.livesOnGameStart = 3;
     PiuPiuConsts.maxLives = 5;
+
+    //  Status layer
+    PiuPiuConsts.levelCompletedTag = "LevelCompletedTag";
 }
 
 if (typeof PiuPiuGlobals == "undefined") {
