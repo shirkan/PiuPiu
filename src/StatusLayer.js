@@ -45,6 +45,12 @@ var StatusLayer = cc.Scene.extend({
         this.removeChild(spriteToRemove);
     },
 
+    resetLives: function () {
+        while (this.livesSprites.length) {
+            this.removeLife();
+        }
+    },
+
     displayHeadShot: function() {
         var headShotSprite = new cc.LabelTTF("Head shot!", "Helvetica", fontSize);
         headShotSprite.setColor(cc.color(255,255,0)); //  Yellow

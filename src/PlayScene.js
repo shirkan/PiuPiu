@@ -61,6 +61,8 @@ var PlayScene = cc.Scene.extend({
         this._super();
 
         //  Game setup
+            this.statusLayer.resetLives();
+
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
                 PiuPiuGlobals.livesLeft = 0;
@@ -80,8 +82,6 @@ var PlayScene = cc.Scene.extend({
         PiuPiuGlobals.gameState = GameStates.Playing;
 
         //  Run level, wait 1 second before actually starting the level
-        //console.log("command line: this.schedule(this.spawnEnemy, "+ PiuPiuLevelSettings.enemiesSpawnInterval+", "+(PiuPiuLevelSettings.totalEnemiesToKill - 1)+", 1);");
-        //this.schedule(this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnInterval, -1, 1);
         cc.director.getScheduler().scheduleCallbackForTarget(this, this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnInterval, cc.REPEAT_FOREVER, 1);
 
         //  Update space
@@ -122,11 +122,18 @@ var PlayScene = cc.Scene.extend({
     },
 
     checkLevelComplete : function () {
+        if (PiuPiuGlobals.gameState == GameStates.GameOver) {
+            return false;
+        }
+
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0 &&
             PiuPiuLevelSettings.enemiesVanished == PiuPiuLevelSettings.totalEnemiesToKill) {
             PiuPiuGlobals.gameState = GameStates.LevelCompleted;
             this.statusLayer.showLevelCompleted();
+            return true;
         }
+
+        return false;
     },
 
     endGame : function ( showGameOverBanner, transitToMainMenu) {
@@ -204,14 +211,16 @@ var PlayScene = cc.Scene.extend({
         var shapes = arbiter.getShapes();
 
         //  Bug fix: sometimes the bullet already touched the head and we still get here
-        for (var i = 0; i < this.bodiesToRemove.length; i++) {
-            if (this.bodiesToRemove[i] == shapes[0].body ||
-                this.bodiesToRemove[i] == shapes[1].body ) {
-                return;
-            }
-        }
+        //for (var i = 0; i < this.bodiesToRemove.length; i++) {
+        //    if (this.bodiesToRemove[i] == shapes[0].body ||
+        //        this.bodiesToRemove[i] == shapes[1].body ) {
+        //        return;
+        //    }
+        //}
 
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
+        //  Set post step callback
+        this.space.addPostStepCallback(this.postStepCallBack.bind(this));
 
         this.points += PiuPiuConsts.pointsPerEnemyKill;
         this.statusLayer.updatePoints(this.points);
@@ -234,6 +243,8 @@ var PlayScene = cc.Scene.extend({
 
         var shapes = arbiter.getShapes();
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
+        //  Set post step callback
+        this.space.addPostStepCallback(this.postStepCallBack.bind(this));
 
         //  Update level settings
         PiuPiuLevelSettings.enemiesVanished++;
@@ -251,11 +262,22 @@ var PlayScene = cc.Scene.extend({
         var shapes = arbiter.getShapes();
         //  shapes[1] is Zehavi
         this.bodiesToRemove.push(shapes[0].body);
+        //  Set post step callback
+        this.space.addPostStepCallback(this.postStepCallBack.bind(this));
 
         this.removeLife();
 
         PiuPiuLevelSettings.enemiesVanished++;
         this.checkLevelComplete();
+    },
+
+    postStepCallBack : function () {
+        // Simulation cpSpaceAddPostStepCallback
+        for(var i = 0; i < this.bodiesToRemove.length; i++) {
+            var shape = this.bodiesToRemove[i];
+            this.gameLayer.removeObjectByBody(shape);
+        }
+        this.bodiesToRemove = [];
     },
 
     update: function (dt) {
@@ -271,12 +293,5 @@ var PlayScene = cc.Scene.extend({
         }
 
         this.space.step(dt);
-
-        // Simulation cpSpaceAddPostStepCallback
-        for(var i = 0; i < this.bodiesToRemove.length; i++) {
-            var shape = this.bodiesToRemove[i];
-            this.gameLayer.removeObjectByBody(shape);
-        }
-        this.bodiesToRemove = [];
     }
 });
