@@ -72,8 +72,7 @@ function SMstep() {
         }
         case ("range"):
         {
-            var interval = SMavailableSpawnTimings[(Math.floor(Math.random() * 3))];
-            console.log("interval = " +interval);
+            var interval = SMavailableSpawnTimings[(Math.floor(Math.random() * SMavailableSpawnTimings.length))];
             cc.director.getScheduler().scheduleCallbackForTarget(SMthis, SMcallback, interval, cc.REPEAT_FOREVER);
             return;
         }
