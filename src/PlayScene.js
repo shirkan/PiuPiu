@@ -10,6 +10,7 @@ var PlayScene = cc.Scene.extend({
     backgroundLayer:null,
     points:0,
     clearAllObjectsFlag:false,
+    hitToUpdate:"",
 
     ctor: function() {
         this._super();
@@ -61,7 +62,6 @@ var PlayScene = cc.Scene.extend({
         this._super();
 
         //  Game setup
-            this.statusLayer.resetLives();
 
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
@@ -72,12 +72,6 @@ var PlayScene = cc.Scene.extend({
                     this.addLife();
                 }
                 playSound(res.sound_ohedNichnasLamigrash);
-            } else {
-                var livesLeft = PiuPiuGlobals.livesLeft;
-                PiuPiuGlobals.livesLeft = 0;
-                for (var i=0; i<livesLeft; i++) {
-                    this.addLife();
-                }
             }
         PiuPiuGlobals.gameState = GameStates.Playing;
 
@@ -92,7 +86,6 @@ var PlayScene = cc.Scene.extend({
     spawnEnemy : function () {
         if (PiuPiuGlobals.gameState != GameStates.Playing) {
             cc.director.getScheduler().unscheduleCallbackForTarget(this, this.spawnEnemy);
-            //this.unschedule(this.spawnEnemy);
             return;
         }
 
@@ -101,7 +94,6 @@ var PlayScene = cc.Scene.extend({
         //  Check if need to spawn more enemies
         PiuPiuLevelSettings.totalEnemiesToSpawn--;
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0) {
-            //this.unschedule(this.spawnEnemy);
             cc.director.getScheduler().unscheduleCallbackForTarget(this, this.spawnEnemy);
             return;
         }
@@ -127,7 +119,7 @@ var PlayScene = cc.Scene.extend({
         }
 
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0 &&
-            PiuPiuLevelSettings.enemiesVanished == PiuPiuLevelSettings.totalEnemiesToKill) {
+            PiuPiuLevelSettings.enemiesVanished >= PiuPiuLevelSettings.totalEnemiesToKill) {
             PiuPiuGlobals.gameState = GameStates.LevelCompleted;
             this.statusLayer.showLevelCompleted();
             return true;
@@ -207,77 +199,90 @@ var PlayScene = cc.Scene.extend({
 
     //  Collisions handling
     collisionBulletEnemy: function (arbiter, space) {
+        if (this.hitToUpdate > hitType.NoHit) {
+            return;
+        }
+        this.hitToUpdate = hitType.BulletEnemy;
 
         var shapes = arbiter.getShapes();
-
-        //  Bug fix: sometimes the bullet already touched the head and we still get here
-        //for (var i = 0; i < this.bodiesToRemove.length; i++) {
-        //    if (this.bodiesToRemove[i] == shapes[0].body ||
-        //        this.bodiesToRemove[i] == shapes[1].body ) {
-        //        return;
-        //    }
-        //}
-
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
         //  Set post step callback
         this.space.addPostStepCallback(this.postStepCallBack.bind(this));
 
-        this.points += PiuPiuConsts.pointsPerEnemyKill;
-        this.statusLayer.updatePoints(this.points);
 
-        //  Update level settings
-        PiuPiuLevelSettings.enemiesVanished++;
-
-        //  Update stats
-        PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyKill;
-        PiuPiuGlobals.totalEnemyKilled++;
-
-        this.checkLevelComplete();
     },
 
     collisionBulletEnemyHead: function (arbiter, space) {
-
-        this.points += PiuPiuConsts.pointsPerEnemyHeadShot;
-        this.statusLayer.updatePoints(this.points);
-        this.statusLayer.displayHeadShot();
+        if (this.hitToUpdate > hitType.NoHit) {
+            return;
+        }
+        this.hitToUpdate = hitType.BulletEnemyHead;
 
         var shapes = arbiter.getShapes();
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
         //  Set post step callback
         this.space.addPostStepCallback(this.postStepCallBack.bind(this));
-
-        //  Update level settings
-        PiuPiuLevelSettings.enemiesVanished++;
-
-        //  Update stats
-        PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyHeadShot;
-        PiuPiuGlobals.totalEnemyKilled++;
-        PiuPiuGlobals.totalHeadShots++;
-
-        this.checkLevelComplete();
     },
 
     collisionEnemyPlayer: function (arbiter, space) {
+        if (this.hitToUpdate > hitType.NoHit) {
+            return;
+        }
+        this.hitToUpdate = hitType.EnemyPlayer;
 
         var shapes = arbiter.getShapes();
         //  shapes[1] is Zehavi
         this.bodiesToRemove.push(shapes[0].body);
         //  Set post step callback
         this.space.addPostStepCallback(this.postStepCallBack.bind(this));
-
-        this.removeLife();
-
-        PiuPiuLevelSettings.enemiesVanished++;
-        this.checkLevelComplete();
     },
 
     postStepCallBack : function () {
         // Simulation cpSpaceAddPostStepCallback
         for(var i = 0; i < this.bodiesToRemove.length; i++) {
-            var shape = this.bodiesToRemove[i];
-            this.gameLayer.removeObjectByBody(shape);
+            var body = this.bodiesToRemove[i];
+            this.gameLayer.removeObjectByBody(body);
         }
         this.bodiesToRemove = [];
+
+        if (this.hitToUpdate == hitType.NoHit) {
+            return;
+        }
+
+        //  Update level settings
+        PiuPiuLevelSettings.enemiesVanished++;
+
+        //  Update stats according to hit type
+        switch (this.hitToUpdate) {
+            case hitType.BulletEnemy:
+            {
+                this.points += PiuPiuConsts.pointsPerEnemyKill;
+                this.statusLayer.updatePoints(this.points);
+
+                PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyKill;
+                PiuPiuGlobals.totalEnemyKilled++;
+
+                break;
+            }
+            case hitType.BulletEnemyHead:
+            {
+                this.points += PiuPiuConsts.pointsPerEnemyHeadShot;
+                this.statusLayer.updatePoints(this.points);
+                this.statusLayer.displayHeadShot();
+
+                PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyHeadShot;
+                PiuPiuGlobals.totalEnemyKilled++;
+                PiuPiuGlobals.totalHeadShots++;
+
+                break;
+            }
+            case hitType.EnemyPlayer:
+            {
+                this.removeLife();
+            }
+        }
+        this.hitToUpdate = hitType.NoHit;
+        this.checkLevelComplete();
     },
 
     update: function (dt) {

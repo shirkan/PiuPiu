@@ -15,7 +15,7 @@ var IntroLayer = cc.Layer.extend({
         this.addChild(spriteBG);
 
         //  Add Level banner
-        var levelSprite = new cc.LabelTTF("Level 1", "Helvetica", 40);
+        var levelSprite = new cc.LabelTTF("Level " + PiuPiuGlobals.currentLevel, "Helvetica", 40);
         levelSprite.setColor(cc.color(255,255,0)); //  Yellow
         levelSprite.enableStroke(cc.color(0,0,255), 2); //Blue
         levelSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - 80);

@@ -12,14 +12,10 @@ var Bullet = cc.Class.extend({
     ctor: function( parentNode, endPoint, bulletStartPoint, endAngle ) {
         this.space = parentNode.space;
         this.parentNode = parentNode;
-        //this._super();
         this.init(endPoint, bulletStartPoint, endAngle);
     },
 
     init: function( endPoint, bulletStartPoint, endAngle ) {
-        //this.space = parentNode.space;
-        //this.parentNode = parentNode;
-
         //  Init sprite
         this.sprite = new cc.PhysicsSprite(res.Bullet_png);
 
@@ -32,7 +28,7 @@ var Bullet = cc.Class.extend({
 
         // init physics - shape
         var contentSize = this.sprite.getContentSize();
-        this.shape = new cp.BoxShape(this.body, contentSize.width, contentSize.height);
+        this.shape = new cp.SegmentShape(this.body, cc.p(-contentSize.width / 2,0), cc.p(contentSize.width/2, 0), 1);
         this.shape.setCollisionType(SpriteTag.Bullet);
         this.shape.setSensor(true);
         this.space.addShape(this.shape);

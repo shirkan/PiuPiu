@@ -9,6 +9,14 @@ if(typeof TagOfLayer == "undefined") {
     TagOfLayer.Status = 2;
 };
 
+if(typeof hitType == "undefined") {
+    var hitType = {};
+    hitType.NoHit = 0;
+    hitType.BulletEnemy = 1;
+    hitType.BulletEnemyHead = 2;
+    hitType.EnemyPlayer = 3;
+};
+
 if(typeof SpriteTag == "undefined") {
     var SpriteTag = {};
     SpriteTag.Player = 0;

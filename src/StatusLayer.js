@@ -2,7 +2,7 @@
  * Created by shirkan on 11/17/14.
  */
 
-const yGap = 20;
+const yGap = 30;
 const xGap = 100;
 const gapBetweenLives = 3;
 const fontSize = 20;
@@ -33,7 +33,7 @@ var StatusLayer = cc.Scene.extend({
 
     addLife: function () {
         var newSprite = new cc.Sprite(res.Life_png);
-        var newPos = cc.p(yGap + (PiuPiuGlobals.livesLeft * (newSprite.width + gapBetweenLives)), PiuPiuGlobals.winSize.height - yGap);
+        var newPos = cc.p(yGap + (PiuPiuGlobals.livesLeft * (newSprite.width + gapBetweenLives)), PiuPiuGlobals.winSize.height - newSprite.height/2);
         newSprite.setPosition(newPos);
         this.addChild(newSprite);
 
