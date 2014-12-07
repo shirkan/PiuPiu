@@ -1,6 +1,7 @@
 {
   "totalEnemies": 20,
-  "intervalMin": 0.5,
-  "intervalMax": 1,
-  "intervalType": "random"
+  "enemiesSpawnIntervalMin": 0.5,
+  "enemiesSpawnIntervalMax": 1,
+  "enemiesSpawnInterval": 0.2,
+  "enemiesSpawnIntervalType": "range"
 }

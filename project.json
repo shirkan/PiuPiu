@@ -12,6 +12,7 @@
 
     "jsList" : [
         "src/Utilities.js",
+        "src/SpawningMechanism.js",
         "src/MainMenu.js",
         "src/BackgroundLayer.js",
         "src/GameLayer.js",

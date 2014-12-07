@@ -76,7 +76,10 @@ var PlayScene = cc.Scene.extend({
         PiuPiuGlobals.gameState = GameStates.Playing;
 
         //  Run level, wait 1 second before actually starting the level
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnInterval, cc.REPEAT_FOREVER, 1);
+        //cc.director.getScheduler().scheduleCallbackForTarget(this, this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnInterval, cc.REPEAT_FOREVER, 1);
+
+        SMinit(this, this.spawnEnemy);
+        SMstart();
 
         //  Update space
         this.scheduleUpdate();
@@ -96,6 +99,8 @@ var PlayScene = cc.Scene.extend({
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0) {
             cc.director.getScheduler().unscheduleCallbackForTarget(this, this.spawnEnemy);
             return;
+        } else {
+            SMstep();
         }
     },
 
