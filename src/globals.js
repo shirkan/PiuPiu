@@ -23,6 +23,7 @@ if(typeof SpriteTag == "undefined") {
     SpriteTag.Bullet = 1;
     SpriteTag.Enemy = 2;
     SpriteTag.EnemyHead = 3;
+    SpriteTag.Powerup = 4;
 };
 
 if(typeof GameStates == "undefined") {
@@ -59,6 +60,10 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.handsLength = 83;
     PiuPiuConsts.livesOnGameStart = 3;
     PiuPiuConsts.maxLives = 5;
+
+    //  Powerups
+    PiuPiuConsts.powerupRadius = 3;
+    PiuPiuConsts.powerupCenterPoint = cp.v(0,0);
 
     //  Status layer
     PiuPiuConsts.levelCompletedTag = "LevelCompletedTag";

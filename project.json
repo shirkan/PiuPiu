@@ -24,6 +24,7 @@
         "src/Hands.js",
         "src/Bullet.js",
         "src/Enemy.js",
+        "src/Powerup.js",
         "src/Statistics.js",
         "src/globals.js",
         "src/resource.js"

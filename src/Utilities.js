@@ -125,3 +125,11 @@ function specialNotationDoesContain( item ) {
     }
     return false;
 }
+
+function isDebugMode() {
+    return cc.game.config["debugMode"];
+}
+
+function ifDebugOn (statement) {
+    return (isDebugMode() ? eval(statement) : false);
+}

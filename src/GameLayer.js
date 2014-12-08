@@ -14,8 +14,7 @@ var GameLayer = cc.Layer.extend({
         this.objects = [];
 
         //  Debug shapes
-        //this._debugNode = new cc.PhysicsDebugNode(this.space);
-        //this.addChild(this._debugNode, 10);
+        isDebugMode() ? eval("this._debugNode = new cc.PhysicsDebugNode(this.space); this.addChild(this._debugNode, 10);") : "";
 
         this.init();
     },
@@ -29,7 +28,7 @@ var GameLayer = cc.Layer.extend({
         //  Create rotating hands
         this.hands = new Hands(this);
 
-        //this.schedule(this.printSize, 1);
+        isDebugMode() ? eval("this.schedule(this.printSize, 1)") : "";
     },
 
     addEnemy: function () {
@@ -37,12 +36,13 @@ var GameLayer = cc.Layer.extend({
         this.objects.push(enemy);
     },
 
-    addBullet : function ( data ) {
-        var endPoint = data[0];
-        var bulletStartPoint = data[1];
-        var endAngle = data[2];
+    addBullet : function ( bulletData ) {
+        var endPoint = bulletData[0];
+        var bulletStartPoint = bulletData[1];
+        var endAngle = bulletData[2];
+        var sound = bulletData[3];
 
-        var bullet = new Bullet( this, endPoint, bulletStartPoint, endAngle);
+        var bullet = new Bullet( this, endPoint, bulletStartPoint, endAngle, sound);
         this.objects.push(bullet);
         this.hands.rotateHands(endAngle);
     },

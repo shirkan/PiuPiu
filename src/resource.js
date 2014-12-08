@@ -17,7 +17,8 @@ var res = {
     Enemy_png : "res/enemy_small.png",
     Field_png : "res/field.png",
     Player_png : "res/player.png",
-    Hands_png : "res/hands.png",
+    Hands_png : "res/handsSprites.png",
+    Hands_plist: "res/hands.plist",
     Start_n_png : "res/start_n.png",
     Start_s_png : "res/start_s.png",
     BulletBig_png: "res/bullet.png",
@@ -27,11 +28,14 @@ var res = {
     Goal_png: "res/goal.png",
     Ball_png: "res/ball.png",
 
+    PowerupMachineGun_png: "res/machineGun.png",
+
     //  Sounds
     sound_hineZeBa: "res/hineZeBa.mp3",
     sound_shaar: "res/shaar.mp3",
     sound_ohedNichnasLamigrash: "res/ohedNichnasLamigrash.mp3",
-    sound_piu: "res/piu.mp3"
+    sound_piu: "res/piu.mp3",
+    sound_machineGun: "res/machineGun.mp3"
 };
 
 var g_resources = [];

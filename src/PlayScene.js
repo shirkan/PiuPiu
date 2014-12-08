@@ -13,6 +13,7 @@ var PlayScene = cc.Scene.extend({
     hitToUpdate:"",
     enemySM:null,
     powerupsSM:null,
+    autoFireFlag: false,
 
     ctor: function() {
         this._super();
@@ -50,6 +51,8 @@ var PlayScene = cc.Scene.extend({
 
         //  Init spawning mechanisms
         enemySM = new SpawningMechanism(this, this.spawnEnemy);
+
+        var m = new MachineGunPowerup(this.gameLayer, this.autoFireStart.bind(this), 19);
     },
 
     initPhysics:function() {
@@ -67,6 +70,8 @@ var PlayScene = cc.Scene.extend({
         this._super();
 
         //  Game setup
+            //  Set machine gun mode off
+            this.autoFireEnd();
 
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
@@ -162,7 +167,32 @@ var PlayScene = cc.Scene.extend({
         }
     },
 
+    //  Powerups callbacks
+    autoFireStart : function () {
+        this.autoFireFlag = true;
+        this.gameLayer.hands.setHandsMachineGun();
+        cc.director.getScheduler().scheduleCallbackForTarget(this, this.autoFireEnd, 10, 0);
+    },
+
+    autoFireEnd : function () {
+        this.gameLayer.hands.setHandsNormal();
+        this.autoFireFlag = false;
+    },
+
     //  Touch handling
+    shootBullet : function (pos, sound) {
+        //  Angle limits - goes crazy beyond these angles
+        if (pos.x < PiuPiuConsts.handsAnchor.x) {
+            return false;
+        }
+
+        var bulletData = calculateTrigonometry(pos);
+        bulletData.push(sound);
+
+        this.gameLayer.addBullet(bulletData);
+        PiuPiuGlobals.totalBulletsFired++;
+    },
+
     onTouchBegan: function (touch, event) {
         //  If game over state, return to menu
         if (PiuPiuGlobals.gameState == GameStates.GameOver) {
@@ -185,20 +215,22 @@ var PlayScene = cc.Scene.extend({
 
         var pos = touch.getLocation();
         var playScene = event.getCurrentTarget();
+        playScene.autoFireFlag ? playScene.shootBullet(pos, res.sound_machineGun) : playScene.shootBullet(pos);
 
-        //  Angle limits - goes crazy beyond these angles
-        if (pos.x < PiuPiuConsts.handsAnchor.x) {
-            return false;
-        }
-
-        var data = calculateTrigonometry(pos);
-
-        playScene.gameLayer.addBullet(data);
-        PiuPiuGlobals.totalBulletsFired++;
         return true;
     },
 
     onTouchMoved: function (touch, event) {
+        var playScene = event.getCurrentTarget();
+
+        if (playScene.autoFireFlag &&
+            PiuPiuGlobals.gameState == GameStates.Playing) {
+            var pos = touch.getLocation();
+            playScene.shootBullet(pos, res.sound_machineGun);
+            return true;
+        }
+
+        return false;
     },
 
     onTouchEnded: function (touch, event) {

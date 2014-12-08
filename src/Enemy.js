@@ -38,10 +38,10 @@ var Enemy = cc.Class.extend({
         var bodyX = contentSize.width/2;
         var bodyY = contentSize.height/2;
         var verts = [-bodyX,-bodyY, -bodyX, bodyY-20, bodyX, bodyY-20, bodyX, -bodyY];
-        this.shapeBody = new cp.PolyShape(this.body, verts, cp.v(0,0));
-        this.shapeBody.setCollisionType(SpriteTag.Enemy);
-        this.shapeBody.setSensor(true);
-        this.space.addShape(this.shapeBody);
+        this.shape = new cp.PolyShape(this.body, verts, cp.v(0,0));
+        this.shape.setCollisionType(SpriteTag.Enemy);
+        this.shape.setSensor(true);
+        this.space.addShape(this.shape);
 
         //  Calculate head shape
         this.shapeHead = new cp.CircleShape(this.body, PiuPiuConsts.enemyHeadRadius, PiuPiuConsts.enemyHeadOffset);
@@ -55,8 +55,8 @@ var Enemy = cc.Class.extend({
     },
 
     removeFromParent:function () {
-        this.space.removeShape(this.shapeBody);
-        this.shapeBody = null;
+        this.space.removeShape(this.shape);
+        this.shape = null;
         this.space.removeShape(this.shapeHead);
         this.shapeHead = null;
         this.space.removeBody(this.body);

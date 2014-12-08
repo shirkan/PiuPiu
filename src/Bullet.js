@@ -9,14 +9,10 @@ var Bullet = cc.Class.extend({
     shape:null,
     parentNode:null,
 
-    ctor: function( parentNode, endPoint, bulletStartPoint, endAngle ) {
+    ctor: function( parentNode, endPoint, bulletStartPoint, endAngle, sound ) {
         this.space = parentNode.space;
         this.parentNode = parentNode;
-        this.init(endPoint, bulletStartPoint, endAngle);
-    },
 
-    init: function( endPoint, bulletStartPoint, endAngle ) {
-        //  Init sprite
         this.sprite = new cc.PhysicsSprite(res.Bullet_png);
 
         // init physics - body
@@ -44,7 +40,9 @@ var Bullet = cc.Class.extend({
         var seq = new cc.Sequence(moveAction, new cc.CallFunc (this.reachedBounds, this));
 
         this.sprite.runAction(seq);
-        playSound(res.sound_piu);
+
+        sound = sound || res.sound_piu;
+        playSound(sound);
     },
 
     removeFromParent:function () {
