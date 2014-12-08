@@ -11,6 +11,8 @@ var PlayScene = cc.Scene.extend({
     points:0,
     clearAllObjectsFlag:false,
     hitToUpdate:"",
+    enemySM:null,
+    powerupsSM:null,
 
     ctor: function() {
         this._super();
@@ -45,6 +47,9 @@ var PlayScene = cc.Scene.extend({
                 }
             }
         }, this);
+
+        //  Init spawning mechanisms
+        enemySM = new SpawningMechanism(this, this.spawnEnemy);
     },
 
     initPhysics:function() {
@@ -75,20 +80,17 @@ var PlayScene = cc.Scene.extend({
             }
         PiuPiuGlobals.gameState = GameStates.Playing;
 
-        //  Run level, wait 1 second before actually starting the level
-        //cc.director.getScheduler().scheduleCallbackForTarget(this, this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnInterval, cc.REPEAT_FOREVER, 1);
+        //  Start spwaning
+        enemySM.start();
 
-        SMinit(this, this.spawnEnemy);
-        SMstart();
-
-        //  Update space
+        //  Start space updating
         this.scheduleUpdate();
     },
 
     //  Gameplay handling
     spawnEnemy : function () {
         if (PiuPiuGlobals.gameState != GameStates.Playing) {
-            cc.director.getScheduler().unscheduleCallbackForTarget(this, this.spawnEnemy);
+            enemySM.stop();
             return;
         }
 
@@ -97,10 +99,10 @@ var PlayScene = cc.Scene.extend({
         //  Check if need to spawn more enemies
         PiuPiuLevelSettings.totalEnemiesToSpawn--;
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0) {
-            cc.director.getScheduler().unscheduleCallbackForTarget(this, this.spawnEnemy);
+            enemySM.stop();
             return;
         } else {
-            SMstep();
+            enemySM.step();
         }
     },
 

@@ -6,23 +6,25 @@
 //  Spawning options:
 //  fixed - spawn enemy every enemiesSpawnInterval seconds
 //  range - spawn enemy in between enemiesSpawnIntervalMin to enemiesSpawnIntervalMax, with steps of size enemiesSpawnInterval
-var SMthis = null;
-var SMavailableSpawnTimings = null;
 
-//  Clear variables
-function SMreset() {
-    SMavailableSpawnTimings = [];
-    SMthis = null;
-    SMcallback = null;
+function SpawningMechanism(target, cb) {
+    this.init(target, cb);
 }
 
+//  Clear variables
+SpawningMechanism.prototype.reset = function () {
+    this.availableSpawnTimings = null;
+    this.target = null;
+    this.callback = null;
+};
+
 //  Initalize variables according to level settings.
-//  "scene" is the scene running current level and is used for updating the scheduler.
+//  "target" is the target running current level and is used for updating the scheduler.
 //  "cb" is the callback for spawning
-function SMinit(scene, cb) {
-    SMreset();
-    SMthis = scene;
-    SMcallback = cb;
+SpawningMechanism.prototype.init = function(target, cb) {
+    this.reset();
+    this.target = target;
+    this.callback = cb;
 
     switch (PiuPiuLevelSettings.enemiesSpawnIntervalType) {
         case ("fixed"):
@@ -41,29 +43,28 @@ function SMinit(scene, cb) {
             return;
         }
     }
-}
+};
 
 //  Start first step
-function SMstart() {
+SpawningMechanism.prototype.start = function () {
     switch (PiuPiuLevelSettings.enemiesSpawnIntervalType) {
         case ("fixed"):
         {
             //  Run level, wait 1 second before actually starting the level
-            cc.director.getScheduler().scheduleCallbackForTarget(SMthis, SMcallback, PiuPiuLevelSettings.enemiesSpawnInterval, cc.REPEAT_FOREVER, 1);
+            cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, PiuPiuLevelSettings.enemiesSpawnInterval, cc.REPEAT_FOREVER, 1);
             return;
         }
         case ("range"):
         {
             //  Run level, wait 1 second before actually starting the level
-            cc.director.getScheduler().scheduleCallbackForTarget(SMthis, SMcallback, PiuPiuLevelSettings.enemiesSpawnIntervalMin, cc.REPEAT_FOREVER, 1);
+            cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, PiuPiuLevelSettings.enemiesSpawnIntervalMin, cc.REPEAT_FOREVER, 1);
             return;
         }
     }
-
-}
+};
 
 //  Set scheduler next step
-function SMstep() {
+SpawningMechanism.prototype.step = function () {
     switch (PiuPiuLevelSettings.enemiesSpawnIntervalType) {
         case ("fixed"):
         {
@@ -73,8 +74,12 @@ function SMstep() {
         case ("range"):
         {
             var interval = SMavailableSpawnTimings[(Math.floor(Math.random() * SMavailableSpawnTimings.length))];
-            cc.director.getScheduler().scheduleCallbackForTarget(SMthis, SMcallback, interval, cc.REPEAT_FOREVER);
+            cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, interval, cc.REPEAT_FOREVER);
             return;
         }
     }
+};
+
+SpawningMechanism.prototype.stop = function () {
+    cc.director.getScheduler().unscheduleCallbackForTarget(this.target, this.callback);
 }
