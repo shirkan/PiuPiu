@@ -46,7 +46,7 @@ var PowerUp = cc.Class.extend({
     },
 
     scheduleRemoveFromParent: function () {
-        this.space.addPostStepCallback(this.removeFromParent.bind(this));
+        addPostStepCallback(this.removeFromParent.bind(this));
     },
 
     removeFromParent:function () {

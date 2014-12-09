@@ -110,6 +110,11 @@ function loadLevelSettings() {
         PiuPiuLevelSettings.enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "fixed";
 
         //  Power ups policy
+        PiuPiuLevelSettings.powerupsSpawnInterval = data["powerupsSpawnInterval"] || 2;
+        PiuPiuLevelSettings.powerupsSpawnIntervalMin = data["powerupsSpawnIntervalMin"] || 0;
+        PiuPiuLevelSettings.powerupsSpawnIntervalMax = data["powerupsSpawnIntervalMax"] || 0;
+        PiuPiuLevelSettings.powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "fixed";
+        PiuPiuLevelSettings.powerupsTypes = data["powerupsTypes"] || "";
 
         //  Special notations
         PiuPiuLevelSettings.specialNotations = data["specialNotations"] || [];
@@ -132,4 +137,17 @@ function isDebugMode() {
 
 function ifDebugOn (statement) {
     return (isDebugMode() ? eval(statement) : false);
+}
+
+//  This is a walkaround until this.space.addPostStepCallback() will be ready (already check in, check out cocos2d-js v3.2
+var spaceCallbacks = [];
+function addPostStepCallback(callback) {
+    spaceCallbacks.push(callback);
+}
+
+function runPostStepCallbacks() {
+    for (var i = 0; i < spaceCallbacks.length; ++i) {
+        spaceCallbacks[i]();
+    }
+    spaceCallbacks = [];
 }

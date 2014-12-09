@@ -1,3 +1,6 @@
 {
-  "totalEnemies" : -1
+  "totalEnemies" : -1,
+  "enemiesSpawnInterval": 0.2,
+  "powerupsSpawnInterval": 10,
+  "powerupsTypes": "all"
 }

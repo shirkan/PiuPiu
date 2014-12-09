@@ -21,17 +21,6 @@ var BackgroundLayer = cc.Layer.extend({
         //this.map = new cc.Sprite("res/grass4.png");
         this.addChild(this.map);
 
-        //
-        //var children = this.map.getChildren();
-        //
-        //for (var c in children) {
-        //    children[c].getTexture().setAntiAliasTexParameters();
-        //}
-
-
-        //var centerPos = cc.p(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
-        //var spriteBG = new cc.Sprite(res.Field_png);
-        //spriteBG.setPosition(centerPos);
-        //this.addChild(spriteBG);
+        this.bake();
     }
 })

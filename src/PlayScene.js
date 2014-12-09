@@ -246,9 +246,7 @@ var PlayScene = cc.Scene.extend({
         var shapes = arbiter.getShapes();
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
         //  Set post step callback
-        this.space.addPostStepCallback(this.postStepCallBack.bind(this));
-
-
+        addPostStepCallback(this.postStepCallBack.bind(this));
     },
 
     collisionBulletEnemyHead: function (arbiter, space) {
@@ -260,7 +258,7 @@ var PlayScene = cc.Scene.extend({
         var shapes = arbiter.getShapes();
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);
         //  Set post step callback
-        this.space.addPostStepCallback(this.postStepCallBack.bind(this));
+        addPostStepCallback(this.postStepCallBack.bind(this));
     },
 
     collisionEnemyPlayer: function (arbiter, space) {
@@ -273,7 +271,7 @@ var PlayScene = cc.Scene.extend({
         //  shapes[1] is Zehavi
         this.bodiesToRemove.push(shapes[0].body);
         //  Set post step callback
-        this.space.addPostStepCallback(this.postStepCallBack.bind(this));
+        addPostStepCallback(this.postStepCallBack.bind(this));
     },
 
     postStepCallBack : function () {
@@ -337,5 +335,10 @@ var PlayScene = cc.Scene.extend({
         }
 
         this.space.step(dt);
+
+        runPostStepCallbacks();
     }
 });
+
+
+
