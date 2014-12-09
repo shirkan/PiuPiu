@@ -4,41 +4,47 @@
 
 //  <------ Spawning Mechanism (SM) ------>
 //  Spawning options:
-//  fixed - spawn enemy every enemiesSpawnInterval seconds
-//  range - spawn enemy in between enemiesSpawnIntervalMin to enemiesSpawnIntervalMax, with steps of size enemiesSpawnInterval
+//  fixed - spawn cb every intervalStep seconds
+//  range - spawn cb in between intervalRangeMin to intervalRangeMax, with steps of size intervalStep
 
-function SpawningMechanism(target, cb) {
-    this.init(target, cb);
-}
+function SpawningMechanism() {}
 
 //  Clear variables
 SpawningMechanism.prototype.reset = function () {
     this.availableSpawnTimings = null;
     this.target = null;
     this.callback = null;
+    this.intervalType = 0;
+    this.intervalStep = 0;
+    this.intervalRangeMin = 0;
+    this.intervalRangeMax = 0;
 };
 
 //  Initalize variables according to level settings.
 //  "target" is the target running current level and is used for updating the scheduler.
 //  "cb" is the callback for spawning
-SpawningMechanism.prototype.init = function(target, cb) {
+SpawningMechanism.prototype.init = function(target, cb, intervalType, intervalStep, intervalRangeMin, intervalRangeMax) {
     this.reset();
     this.target = target;
     this.callback = cb;
+    this.intervalType = intervalType;
+    this.intervalStep = intervalStep;
+    this.intervalRangeMin = intervalRangeMin;
+    this.intervalRangeMax = intervalRangeMax;
 
-    switch (PiuPiuLevelSettings.enemiesSpawnIntervalType) {
+    switch (this.intervalType) {
         case ("fixed"):
         {
-            this.availableSpawnTimings = PiuPiuLevelSettings.enemiesSpawnInterval;
+            this.availableSpawnTimings = this.intervalStep;
             return;
         }
         case ("range"):
         {
-            var iterator = PiuPiuLevelSettings.enemiesSpawnIntervalMin;
+            var iterator = this.intervalRangeMin;
             this.availableSpawnTimings = [];
-            while (iterator < PiuPiuLevelSettings.enemiesSpawnIntervalMax) {
+            while (iterator < this.intervalRangeMax) {
                 this.availableSpawnTimings.push(iterator);
-                iterator+= PiuPiuLevelSettings.enemiesSpawnInterval;
+                iterator+= this.intervalStep;
             }
             return;
         }
@@ -47,17 +53,17 @@ SpawningMechanism.prototype.init = function(target, cb) {
 
 //  Start first step
 SpawningMechanism.prototype.start = function () {
-    switch (PiuPiuLevelSettings.enemiesSpawnIntervalType) {
+    switch (this.intervalType) {
         case ("fixed"):
         {
             //  Run level, wait 1 second before actually starting the level
-            cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, PiuPiuLevelSettings.enemiesSpawnInterval, cc.REPEAT_FOREVER, 1);
+            cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, this.intervalStep, cc.REPEAT_FOREVER, 1);
             return;
         }
         case ("range"):
         {
             //  Run level, wait 1 second before actually starting the level
-            cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, PiuPiuLevelSettings.enemiesSpawnIntervalMin, cc.REPEAT_FOREVER, 1);
+            cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, this.intervalRangeMin, cc.REPEAT_FOREVER, 1);
             return;
         }
     }
@@ -65,7 +71,7 @@ SpawningMechanism.prototype.start = function () {
 
 //  Set scheduler next step
 SpawningMechanism.prototype.step = function () {
-    switch (PiuPiuLevelSettings.enemiesSpawnIntervalType) {
+    switch (this.intervalType) {
         case ("fixed"):
         {
             //  No need to do nothing

@@ -82,14 +82,14 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemAchievements);
 
         //  Exit
-        var labelExit = new cc.LabelTTF("Exit", "Helvetica", 44);
-        labelExit.setColor(cc.color(255,255,0)); //Yellow
-        labelExit.enableStroke(cc.color(0,0,255), 2); //Blue
-
-        var menuItemExit = new cc.MenuItemLabel(
-            labelExit,
-            this.onExitClicked, this);
-        menuItems.push(menuItemExit);
+        //var labelExit = new cc.LabelTTF("Exit", "Helvetica", 44);
+        //labelExit.setColor(cc.color(255,255,0)); //Yellow
+        //labelExit.enableStroke(cc.color(0,0,255), 2); //Blue
+        //
+        //var menuItemExit = new cc.MenuItemLabel(
+        //    labelExit,
+        //    this.onExitClicked, this);
+        //menuItems.push(menuItemExit);
 
         var menu = new cc.Menu(menuItems);
 

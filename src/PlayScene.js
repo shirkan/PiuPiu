@@ -49,8 +49,8 @@ var PlayScene = cc.Scene.extend({
             }
         }, this);
 
-        //  Init spawning mechanisms
-        enemySM = new SpawningMechanism(this, this.spawnEnemy);
+        //  Create new spawning mechanisms
+        enemySM = new SpawningMechanism();
 
         var m = new MachineGunPowerup(this.gameLayer, this.autoFireStart.bind(this), 19);
     },
@@ -85,8 +85,10 @@ var PlayScene = cc.Scene.extend({
             }
         PiuPiuGlobals.gameState = GameStates.Playing;
 
-        //  Start spwaning
-        enemySM.init(this, this.spawnEnemy);
+        //  Init & start enemies spwaning
+        enemySM.init(this, this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnIntervalType,
+            PiuPiuLevelSettings.enemiesSpawnInterval, PiuPiuLevelSettings.enemiesSpawnIntervalMin,
+            PiuPiuLevelSettings.enemiesSpawnIntervalMax);
         enemySM.start();
 
         //  Start space updating
