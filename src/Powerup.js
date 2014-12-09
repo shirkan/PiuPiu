@@ -9,16 +9,18 @@ var PowerUp = cc.Class.extend({
     sprite:null,
     body:null,
     shape:null,
+    parentNode:null,
     ctor: function( parentNode, sprite, onHit, period, location) {
         this.space = parentNode.space;
         this.onHit = onHit;
+        this.parentNode = parentNode;
         this.sprite = new cc.PhysicsSprite(sprite);
 
         //  Set starting position
         if (location == undefined) {
             //  Random location on last Q of screen
-            var x = Math.random() * (PiuPiuGlobals.winSize.width / 4) + (PiuPiuGlobals.winSize.width * 3 / 4);
-            var y = Math.random() * (PiuPiuGlobals.winSize.height);
+            var x = Math.random() * (PiuPiuGlobals.winSize.width / 2) + (PiuPiuGlobals.winSize.width / 2 - this.sprite.width);
+            var y = Math.random() * (PiuPiuGlobals.winSize.height - this.sprite.height) + this.sprite.height / 2;
             location = cc.p(x,y);
         }
 
@@ -39,7 +41,7 @@ var PowerUp = cc.Class.extend({
         this.space.addShape(this.shape);
 
         //  Display power up
-        parentNode.addChild(this.sprite);
+        this.parentNode.addChild(this.sprite);
 
         //  Remove powerup in "period" seconds
         cc.director.getScheduler().scheduleCallbackForTarget(this, this.scheduleRemoveFromParent, period, 0);
@@ -50,6 +52,7 @@ var PowerUp = cc.Class.extend({
     },
 
     removeFromParent:function () {
+        this.parentNode.removeObject(this.body);
         this.space.removeShape(this.shape);
         this.shape = null;
         this.space.removeBody(this.body);

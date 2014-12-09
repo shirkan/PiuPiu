@@ -33,7 +33,7 @@ var GameLayer = cc.Layer.extend({
 
     addEnemy: function () {
         var enemy = new Enemy(this);
-        this.objects.push(enemy);
+        this.addObject(enemy);
     },
 
     addBullet : function ( bulletData ) {
@@ -43,8 +43,12 @@ var GameLayer = cc.Layer.extend({
         var sound = bulletData[3];
 
         var bullet = new Bullet( this, endPoint, bulletStartPoint, endAngle, sound);
-        this.objects.push(bullet);
+        this.addObject(bullet);
         this.hands.rotateHands(endAngle);
+    },
+
+    addObject : function (obj) {
+        this.objects.push(obj);
     },
 
     removeObject: function ( body ) {

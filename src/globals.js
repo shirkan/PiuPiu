@@ -54,16 +54,17 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.enemyHeadOffset = cp.v(-6,22);
 
     //  Player
-    // 640 x 480:
-    //PiuPiuConsts.handsAnchor = cc.p(30,245);
     PiuPiuConsts.handsAnchor = cc.p(30,184);
     PiuPiuConsts.handsLength = 83;
     PiuPiuConsts.livesOnGameStart = 3;
     PiuPiuConsts.maxLives = 5;
 
     //  Powerups
-    PiuPiuConsts.powerupRadius = 3;
+    PiuPiuConsts.powerupRadius = 4;
     PiuPiuConsts.powerupCenterPoint = cp.v(0,0);
+    PiuPiuConsts.powerupPeriod = 3;
+    PiuPiuConsts.powerupTypes = ["MachineGunPowerup"];
+    PiuPiuConsts.powerupMachineGunPeriod = 10;
 
     //  Status layer
     PiuPiuConsts.levelCompletedTag = "LevelCompletedTag";

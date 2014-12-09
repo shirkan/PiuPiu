@@ -51,8 +51,9 @@ var PlayScene = cc.Scene.extend({
 
         //  Create new spawning mechanisms
         enemySM = new SpawningMechanism();
+        powerupSM = new SpawningMechanism();
 
-        var m = new MachineGunPowerup(this.gameLayer, this.autoFireStart.bind(this), 19);
+        //var m = new MachineGunPowerup(this.gameLayer, this.autoFireStart.bind(this), 19);
     },
 
     initPhysics:function() {
@@ -71,7 +72,7 @@ var PlayScene = cc.Scene.extend({
 
         //  Game setup
             //  Set machine gun mode off
-            this.autoFireEnd();
+            this.machineGunEnd();
 
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
@@ -91,6 +92,15 @@ var PlayScene = cc.Scene.extend({
             PiuPiuLevelSettings.enemiesSpawnIntervalMax);
         enemySM.start();
 
+        //  Init $ start powerups spawning
+        if (PiuPiuLevelSettings.powerupsTypes == "all") {
+            PiuPiuLevelSettings.powerupsTypes = PiuPiuConsts.powerupTypes;
+        }
+        powerupSM.init(this, this.spawnPowerup, PiuPiuLevelSettings.powerupsSpawnIntervalType,
+            PiuPiuLevelSettings.powerupsSpawnInterval, PiuPiuLevelSettings.powerupsSpawnIntervalMin,
+            PiuPiuLevelSettings.powerupsSpawnIntervalMax);
+        powerupSM.start();
+
         //  Start space updating
         this.scheduleUpdate();
     },
@@ -108,10 +118,24 @@ var PlayScene = cc.Scene.extend({
         PiuPiuLevelSettings.totalEnemiesToSpawn--;
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0) {
             enemySM.stop();
+            powerupSM.stop();
             return;
         } else {
             enemySM.step();
         }
+    },
+
+    spawnPowerup : function () {
+        var powerup = PiuPiuLevelSettings.powerupsTypes[Math.floor(Math.random() * PiuPiuLevelSettings.powerupsTypes.length)];
+
+        switch (powerup) {
+            case "MachineGunPowerup": {
+                var obj = new MachineGunPowerup(this.gameLayer, this.machineGunStart.bind(this), PiuPiuConsts.powerupPeriod);
+                break;
+            }
+        }
+        this.gameLayer.addObject(obj);
+        powerupSM.step();
     },
 
     addLife : function () {
@@ -171,13 +195,13 @@ var PlayScene = cc.Scene.extend({
     },
 
     //  Powerups callbacks
-    autoFireStart : function () {
+    machineGunStart : function () {
         this.autoFireFlag = true;
         this.gameLayer.hands.setHandsMachineGun();
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.autoFireEnd, 10, 0);
+        cc.director.getScheduler().scheduleCallbackForTarget(this, this.machineGunEnd, PiuPiuConsts.powerupMachineGunPeriod, 0);
     },
 
-    autoFireEnd : function () {
+    machineGunEnd : function () {
         this.gameLayer.hands.setHandsNormal();
         this.autoFireFlag = false;
     },
@@ -271,7 +295,7 @@ var PlayScene = cc.Scene.extend({
         this.hitToUpdate = hitType.EnemyPlayer;
 
         var shapes = arbiter.getShapes();
-        //  shapes[1] is Zehavi
+        //  shapes[1] is Player
         this.bodiesToRemove.push(shapes[0].body);
         //  Set post step callback
         addPostStepCallback(this.postStepCallBack.bind(this));

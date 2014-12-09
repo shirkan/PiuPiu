@@ -107,13 +107,13 @@ function loadLevelSettings() {
         PiuPiuLevelSettings.enemiesSpawnInterval = data["enemiesSpawnInterval"] || 2;
         PiuPiuLevelSettings.enemiesSpawnIntervalMin = data["enemiesSpawnIntervalMin"] || 0;
         PiuPiuLevelSettings.enemiesSpawnIntervalMax = data["enemiesSpawnIntervalMax"] || 0;
-        PiuPiuLevelSettings.enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "fixed";
+        PiuPiuLevelSettings.enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "constantTempo";
 
         //  Power ups policy
         PiuPiuLevelSettings.powerupsSpawnInterval = data["powerupsSpawnInterval"] || 2;
         PiuPiuLevelSettings.powerupsSpawnIntervalMin = data["powerupsSpawnIntervalMin"] || 0;
         PiuPiuLevelSettings.powerupsSpawnIntervalMax = data["powerupsSpawnIntervalMax"] || 0;
-        PiuPiuLevelSettings.powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "fixed";
+        PiuPiuLevelSettings.powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "none";
         PiuPiuLevelSettings.powerupsTypes = data["powerupsTypes"] || "";
 
         //  Special notations

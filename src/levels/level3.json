@@ -3,5 +3,5 @@
   "enemiesSpawnIntervalMin": 0.5,
   "enemiesSpawnIntervalMax": 1,
   "enemiesSpawnInterval": 0.2,
-  "enemiesSpawnIntervalType": "range"
+  "enemiesSpawnIntervalType": "rangeTime"
 }

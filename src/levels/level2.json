@@ -1,5 +1,5 @@
 {
   "totalEnemies": 10,
   "enemiesSpawnInterval": 0.8,
-  "enemiesSpawnIntervalType": "fixed"
+  "enemiesSpawnIntervalType": "constantTempo"
 }

@@ -22,7 +22,7 @@ var res = {
     Start_n_png : "res/start_n.png",
     Start_s_png : "res/start_s.png",
     BulletBig_png: "res/bullet.png",
-    Bullet_png: "res/bullet_small.png",
+    Bullet_png: "res/bullet_small2.png",
     LifeBig_png : "res/life.png",
     Life_png : "res/life_small.png",
     Goal_png: "res/goal.png",
