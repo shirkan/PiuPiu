@@ -145,5 +145,6 @@ var StatsScene = cc.Scene.extend({
     onBackClicked : function () {
         var transition = new cc.TransitionFade(1, new MenuScene());
         cc.director.runScene(transition);
+        return true;
     }
 });

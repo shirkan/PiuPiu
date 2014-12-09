@@ -86,6 +86,7 @@ var PlayScene = cc.Scene.extend({
         PiuPiuGlobals.gameState = GameStates.Playing;
 
         //  Start spwaning
+        enemySM.init(this, this.spawnEnemy);
         enemySM.start();
 
         //  Start space updating

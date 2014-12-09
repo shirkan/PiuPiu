@@ -61,6 +61,16 @@ var MenuLayer = cc.Layer.extend({
             this.onStatistics, this);
         menuItems.push(menuItemStatistics);
 
+        //  Leaderboard
+        var labelLeaderboard = new cc.LabelTTF("Leaderboard", "Helvetica", 44);
+        labelLeaderboard.setColor(cc.color(255,255,0)); //Yellow
+        labelLeaderboard.enableStroke(cc.color(0,0,255), 2);
+
+        var menuItemLeaderboard = new cc.MenuItemLabel(
+            labelLeaderboard,
+            this.onLeaderboard, this);
+        menuItems.push(menuItemLeaderboard);
+
         //  Achievements
         var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", 44);
         labelAchievements.setColor(cc.color(255,255,0)); //Yellow
@@ -103,6 +113,11 @@ var MenuLayer = cc.Layer.extend({
     onAchievements : function () {
         console.log("achievements clicked");
     },
+
+    onLeaderBoard : function () {
+        console.log("leaderboard clicked");
+    },
+
 
     onStatistics : function () {
         var transition = new cc.TransitionFade(1, new StatsScene());

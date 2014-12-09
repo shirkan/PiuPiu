@@ -29,15 +29,15 @@ SpawningMechanism.prototype.init = function(target, cb) {
     switch (PiuPiuLevelSettings.enemiesSpawnIntervalType) {
         case ("fixed"):
         {
-            SMavailableSpawnTimings = PiuPiuLevelSettings.enemiesSpawnInterval;
+            this.availableSpawnTimings = PiuPiuLevelSettings.enemiesSpawnInterval;
             return;
         }
         case ("range"):
         {
             var iterator = PiuPiuLevelSettings.enemiesSpawnIntervalMin;
-            SMavailableSpawnTimings = [];
+            this.availableSpawnTimings = [];
             while (iterator < PiuPiuLevelSettings.enemiesSpawnIntervalMax) {
-                SMavailableSpawnTimings.push(iterator);
+                this.availableSpawnTimings.push(iterator);
                 iterator+= PiuPiuLevelSettings.enemiesSpawnInterval;
             }
             return;
@@ -73,7 +73,8 @@ SpawningMechanism.prototype.step = function () {
         }
         case ("range"):
         {
-            var interval = SMavailableSpawnTimings[(Math.floor(Math.random() * SMavailableSpawnTimings.length))];
+            var interval = this.availableSpawnTimings[(Math.floor(Math.random() * this.availableSpawnTimings.length))];
+            console.log("interval is " + interval);
             cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, interval, cc.REPEAT_FOREVER);
             return;
         }
