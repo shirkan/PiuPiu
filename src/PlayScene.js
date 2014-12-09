@@ -50,8 +50,8 @@ var PlayScene = cc.Scene.extend({
         }, this);
 
         //  Create new spawning mechanisms
-        enemySM = new SpawningMechanism();
-        powerupSM = new SpawningMechanism();
+        this.enemySM = new SpawningMechanism();
+        this.powerupSM = new SpawningMechanism();
 
         //var m = new MachineGunPowerup(this.gameLayer, this.autoFireStart.bind(this), 19);
     },
@@ -76,30 +76,32 @@ var PlayScene = cc.Scene.extend({
 
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
-                PiuPiuGlobals.livesLeft = 0;
-
-                //  Add lives for start
-                for (var i=0; i<PiuPiuConsts.livesOnGameStart; i++) {
-                    this.addLife();
-                }
+                PiuPiuGlobals.livesLeft = PiuPiuConsts.livesOnGameStart;
+                this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
+                //PiuPiuGlobals.livesLeft = 0;
+                //
+                ////  Add lives for start
+                //for (var i=0; i<PiuPiuConsts.livesOnGameStart; i++) {
+                //    this.addLife();
+                //}
                 playSound(res.sound_ohedNichnasLamigrash);
             }
         PiuPiuGlobals.gameState = GameStates.Playing;
 
         //  Init & start enemies spwaning
-        enemySM.init(this, this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnIntervalType,
+        this.enemySM.init(this, this.spawnEnemy, PiuPiuLevelSettings.enemiesSpawnIntervalType,
             PiuPiuLevelSettings.enemiesSpawnInterval, PiuPiuLevelSettings.enemiesSpawnIntervalMin,
             PiuPiuLevelSettings.enemiesSpawnIntervalMax);
-        enemySM.start();
+        this.enemySM.start();
 
         //  Init $ start powerups spawning
         if (PiuPiuLevelSettings.powerupsTypes == "all") {
             PiuPiuLevelSettings.powerupsTypes = PiuPiuConsts.powerupTypes;
         }
-        powerupSM.init(this, this.spawnPowerup, PiuPiuLevelSettings.powerupsSpawnIntervalType,
+        this.powerupSM.init(this, this.spawnPowerup, PiuPiuLevelSettings.powerupsSpawnIntervalType,
             PiuPiuLevelSettings.powerupsSpawnInterval, PiuPiuLevelSettings.powerupsSpawnIntervalMin,
             PiuPiuLevelSettings.powerupsSpawnIntervalMax);
-        powerupSM.start();
+        this.powerupSM.start();
 
         //  Start space updating
         this.scheduleUpdate();
@@ -108,7 +110,7 @@ var PlayScene = cc.Scene.extend({
     //  Gameplay handling
     spawnEnemy : function () {
         if (PiuPiuGlobals.gameState != GameStates.Playing) {
-            enemySM.stop();
+            this.enemySM.stop();
             return;
         }
 
@@ -117,11 +119,9 @@ var PlayScene = cc.Scene.extend({
         //  Check if need to spawn more enemies
         PiuPiuLevelSettings.totalEnemiesToSpawn--;
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0) {
-            enemySM.stop();
-            powerupSM.stop();
-            return;
+            this.enemySM.stop();
         } else {
-            enemySM.step();
+            this.enemySM.step();
         }
     },
 
@@ -133,23 +133,34 @@ var PlayScene = cc.Scene.extend({
                 var obj = new MachineGunPowerup(this.gameLayer, this.machineGunStart.bind(this), PiuPiuConsts.powerupPeriod);
                 break;
             }
+            case "OneUpPowerUp": {
+                var obj = new OneUpPowerUp(this.gameLayer, this.addLife.bind(this), PiuPiuConsts.powerupPeriod);
+                break;
+            }
         }
         this.gameLayer.addObject(obj);
-        powerupSM.step();
+        this.powerupSM.step();
     },
 
     addLife : function () {
         PiuPiuGlobals.livesLeft++;
-        this.statusLayer.addLife();
+        this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
     },
 
     removeLife : function () {
-        this.statusLayer.removeLife();
-
         PiuPiuGlobals.livesLeft--;
+        //this.statusLayer.removeLife();
+        this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
+
         if (PiuPiuGlobals.livesLeft == 0) {
             this.endGame( true, false);
         }
+    },
+
+    stopPlayment : function () {
+        this.gameLayer.removeAllObjects();
+        this.enemySM.stop();
+        this.powerupSM.stop();
     },
 
     checkLevelComplete : function () {
@@ -160,6 +171,7 @@ var PlayScene = cc.Scene.extend({
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0 &&
             PiuPiuLevelSettings.enemiesVanished >= PiuPiuLevelSettings.totalEnemiesToKill) {
             PiuPiuGlobals.gameState = GameStates.LevelCompleted;
+            this.stopPlayment();
             this.statusLayer.showLevelCompleted();
             return true;
         }
@@ -173,6 +185,7 @@ var PlayScene = cc.Scene.extend({
 
         //  Change game state
         PiuPiuGlobals.gameState = GameStates.GameOver;
+        this.stopPlayment();
 
         //  Show game over banner
         if (showGameOverBanner) {

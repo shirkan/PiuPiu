@@ -29,6 +29,7 @@ var res = {
     Ball_png: "res/ball.png",
 
     PowerupMachineGun_png: "res/machineGun.png",
+    Powerup1Up_png: "res/1up.png",
 
     //  Sounds
     sound_hineZeBa: "res/hineZeBa.mp3",

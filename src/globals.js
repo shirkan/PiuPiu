@@ -47,11 +47,13 @@ if (typeof PiuPiuConsts == "undefined") {
 
     //  Bullet
     PiuPiuConsts.framesPerSeconds = 1000;
+    PiuPiuConsts.bulletLocalZOrder = 5;
 
     //  Enemy
     PiuPiuConsts.enemyMoveToPoint = cc.p(30,240);
     PiuPiuConsts.enemyHeadRadius = 10;
     PiuPiuConsts.enemyHeadOffset = cp.v(-6,22);
+    PiuPiuConsts.enemyLocalZOrder = 3;
 
     //  Player
     PiuPiuConsts.handsAnchor = cc.p(30,184);
@@ -60,11 +62,12 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.maxLives = 5;
 
     //  Powerups
-    PiuPiuConsts.powerupRadius = 4;
+    PiuPiuConsts.powerupRadius = 7;
     PiuPiuConsts.powerupCenterPoint = cp.v(0,0);
     PiuPiuConsts.powerupPeriod = 3;
-    PiuPiuConsts.powerupTypes = ["MachineGunPowerup"];
+    PiuPiuConsts.powerupTypes = ["MachineGunPowerup", "OneUpPowerUp"];
     PiuPiuConsts.powerupMachineGunPeriod = 10;
+    PiuPiuConsts.powerupLocalZOrder = 1;
 
     //  Status layer
     PiuPiuConsts.levelCompletedTag = "LevelCompletedTag";

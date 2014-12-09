@@ -30,7 +30,7 @@ var Bullet = cc.Class.extend({
         this.space.addShape(this.shape);
 
         //  Visualize
-        this.parentNode.addChild(this.sprite);
+        this.parentNode.addChild(this.sprite, PiuPiuConsts.bulletLocalZOrder);
 
         //  Calculate how much time it should take the bullet to complete the action (so velocity will be the same for all bullets)
         var moveDuration = calculateLineLength(bulletStartPoint, endPoint) / PiuPiuConsts.framesPerSeconds;

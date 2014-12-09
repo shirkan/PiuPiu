@@ -41,7 +41,7 @@ var PowerUp = cc.Class.extend({
         this.space.addShape(this.shape);
 
         //  Display power up
-        this.parentNode.addChild(this.sprite);
+        this.parentNode.addChild(this.sprite, PiuPiuConsts.powerupLocalZOrder);
 
         //  Remove powerup in "period" seconds
         cc.director.getScheduler().scheduleCallbackForTarget(this, this.scheduleRemoveFromParent, period, 0);
@@ -79,5 +79,11 @@ var PowerUp = cc.Class.extend({
 var MachineGunPowerup = PowerUp.extend({
     ctor: function (parentNode, onHit, period, location) {
         this._super(parentNode, res.PowerupMachineGun_png, onHit, period, location)
+    }
+});
+
+var OneUpPowerUp = PowerUp.extend({
+    ctor: function (parentNode, onHit, period, location) {
+        this._super(parentNode, res.Powerup1Up_png, onHit, period, location)
     }
 });

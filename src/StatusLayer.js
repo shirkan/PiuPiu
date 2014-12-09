@@ -11,7 +11,7 @@ var StatusLayer = cc.Scene.extend({
     labelPoints:null,
     labelHighScore:null,
     labelLevelCompleted:null,
-    livesSprites:[],
+    labelLives:null,
     ctor: function() {
         this._super();
         this.init();
@@ -25,30 +25,26 @@ var StatusLayer = cc.Scene.extend({
         this.labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
         this.labelHishScore.setPosition(PiuPiuGlobals.winSize.width - xGap, PiuPiuGlobals.winSize.height - yGap);
         this.addChild(this.labelHishScore);
+
+        //  Create sprite for lives
+        var livesSprite = new cc.Sprite(res.Life_png);
+        var livePos = cc.p(yGap, PiuPiuGlobals.winSize.height - livesSprite.height/2);
+        livesSprite.setPosition(livePos);
+        this.addChild(livesSprite);
+
+        //  Create label for lives, position near the sprite
+        this.labelLives = new cc.LabelTTF("X0", "Helvetica", fontSize);
+        this.labelLives.setColor(cc.color(255,255,0)); //  Yellow
+        this.labelLives.setPosition(yGap + gapBetweenLives +livesSprite.width, PiuPiuGlobals.winSize.height - livesSprite.height/2);
+        this.addChild(this.labelLives);
     },
 
     updatePoints: function ( points ) {
         this.labelHishScore.setString("Score: " + points);
     },
 
-    addLife: function () {
-        var newSprite = new cc.Sprite(res.Life_png);
-        var newPos = cc.p(yGap + (PiuPiuGlobals.livesLeft * (newSprite.width + gapBetweenLives)), PiuPiuGlobals.winSize.height - newSprite.height/2);
-        newSprite.setPosition(newPos);
-        this.addChild(newSprite);
-
-        this.livesSprites.push(newSprite);
-    },
-
-    removeLife: function () {
-        var spriteToRemove = this.livesSprites.pop();
-        this.removeChild(spriteToRemove);
-    },
-
-    resetLives: function () {
-        while (this.livesSprites.length) {
-            this.removeLife();
-        }
+    setLives: function ( lives ) {
+        this.labelLives.setString("X" + lives);
     },
 
     displayHeadShot: function() {
@@ -62,8 +58,8 @@ var StatusLayer = cc.Scene.extend({
 
     showGameOver : function () {
         var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", fontSize * 3);
-        gameOverSprite.setColor(cc.color(255,0,0)); //  Red
-        gameOverSprite.enableStroke(cc.color(255,255,255), 5); //White
+        gameOverSprite.setColor(cc.color(255,255,255)); //  White
+        gameOverSprite.enableStroke(cc.color(255,0,0), 3); //   Red
         gameOverSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
         var gameOverAnimation = cc.RepeatForever.create(new cc.Sequence(cc.ScaleBy.create(2, 1.5), cc.ScaleBy.create(2, 1/1.5)));
         this.addChild(gameOverSprite);

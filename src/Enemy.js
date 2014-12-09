@@ -49,7 +49,7 @@ var Enemy = cc.Class.extend({
         this.shapeHead.setSensor(true);
         this.space.addShape(this.shapeHead);
 
-        parentNode.addChild(this.sprite);
+        parentNode.addChild(this.sprite, PiuPiuConsts.enemyLocalZOrder);
 
         this.sprite.runAction(cc.MoveTo.create(this.speed, PiuPiuConsts.enemyMoveToPoint));
     },
