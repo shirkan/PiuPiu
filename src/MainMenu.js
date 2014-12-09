@@ -140,6 +140,7 @@ var MenuScene = cc.Scene.extend({
         this._super();
         var layer = new MenuLayer();
         layer.init();
+        layer.bake();
         this.addChild(layer);
 
         //  Set game state as menu
