@@ -114,8 +114,22 @@ var MenuLayer = cc.Layer.extend({
         console.log("achievements clicked");
     },
 
-    onLeaderBoard : function () {
+    onLeaderboard : function () {
         console.log("leaderboard clicked");
+        //var facebook = plugin.FacebookAgent.getInstance();
+        var info = {
+            "app_id": PiuPiuConsts.FB_appid,
+            "message": "Piu Piu is a great game!",
+            "title": "Piu Piu"
+        };
+        var facebook = plugin.FacebookAgent.getInstance();
+        facebook.appRequest(info, function (code, msg) {
+            if(code == plugin.FacebookAgent.CODE_SUCCEED){
+                cc.log("Sending request succeeded, code #" + code + ": " + msg.toString());
+            } else {
+                cc.log("Sending request failed, error #" + code + ": " + msg.toString());
+            }
+        });
     },
 
 

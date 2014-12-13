@@ -71,6 +71,9 @@ if (typeof PiuPiuConsts == "undefined") {
 
     //  Status layer
     PiuPiuConsts.levelCompletedTag = "LevelCompletedTag";
+
+    //  Facebook
+    PiuPiuConsts.FB_appid = "331202163734875";
 }
 
 if (typeof PiuPiuGlobals == "undefined") {

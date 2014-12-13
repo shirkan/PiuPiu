@@ -8,7 +8,14 @@
     "renderMode" : 0,
     "engineDir":"frameworks/cocos2d-html5",
 
-    "modules" : ["cocos2d","chipmunk"],
+    "modules" : ["cocos2d","chipmunk", "pluginx", "plugin-facebook"],
+    "plugin" : {
+        "facebook": {
+            "appId" : "331202163734875",
+            "xfbml" : true,
+            "version" : "v2.0"
+        }
+    },
 
     "jsList" : [
         "src/Utilities.js",
