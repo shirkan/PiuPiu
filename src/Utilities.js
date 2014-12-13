@@ -70,6 +70,14 @@ function initGlobals() {
     if (PiuPiuGlobals.soundEnabled === undefined || isNaN(PiuPiuGlobals.soundEnabled)) {
         cc.sys.localStorage.soundEnabled = PiuPiuGlobals.soundEnabled = 1;
     }
+
+    //  Check Facebook
+    var facebook = plugin.FacebookAgent.getInstance();
+    if (facebook.isLoggedIn()) {
+        console.log("FACEBOOK: logged in!");
+    } else {
+        console.log("FACEBOOK: Not logged in!");
+    }
 }
 
 function loadStats () {
@@ -150,4 +158,24 @@ function runPostStepCallbacks() {
         spaceCallbacks[i]();
     }
     spaceCallbacks = [];
+}
+
+// ***** Facebook utilities *****
+function FBlogin() {
+    var facebook = plugin.FacebookAgent.getInstance();
+    var permissions = ["user_games_activity", "user_about_me"];
+    facebook.login(permissions, function(code, response){
+        if(code == plugin.FacebookAgent.CODE_SUCCEED){
+            cc.log("login succeeded");
+            cc.log("AccessToken: " + response["accessToken"]);
+            var allowedPermissions = response["permissions"];
+            var str = "Permissions: ";
+            for (var i = 0; i < allowedPermissions.length; ++i) {
+                str += allowedPermissions[i] + " ";
+            }
+            cc.log("Permissions: " + str);
+        } else {
+            cc.log("Login failed, error #" + code + ": " + response);
+        }
+    });
 }

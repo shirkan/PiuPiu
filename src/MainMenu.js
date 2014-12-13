@@ -20,6 +20,9 @@ var MenuLayer = cc.Layer.extend({
 
         //  Setup menu items
         this.createMenu();
+
+        //  Check if need to add facebook login image
+        this.checkFacebook();
     },
 
     createMenu : function () {
@@ -63,7 +66,7 @@ var MenuLayer = cc.Layer.extend({
 
         //  Leaderboard
         var labelLeaderboard = new cc.LabelTTF("Leaderboard", "Helvetica", 44);
-        labelLeaderboard.setColor(cc.color(255,255,0)); //Yellow
+        labelLeaderboard.setColor(cc.color(255,255,255)); //White
         labelLeaderboard.enableStroke(cc.color(0,0,255), 2);
 
         var menuItemLeaderboard = new cc.MenuItemLabel(
@@ -73,7 +76,7 @@ var MenuLayer = cc.Layer.extend({
 
         //  Achievements
         var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", 44);
-        labelAchievements.setColor(cc.color(255,255,0)); //Yellow
+        labelAchievements.setColor(cc.color(255,255,255)); //White
         labelAchievements.enableStroke(cc.color(0,0,255), 2); //Blue
 
         var menuItemAchievements = new cc.MenuItemLabel(
@@ -145,6 +148,37 @@ var MenuLayer = cc.Layer.extend({
         } else {
             this.labelSound.setString("Sound on");
         }
+    },
+
+    checkFacebook : function () {
+        var facebookSprite = new cc.Sprite(res.FB_png);
+        facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width * 0.95, PiuPiuGlobals.winSize.height * 0.1));
+        this.addChild(facebookSprite);
+
+
+        var listener1 = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            // When "swallow touches" is true, then returning 'true' from the onTouchBegan method will "swallow" the touch event, preventing other listeners from using it.
+            swallowTouches: true,
+            //onTouchBegan event callback function
+            onTouchBegan: function (touch, event) {
+                // event.getCurrentTarget() returns the *listener's* sceneGraphPriority node.
+                var target = event.getCurrentTarget();
+
+                //Get the position of the current point relative to the button
+                var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                var s = target.getContentSize();
+                var rect = cc.rect(0, 0, s.width, s.height);
+
+                //Check the click area
+                if (cc.rectContainsPoint(rect, locationInNode)) {
+                    FBlogin();
+                    return true;
+                }
+                return false;
+            }
+        });
+        cc.eventManager.addListener(listener1, facebookSprite);
     }
 
 });

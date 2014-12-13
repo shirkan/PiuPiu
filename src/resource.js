@@ -25,6 +25,7 @@ var res = {
     Life_png : "res/life_small.png",
     Goal_png: "res/goal.png",
     Ball_png: "res/ball.png",
+    FB_png: "res/facebook.png",
 
     PowerupMachineGun_png: "res/machineGun.png",
     Powerup1Up_png: "res/1up.png",

@@ -95,6 +95,9 @@ if (typeof PiuPiuGlobals == "undefined") {
     for (var i in PiuPiuGlobals.statsNames) {
         eval("PiuPiuGlobals." + PiuPiuGlobals.statsNames[i] + " = 0");
     }
+
+    //  Facebook
+    PiuPiuGlobals.FB_isLoggedIn = false;
 }
 
 if (typeof PiuPiuLevelSettings == "undefined") {
