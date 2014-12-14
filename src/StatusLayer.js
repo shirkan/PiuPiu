@@ -5,7 +5,6 @@
 const yGap = 30;
 const xGap = 100;
 const gapBetweenLives = 3;
-const fontSize = 20;
 
 var StatusLayer = cc.Scene.extend({
     labelPoints:null,
@@ -21,8 +20,9 @@ var StatusLayer = cc.Scene.extend({
         this._super();
 
         //  Create label for points
-        this.labelHishScore = new cc.LabelTTF("Score: 0", "Helvetica", fontSize);
-        this.labelHishScore.setColor(cc.color(255,255,0)); //  Yellow
+        this.labelHishScore = new cc.LabelTTF("Score: 0", "Helvetica", PiuPiuConsts.fontSizeStatus);
+        this.labelHishScore.setFontFillColor(cc.color(255,220,80)); //  Yellow
+        this.labelHishScore.enableStroke(cc.color(0,0,255), 2); //Blue
         this.labelHishScore.setPosition(PiuPiuGlobals.winSize.width - xGap, PiuPiuGlobals.winSize.height - yGap);
         this.addChild(this.labelHishScore);
 
@@ -33,8 +33,9 @@ var StatusLayer = cc.Scene.extend({
         this.addChild(livesSprite);
 
         //  Create label for lives, position near the sprite
-        this.labelLives = new cc.LabelTTF("X0", "Helvetica", fontSize);
-        this.labelLives.setColor(cc.color(255,255,0)); //  Yellow
+        this.labelLives = new cc.LabelTTF("X0", "Helvetica", PiuPiuConsts.fontSizeStatus);
+        this.labelLives.setFontFillColor(cc.color(255,220,80)); //  Yellow
+        this.labelLives.enableStroke(cc.color(0,0,255), 2); //Blue
         this.labelLives.setPosition(yGap + gapBetweenLives +livesSprite.width, PiuPiuGlobals.winSize.height - livesSprite.height/2);
         this.addChild(this.labelLives);
     },
@@ -48,8 +49,8 @@ var StatusLayer = cc.Scene.extend({
     },
 
     displayHeadShot: function() {
-        var headShotSprite = new cc.LabelTTF("Head shot!", "Helvetica", fontSize);
-        headShotSprite.setColor(cc.color(255,255,0)); //  Yellow
+        var headShotSprite = new cc.LabelTTF("Head shot!", "Helvetica", PiuPiuConsts.fontSizeStatus);
+        headShotSprite.setFontFillColor(cc.color(255,220,80)); //  Yellow
         headShotSprite.enableStroke(cc.color(0,0,255), 2); //Blue
         headShotSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - yGap);
         this.addChild(headShotSprite);
@@ -57,9 +58,9 @@ var StatusLayer = cc.Scene.extend({
     },
 
     showGameOver : function () {
-        var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", fontSize * 3);
-        gameOverSprite.setColor(cc.color(255,255,255)); //  White
-        gameOverSprite.enableStroke(cc.color(255,0,0), 3); //   Red
+        var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", PiuPiuConsts.fontSizeStatus * 2);
+        gameOverSprite.setFontFillColor(cc.color(255,0,0)); //  Red
+        gameOverSprite.enableStroke(cc.color(255,255,255), 3); //   White
         gameOverSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
         var gameOverAnimation = cc.RepeatForever.create(new cc.Sequence(cc.ScaleBy.create(2, 1.5), cc.ScaleBy.create(2, 1/1.5)));
         this.addChild(gameOverSprite);
@@ -67,11 +68,11 @@ var StatusLayer = cc.Scene.extend({
     },
 
     showLevelCompleted: function () {
-        this.labelLevelCompleted = new cc.LabelTTF("Level Completed!", "Helvetica", fontSize * 3);
-        this.labelLevelCompleted.setColor(cc.color(255,255,0)); //  Yellow
+        this.labelLevelCompleted = new cc.LabelTTF("Level Completed!", "Helvetica", PiuPiuConsts.fontSizeStatus * 2);
+        this.labelLevelCompleted.setFontFillColor(cc.color(255,220,80)); //  Yellow
         this.labelLevelCompleted.enableStroke(cc.color(0,0,255), 2); //Blue
         this.labelLevelCompleted.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
-        this.addChild(this.labelLevelCompleted, 0, PiuPiuConsts.levelCompletedTag);
+        this.addChild(this.labelLevelCompleted, 0);
     },
 
     hideLevelCompleted: function () {

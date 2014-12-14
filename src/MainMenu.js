@@ -1,6 +1,8 @@
 
 var MenuLayer = cc.Layer.extend({
     labelSound:null,
+    facebookSprite:null,
+    isAnimatingFBLogin:false,
     ctor : function(){
         //1. call super class's ctor function
         this._super();
@@ -29,10 +31,9 @@ var MenuLayer = cc.Layer.extend({
         var menuItems = [];
 
         //  Start
-        var labelStart = new cc.LabelTTF("Start", "Helvetica", 44);
-        labelStart.setColor(cc.color(255,255,0)); //Yellow
-        //labelStart.enableOutline((255,0,0),5);
-        labelStart.enableStroke(cc.color(0,0,255), 2); //Blue
+        var labelStart = new cc.LabelTTF("Start", "Helvetica", PiuPiuConsts.fontSize);
+        labelStart.setFontFillColor(cc.color(255,220,80)); //Yellow
+        labelStart.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
         var menuItemPlay = new cc.MenuItemLabel(
             labelStart,
@@ -40,10 +41,9 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemPlay);
 
         //  Sound on/off
-        this.labelSound = new cc.LabelTTF("Sound on", "Helvetica", 44);
-        this.labelSound.setColor(cc.color(255,255,0)); //Yellow
-        //labelStart.enableOutline((255,0,0),5);
-        this.labelSound.enableStroke(cc.color(0,0,255), 2); //Blue
+        this.labelSound = new cc.LabelTTF("Sound on", "Helvetica", PiuPiuConsts.fontSize);
+        this.labelSound.setFontFillColor(cc.color(255,220,80)); //Yellow
+        this.labelSound.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
         if (PiuPiuGlobals.soundEnabled == 0) {
             this.labelSound.setString("Sound off");
@@ -55,9 +55,9 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemSound);
 
         //  Statistics
-        var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", 44);
-        labelStatistics.setColor(cc.color(255,255,0)); //Yellow
-        labelStatistics.enableStroke(cc.color(0,0,255), 2);
+        var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", PiuPiuConsts.fontSize);
+        labelStatistics.setFontFillColor(cc.color(255,220,80)); //Yellow
+        labelStatistics.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize);
 
         var menuItemStatistics = new cc.MenuItemLabel(
             labelStatistics,
@@ -65,9 +65,9 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemStatistics);
 
         //  Leaderboard
-        var labelLeaderboard = new cc.LabelTTF("Leaderboard", "Helvetica", 44);
-        labelLeaderboard.setColor(cc.color(255,255,255)); //White
-        labelLeaderboard.enableStroke(cc.color(0,0,255), 2);
+        var labelLeaderboard = new cc.LabelTTF("Leaderboard", "Helvetica", PiuPiuConsts.fontSize);
+        labelLeaderboard.setFontFillColor(cc.color(255,220,80)); //Blue
+        labelLeaderboard.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize);
 
         var menuItemLeaderboard = new cc.MenuItemLabel(
             labelLeaderboard,
@@ -75,24 +75,14 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemLeaderboard);
 
         //  Achievements
-        var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", 44);
-        labelAchievements.setColor(cc.color(255,255,255)); //White
-        labelAchievements.enableStroke(cc.color(0,0,255), 2); //Blue
+        var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", PiuPiuConsts.fontSize);
+        labelAchievements.setFontFillColor(cc.color(255,220,80)); //Blue
+        labelAchievements.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
         var menuItemAchievements = new cc.MenuItemLabel(
             labelAchievements,
             this.onAchievements, this);
         menuItems.push(menuItemAchievements);
-
-        //  Exit
-        //var labelExit = new cc.LabelTTF("Exit", "Helvetica", 44);
-        //labelExit.setColor(cc.color(255,255,0)); //Yellow
-        //labelExit.enableStroke(cc.color(0,0,255), 2); //Blue
-        //
-        //var menuItemExit = new cc.MenuItemLabel(
-        //    labelExit,
-        //    this.onExitClicked, this);
-        //menuItems.push(menuItemExit);
 
         var menu = new cc.Menu(menuItems);
 
@@ -115,10 +105,24 @@ var MenuLayer = cc.Layer.extend({
 
     onAchievements : function () {
         console.log("achievements clicked");
+
+        if (!FBisLoggedIn()) {
+            this.animateLoginToFB();
+        }
+
+        FBgetScore();
     },
 
     onLeaderboard : function () {
         console.log("leaderboard clicked");
+
+        if (!FBisLoggedIn()) {
+            this.animateLoginToFB();
+        }
+
+        FBgetAllScores();
+
+        return;
         //var facebook = plugin.FacebookAgent.getInstance();
         var info = {
             "app_id": PiuPiuConsts.FB_appid,
@@ -151,10 +155,17 @@ var MenuLayer = cc.Layer.extend({
     },
 
     checkFacebook : function () {
-        var facebookSprite = new cc.Sprite(res.FB_png);
-        facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width * 0.95, PiuPiuGlobals.winSize.height * 0.1));
-        this.addChild(facebookSprite);
+        if (FBisLoggedIn()) {
+            return;
+        }
 
+        this.facebookSprite = new cc.Sprite(res.FB_png);
+        this.facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width - 20 , 20));
+        this.addChild(this.facebookSprite);
+
+        //var scoreSprite = new cc.LabelTTF("", "Helvetica", PiuPiuConsts.fontSize);
+        //scoreSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width * 0.85, PiuPiuGlobals.winSize.height * 0.1));
+        //this.addChild(scoreSprite);
 
         var listener1 = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -178,7 +189,40 @@ var MenuLayer = cc.Layer.extend({
                 return false;
             }
         });
-        cc.eventManager.addListener(listener1, facebookSprite);
+        cc.eventManager.addListener(listener1, this.facebookSprite);
+    },
+
+    animateLoginToFB : function () {
+        if (this.isAnimatingFBLogin) {
+            return;
+        }
+        var labelSprite = new cc.LabelTTF("You must login to Facebook to enable this feature->", "Helvetica", 22);
+        labelSprite.anchorX = 1;
+        labelSprite.setPosition(cc.p(0, 20));
+        labelSprite.setFontFillColor(cc.color(255,220,80)); //Yellow
+        labelSprite.enableStroke(cc.color(0,0,255), 2); // Blue
+        this.addChild(labelSprite);
+
+        var labelAnimation = new cc.Sequence(
+            cc.MoveBy.create(1, cc.p(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5), 0)).easing(cc.easeOut(3)),
+            cc.DelayTime.create(2.5),
+            cc.MoveBy.create(1.5, cc.p(-(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5)), 0)).easing(cc.easeIn(3)),
+            new cc.CallFunc(function() { this.removeFromParent()}, labelSprite),
+            new cc.CallFunc(function() { this.isAnimatingFBLogin = false}, this)
+        );
+
+        //  Bouncing FB logo animation
+        var bouncingAnimation = new cc.Sequence(
+            cc.DelayTime.create(1),
+            cc.Repeat.create(new cc.Sequence(
+                cc.MoveBy.create(0.1, cc.p(0,40)),
+                cc.MoveBy.create(0.8, cc.p(0,-40)).easing(cc.easeBounceOut(1))
+            ), 3)
+        );
+
+        labelSprite.runAction(labelAnimation);
+        this.facebookSprite.runAction(bouncingAnimation);
+        this.isAnimatingFBLogin = true;
     }
 
 });
@@ -202,6 +246,11 @@ var MenuScene = cc.Scene.extend({
                 if(keyCode == cc.KEY.back || keyCode == cc.KEY.backspace)
                 {
                     event.getCurrentTarget().onExitClicked();
+                }
+
+                //FACEBOOK logout walkaround
+                if(keyCode == cc.KEY.l) {
+                    FBlogout();
                 }
             }
         }, this);

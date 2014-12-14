@@ -192,8 +192,12 @@ var PlayScene = cc.Scene.extend({
             this.statusLayer.showGameOver();
         }
 
+        //  Update high score
         this.updateHighScore();
+        //  Update stats
         updateStats();
+        //  Update Facebook stats
+        FBpostScore();
 
         if (transitToMainMenu) {
             var transition = new cc.TransitionFade(1, new MenuScene());
@@ -294,6 +298,7 @@ var PlayScene = cc.Scene.extend({
             return;
         }
         this.hitToUpdate = hitType.BulletEnemyHead;
+        playSound(res.sound_headshot);
 
         var shapes = arbiter.getShapes();
         this.bodiesToRemove.push(shapes[0].body, shapes[1].body);

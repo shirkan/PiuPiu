@@ -70,14 +70,6 @@ function initGlobals() {
     if (PiuPiuGlobals.soundEnabled === undefined || isNaN(PiuPiuGlobals.soundEnabled)) {
         cc.sys.localStorage.soundEnabled = PiuPiuGlobals.soundEnabled = 1;
     }
-
-    //  Check Facebook
-    var facebook = plugin.FacebookAgent.getInstance();
-    if (facebook.isLoggedIn()) {
-        console.log("FACEBOOK: logged in!");
-    } else {
-        console.log("FACEBOOK: Not logged in!");
-    }
 }
 
 function loadStats () {
@@ -161,21 +153,131 @@ function runPostStepCallbacks() {
 }
 
 // ***** Facebook utilities *****
+var FBInstance = plugin.FacebookAgent.getInstance();
+
+function FBinit() {
+    if (FBisLoggedIn()) {
+        console.log("FACEBOOK: logged in!");
+    } else {
+        console.log("FACEBOOK: not logged in!");
+        //  Try to get access token
+        var token = FBInstance.getAccessToken();
+        if (token){
+            console.log("AccessToken: " + token);
+        } else {
+            console.log("No valid access token from the current user, trying to login");
+            FBlogin();
+        }
+
+    }
+    FBgetScore();
+}
+
 function FBlogin() {
-    var facebook = plugin.FacebookAgent.getInstance();
-    var permissions = ["user_games_activity", "user_about_me"];
-    facebook.login(permissions, function(code, response){
+    console.log("asking for  the following permissions: " +PiuPiuConsts.FBpermissionsNeeded);
+    FBInstance.login(PiuPiuConsts.FBpermissionsNeeded, function(code, response){
         if(code == plugin.FacebookAgent.CODE_SUCCEED){
-            cc.log("login succeeded");
-            cc.log("AccessToken: " + response["accessToken"]);
+            console.log("login succeeded");
+            console.log("AccessToken: " + response["accessToken"]);
             var allowedPermissions = response["permissions"];
-            var str = "Permissions: ";
+            var str = "";
             for (var i = 0; i < allowedPermissions.length; ++i) {
                 str += allowedPermissions[i] + " ";
             }
-            cc.log("Permissions: " + str);
+            console.log("Permissions: " + str);
+
+            PiuPiuGlobals.FBpermissionsGranted = allowedPermissions;
+            console.log("Has all permission?: " + FBcheckPermissions());
+
         } else {
-            cc.log("Login failed, error #" + code + ": " + response);
+            console.log("Login failed, error #" + code + ": " + response);
+        }
+    });
+}
+
+function FBlogout() {
+    if (FBisLoggedIn()) {
+        FBInstance.logout();
+    }
+    console.log("Facebook logged out. IsloggedIn? " + FBisLoggedIn());
+}
+
+function FBisLoggedIn() {
+    return FBInstance.isLoggedIn();
+    //return FBInstance.isLoggedIn() && PiuPiuGlobals.FBhaveAllPermissions;
+}
+
+function FBcheckPermissions() {
+    PiuPiuGlobals.FBpermissionsMissing = [];
+    for (var i = 0; i < PiuPiuConsts.FBpermissionsNeeded.length; ++i) {
+        if (PiuPiuGlobals.FBpermissionsGranted.indexOf(PiuPiuConsts.FBpermissionsNeeded[i]) == -1) {
+            console.log("Missing permission: " + PiuPiuConsts.FBpermissionsNeeded[i]);
+            PiuPiuGlobals.FBpermissionsMissing.push(PiuPiuConsts.FBpermissionsNeeded[i]);
+            //PiuPiuGlobals.FBhaveAllPermissions = false;
+        }
+    }
+
+    return (PiuPiuGlobals.FBpermissionsMissing.length == 0);
+}
+
+function FBpostScore () {
+    if (!FBisLoggedIn()) {
+        return false;
+    }
+
+    FBpostTotalScore();
+    FBpostHighScore();
+}
+
+function FBpostTotalScore( ) {
+    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.POST, {"score" : PiuPiuGlobals.totalPoints}, function (type, response) {
+        if (type == plugin.FacebookAgent.CODE_SUCCEED) {
+            console.log("FBpostScore: " + JSON.stringify(response));
+        } else {
+            console.log("FBpostScore: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+        }
+    });
+    return true;
+}
+
+function FBpostHighScore() {
+    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.POST, {"highscore" : PiuPiuGlobals.highScore}, function (type, response) {
+        if (type == plugin.FacebookAgent.CODE_SUCCEED) {
+            console.log("FBpostHighScore: " + JSON.stringify(response));
+        } else {
+            console.log("FBpostHighScore: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+        }
+    });
+    return true;
+}
+
+function FBgetScore() {
+    if (!FBisLoggedIn()) {
+        return false;
+    }
+
+    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.GET, function (type, response) {
+        if (type == plugin.FacebookAgent.CODE_SUCCEED) {
+            PiuPiuGlobals.allScoresData = response.data;
+            console.log("FBgetScore: " + JSON.stringify(response));
+        } else {
+            console.log("FBgetScore: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+        }
+    });
+}
+
+function FBgetAllScores() {
+    if (!FBisLoggedIn()) {
+        return false;
+    }
+
+    FBInstance.api("/" + PiuPiuConsts.FB_appid+ "/scores", plugin.FacebookAgent.HttpMethod.GET, function (type, response) {
+        if (type == plugin.FacebookAgent.CODE_SUCCEED) {
+            PiuPiuGlobals.allScoresData = response.data;
+            console.log("Done getting all scores!");
+            console.log("FBgetAllScores: " + JSON.stringify(PiuPiuGlobals.allScoresData));
+        } else {
+            console.log("FBgetAllScores: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
         }
     });
 }

@@ -35,7 +35,8 @@ var res = {
     sound_shaar: "res/shaar.mp3",
     sound_ohedNichnasLamigrash: "res/ohedNichnasLamigrash.mp3",
     sound_piu: "res/piu.mp3",
-    sound_machineGun: "res/machineGun.mp3"
+    sound_machineGun: "res/machineGun.mp3",
+    sound_headshot: "res/headshot.mp3"
 };
 
 var g_resources = [];

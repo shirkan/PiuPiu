@@ -39,6 +39,11 @@ if(typeof GameStates == "undefined") {
 if (typeof PiuPiuConsts == "undefined") {
     var PiuPiuConsts = {};
 
+    //  Styles
+    PiuPiuConsts.fontSize = 44;
+    PiuPiuConsts.fontStrokeSize = 3;
+    PiuPiuConsts.fontSizeStatus = 24;
+
     //  Points
     PiuPiuConsts.pointsPerEnemyKill = 7;
     PiuPiuConsts.pointsPerEnemyHeadShot = 10;
@@ -69,11 +74,9 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.powerupMachineGunPeriod = 10;
     PiuPiuConsts.powerupLocalZOrder = 1;
 
-    //  Status layer
-    PiuPiuConsts.levelCompletedTag = "LevelCompletedTag";
-
     //  Facebook
     PiuPiuConsts.FB_appid = "331202163734875";
+    PiuPiuConsts.FBpermissionsNeeded = ["public_profile", "user_activities", "user_about_me", "user_friends", "publish_actions"];
 }
 
 if (typeof PiuPiuGlobals == "undefined") {
@@ -97,7 +100,8 @@ if (typeof PiuPiuGlobals == "undefined") {
     }
 
     //  Facebook
-    PiuPiuGlobals.FB_isLoggedIn = false;
+    PiuPiuGlobals.FBpermissionsMissing = PiuPiuConsts.FBpermissionsNeeded;
+    PiuPiuGlobals.FBpermissionsGranted = [];
 }
 
 if (typeof PiuPiuLevelSettings == "undefined") {
