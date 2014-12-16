@@ -31,7 +31,7 @@ var MenuLayer = cc.Layer.extend({
         var menuItems = [];
 
         //  Start
-        var labelStart = new cc.LabelTTF("Start", "Helvetica", PiuPiuConsts.fontSize);
+        var labelStart = new cc.LabelTTF("Start", "Helvetica", PiuPiuConsts.fontSizeNormal);
         labelStart.setFontFillColor(cc.color(255,220,80)); //Yellow
         labelStart.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
@@ -41,7 +41,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemPlay);
 
         //  Sound on/off
-        this.labelSound = new cc.LabelTTF("Sound on", "Helvetica", PiuPiuConsts.fontSize);
+        this.labelSound = new cc.LabelTTF("Sound on", "Helvetica", PiuPiuConsts.fontSizeNormal);
         this.labelSound.setFontFillColor(cc.color(255,220,80)); //Yellow
         this.labelSound.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
@@ -55,7 +55,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemSound);
 
         //  Statistics
-        var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", PiuPiuConsts.fontSize);
+        var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", PiuPiuConsts.fontSizeNormal);
         labelStatistics.setFontFillColor(cc.color(255,220,80)); //Yellow
         labelStatistics.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize);
 
@@ -65,7 +65,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemStatistics);
 
         //  Leaderboard
-        var labelLeaderboard = new cc.LabelTTF("Leaderboard", "Helvetica", PiuPiuConsts.fontSize);
+        var labelLeaderboard = new cc.LabelTTF("Leaderboard", "Helvetica", PiuPiuConsts.fontSizeNormal);
         labelLeaderboard.setFontFillColor(cc.color(255,220,80)); //Blue
         labelLeaderboard.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize);
 
@@ -75,7 +75,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemLeaderboard);
 
         //  Achievements
-        var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", PiuPiuConsts.fontSize);
+        var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", PiuPiuConsts.fontSizeNormal);
         labelAchievements.setFontFillColor(cc.color(255,220,80)); //Blue
         labelAchievements.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
@@ -110,7 +110,6 @@ var MenuLayer = cc.Layer.extend({
             this.animateLoginToFB();
         }
 
-        FBgetScore();
     },
 
     onLeaderboard : function () {
@@ -118,9 +117,12 @@ var MenuLayer = cc.Layer.extend({
 
         if (!FBisLoggedIn()) {
             this.animateLoginToFB();
+            return;
         }
 
-        FBgetAllScores();
+        //FBgetAllScores();
+        var transition = new cc.TransitionFade(1, new LeaderboardScene());
+        cc.director.pushScene(transition);
 
         return;
         //var facebook = plugin.FacebookAgent.getInstance();
@@ -163,7 +165,7 @@ var MenuLayer = cc.Layer.extend({
         this.facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width - 20 , 20));
         this.addChild(this.facebookSprite);
 
-        //var scoreSprite = new cc.LabelTTF("", "Helvetica", PiuPiuConsts.fontSize);
+        //var scoreSprite = new cc.LabelTTF("", "Helvetica", PiuPiuConsts.fontSizeNormal);
         //scoreSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width * 0.85, PiuPiuGlobals.winSize.height * 0.1));
         //this.addChild(scoreSprite);
 
@@ -252,10 +254,25 @@ var MenuScene = cc.Scene.extend({
                 if(keyCode == cc.KEY.l) {
                     FBlogout();
                 }
+                if(keyCode == cc.KEY.d) {
+                    FBdeleteMe();
+                }
+                if(keyCode == cc.KEY.p) {
+                    FBgetPicture("me", event.getCurrentTarget(), event.getCurrentTarget().addimage);
+
+                }
             }
         }, this);
     },
     onExitClicked : function () {
         cc.director.end();
+    },
+    addimage : function (userid, url) {
+
+        var sprite = new cc.Sprite(url);
+        //var tex = cc.textureCache.addImage(url);
+        //sprite.setTexture(tex);
+        sprite.setPosition(cc.p(110,110));
+        this.addChild(sprite);
     }
 });

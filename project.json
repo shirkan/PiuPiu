@@ -27,6 +27,7 @@
         "src/PlayScene.js",
         "src/IntroScene.js",
         "src/LevelCutScene.js",
+        "src/Leaderboard.js",
         "src/Player.js",
         "src/Hands.js",
         "src/Bullet.js",

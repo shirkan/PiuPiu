@@ -58,7 +58,7 @@ var StatusLayer = cc.Scene.extend({
     },
 
     showGameOver : function () {
-        var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", PiuPiuConsts.fontSizeStatus * 2);
+        var gameOverSprite = new cc.LabelTTF("Game Over", "Helvetica", PiuPiuConsts.fontSizeBig);
         gameOverSprite.setFontFillColor(cc.color(255,0,0)); //  Red
         gameOverSprite.enableStroke(cc.color(255,255,255), 3); //   White
         gameOverSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
@@ -68,7 +68,7 @@ var StatusLayer = cc.Scene.extend({
     },
 
     showLevelCompleted: function () {
-        this.labelLevelCompleted = new cc.LabelTTF("Level Completed!", "Helvetica", PiuPiuConsts.fontSizeStatus * 2);
+        this.labelLevelCompleted = new cc.LabelTTF("Level Completed!", "Helvetica", PiuPiuConsts.fontSizeBig);
         this.labelLevelCompleted.setFontFillColor(cc.color(255,220,80)); //  Yellow
         this.labelLevelCompleted.enableStroke(cc.color(0,0,255), 2); //Blue
         this.labelLevelCompleted.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);

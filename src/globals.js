@@ -33,16 +33,18 @@ if(typeof GameStates == "undefined") {
     GameStates.Playing = 2;
     GameStates.GameOver = 3;
     GameStates.CutScene = 4;
-    GameStates.LevelCompleted = 4;
+    GameStates.LevelCompleted = 5;
+    GameStates.Leaderboard = 6;
 }
 
 if (typeof PiuPiuConsts == "undefined") {
     var PiuPiuConsts = {};
 
     //  Styles
-    PiuPiuConsts.fontSize = 44;
+    PiuPiuConsts.fontSizeNormal = 44;
     PiuPiuConsts.fontStrokeSize = 3;
     PiuPiuConsts.fontSizeStatus = 24;
+    PiuPiuConsts.fontSizeBig = 80;
 
     //  Points
     PiuPiuConsts.pointsPerEnemyKill = 7;
@@ -77,6 +79,8 @@ if (typeof PiuPiuConsts == "undefined") {
     //  Facebook
     PiuPiuConsts.FB_appid = "331202163734875";
     PiuPiuConsts.FBpermissionsNeeded = ["public_profile", "user_activities", "user_about_me", "user_friends", "publish_actions"];
+    PiuPiuConsts.FBwaitForResultsInSeconds = 11;
+    PiuPiuConsts.FBleaderboardShowTop = 7;
 }
 
 if (typeof PiuPiuGlobals == "undefined") {
@@ -102,6 +106,9 @@ if (typeof PiuPiuGlobals == "undefined") {
     //  Facebook
     PiuPiuGlobals.FBpermissionsMissing = PiuPiuConsts.FBpermissionsNeeded;
     PiuPiuGlobals.FBpermissionsGranted = [];
+    PiuPiuGlobals.FBallScoresData = null;
+    PiuPiuGlobals.FBplayerScoreData = null;
+    PiuPiuGlobals.FBpictureSize = 40;
 }
 
 if (typeof PiuPiuLevelSettings == "undefined") {

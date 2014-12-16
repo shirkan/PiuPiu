@@ -27,8 +27,18 @@ var res = {
     Ball_png: "res/ball.png",
     FB_png: "res/facebook.png",
 
+    //  Powerups
     PowerupMachineGun_png: "res/machineGun.png",
     Powerup1Up_png: "res/1up.png",
+
+    //  Leaderboard sprites
+    place1_png : "res/place1.png",
+    place2_png : "res/place2.png",
+    place3_png : "res/place3.png",
+    place4_png : "res/place4.png",
+    place5_png : "res/place5.png",
+    place6_png : "res/place6.png",
+    place7_png : "res/place7.png",
 
     //  Sounds
     sound_hineZeBa: "res/hineZeBa.mp3",

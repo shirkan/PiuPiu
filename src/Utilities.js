@@ -220,17 +220,35 @@ function FBcheckPermissions() {
     return (PiuPiuGlobals.FBpermissionsMissing.length == 0);
 }
 
-function FBpostScore () {
+function FBpostScore ( score ) {
     if (!FBisLoggedIn()) {
         return false;
     }
 
-    FBpostTotalScore();
-    FBpostHighScore();
+    var updateHighScore = function () {
+        if (PiuPiuGlobals.FBplayerScoreData.score < PiuPiuGlobals.highScore) {
+            console.log("Updated high score!");
+            FBpostHighScore();
+        } else {
+            console.log("High score wasn't updated");
+        }
+
+    };
+
+    //  We need to get high score from server and add the points of the last game.
+    //  By doing this, we are aligned on all platforms and not only on local device :)
+    var updateTotalScore = function ( score ) {
+        FBpostTotalScore( parseInt(score) + parseInt(PiuPiuGlobals.FBplayerScoreData.totalscore))
+    }
+
+    FBgetScore(this, function() { updateHighScore()});
+
+    //FBpostTotalScore();
+    //FBpostHighScore();
 }
 
 function FBpostTotalScore( ) {
-    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.POST, {"score" : PiuPiuGlobals.totalPoints}, function (type, response) {
+    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.POST, {"totalscore" : PiuPiuGlobals.totalPoints}, function (type, response) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
             console.log("FBpostScore: " + JSON.stringify(response));
         } else {
@@ -241,7 +259,7 @@ function FBpostTotalScore( ) {
 }
 
 function FBpostHighScore() {
-    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.POST, {"highscore" : PiuPiuGlobals.highScore}, function (type, response) {
+    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.POST, {"score" : PiuPiuGlobals.highScore}, function (type, response) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
             console.log("FBpostHighScore: " + JSON.stringify(response));
         } else {
@@ -251,33 +269,87 @@ function FBpostHighScore() {
     return true;
 }
 
-function FBgetScore() {
+function FBgetScore( target, success_callback, error_callback) {
     if (!FBisLoggedIn()) {
         return false;
     }
-
+    PiuPiuGlobals.FBplayerScoreData = null;
     FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.GET, function (type, response) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
-            PiuPiuGlobals.allScoresData = response.data;
             console.log("FBgetScore: " + JSON.stringify(response));
+            PiuPiuGlobals.FBplayerScoreData = response.data;
+            if (!PiuPiuGlobals.FBplayerScoreData.score) {
+                PiuPiuGlobals.FBplayerScoreData.score = 0;
+            }
+            if (success_callback) { success_callback.call(target) }
         } else {
             console.log("FBgetScore: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+            if (error_callback) { error_callback.call(target) }
         }
     });
 }
 
-function FBgetAllScores() {
+function FBgetAllScores( target, success_callback, error_callback ) {
     if (!FBisLoggedIn()) {
         return false;
     }
+
+    PiuPiuGlobals.FBallScoresData = null;
 
     FBInstance.api("/" + PiuPiuConsts.FB_appid+ "/scores", plugin.FacebookAgent.HttpMethod.GET, function (type, response) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
-            PiuPiuGlobals.allScoresData = response.data;
-            console.log("Done getting all scores!");
-            console.log("FBgetAllScores: " + JSON.stringify(PiuPiuGlobals.allScoresData));
+            PiuPiuGlobals.FBallScoresData = response.data;
+            console.log("FBgetAllScores: " + JSON.stringify(PiuPiuGlobals.FBallScoresData));
+            if (success_callback) { success_callback.call(target) }
         } else {
             console.log("FBgetAllScores: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+            if (error_callback) { error_callback.call(target) }
         }
     });
 }
+
+function FBdeleteAll () {
+    if (!FBisLoggedIn()) {
+        return false;
+    }
+    FBInstance.api("/" + PiuPiuConsts.FB_appid+ "/scores", plugin.FacebookAgent.HttpMethod.DELETE, function (type, response) {
+        if (type == plugin.FacebookAgent.CODE_SUCCEED) {
+            PiuPiuGlobals.FBallScoresData = null;
+            console.log("FBdeleteAll: " + JSON.stringify(response));
+        } else {
+            console.log("FBdeleteAll: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+        }
+    });
+}
+
+function FBdeleteMe () {
+    if (!FBisLoggedIn()) {
+        return false;
+    }
+    FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.DELETE, function (type, response) {
+        if (type == plugin.FacebookAgent.CODE_SUCCEED) {
+            PiuPiuGlobals.FBallScoresData = null;
+            console.log("FBdeleteMe: " + JSON.stringify(response));
+        } else {
+            console.log("FBdeleteMe: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+        }
+    });
+}
+
+function FBgetPicture ( userid, target, cb ) {
+    if (!FBisLoggedIn()) {
+        return false;
+    }
+
+    FBInstance.api("/" + userid + "/picture", plugin.FacebookAgent.HttpMethod.GET,
+        {"type" : "normal", "height" : PiuPiuGlobals.FBpictureSize, "width" : PiuPiuGlobals.FBpictureSize}, function (type, response) {
+        if (type == plugin.FacebookAgent.CODE_SUCCEED) {
+            console.log("FBgetPicture: " + JSON.stringify(response));
+            if (cb) { cb.call(target, userid, response.data.url) }
+        } else {
+            console.log("FBgetPicture: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+        }
+    });
+}
+
+
