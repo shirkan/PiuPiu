@@ -1,4 +1,7 @@
 var res = {
+    //  Font
+    arcade_font: "arcade.ttf",
+
     //  Maps
     grass1_tmx : "res/grass1.tmx",
     grass1_lowtmx : "res/grass1_low.tmx",
@@ -32,6 +35,7 @@ var res = {
     Powerup1Up_png: "res/1up.png",
 
     //  Leaderboard sprites
+    stencil_png: "res/stencil1.png",
     place1_png : "res/place1.png",
     place2_png : "res/place2.png",
     place3_png : "res/place3.png",

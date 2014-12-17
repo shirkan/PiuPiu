@@ -28,6 +28,7 @@
         "src/IntroScene.js",
         "src/LevelCutScene.js",
         "src/Leaderboard.js",
+        "src/Achievements.js",
         "src/Player.js",
         "src/Hands.js",
         "src/Bullet.js",

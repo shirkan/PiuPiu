@@ -24,14 +24,14 @@ var MenuLayer = cc.Layer.extend({
         this.createMenu();
 
         //  Check if need to add facebook login image
-        this.checkFacebook();
+        FBisLoggedIn(this, null, this.showFacebookLogo);
     },
 
     createMenu : function () {
         var menuItems = [];
 
         //  Start
-        var labelStart = new cc.LabelTTF("Start", "Helvetica", PiuPiuConsts.fontSizeNormal);
+        var labelStart = new cc.LabelTTF("Start", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
         labelStart.setFontFillColor(cc.color(255,220,80)); //Yellow
         labelStart.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
@@ -41,7 +41,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemPlay);
 
         //  Sound on/off
-        this.labelSound = new cc.LabelTTF("Sound on", "Helvetica", PiuPiuConsts.fontSizeNormal);
+        this.labelSound = new cc.LabelTTF("Sound on", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
         this.labelSound.setFontFillColor(cc.color(255,220,80)); //Yellow
         this.labelSound.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
@@ -55,7 +55,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemSound);
 
         //  Statistics
-        var labelStatistics = new cc.LabelTTF("Statistics", "Helvetica", PiuPiuConsts.fontSizeNormal);
+        var labelStatistics = new cc.LabelTTF("Statistics", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
         labelStatistics.setFontFillColor(cc.color(255,220,80)); //Yellow
         labelStatistics.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize);
 
@@ -65,7 +65,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemStatistics);
 
         //  Leaderboard
-        var labelLeaderboard = new cc.LabelTTF("Leaderboard", "Helvetica", PiuPiuConsts.fontSizeNormal);
+        var labelLeaderboard = new cc.LabelTTF("Leaderboard", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
         labelLeaderboard.setFontFillColor(cc.color(255,220,80)); //Blue
         labelLeaderboard.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize);
 
@@ -75,7 +75,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemLeaderboard);
 
         //  Achievements
-        var labelAchievements = new cc.LabelTTF("Acheivements", "Helvetica", PiuPiuConsts.fontSizeNormal);
+        var labelAchievements = new cc.LabelTTF("Acheivements", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
         labelAchievements.setFontFillColor(cc.color(255,220,80)); //Blue
         labelAchievements.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
@@ -110,6 +110,8 @@ var MenuLayer = cc.Layer.extend({
             this.animateLoginToFB();
         }
 
+        var transition = new cc.TransitionFade(1, new AchievementsScene());
+        cc.director.pushScene(transition);
     },
 
     onLeaderboard : function () {
@@ -156,16 +158,13 @@ var MenuLayer = cc.Layer.extend({
         }
     },
 
-    checkFacebook : function () {
-        if (FBisLoggedIn()) {
-            return;
-        }
+    showFacebookLogo : function () {
 
         this.facebookSprite = new cc.Sprite(res.FB_png);
         this.facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width - 20 , 20));
         this.addChild(this.facebookSprite);
 
-        //var scoreSprite = new cc.LabelTTF("", "Helvetica", PiuPiuConsts.fontSizeNormal);
+        //var scoreSprite = new cc.LabelTTF("", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
         //scoreSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width * 0.85, PiuPiuGlobals.winSize.height * 0.1));
         //this.addChild(scoreSprite);
 
@@ -185,7 +184,7 @@ var MenuLayer = cc.Layer.extend({
 
                 //Check the click area
                 if (cc.rectContainsPoint(rect, locationInNode)) {
-                    FBlogin();
+                    FBlogin(target, function () { this.removeChild(this.facebookSprite); });
                     return true;
                 }
                 return false;
@@ -198,7 +197,7 @@ var MenuLayer = cc.Layer.extend({
         if (this.isAnimatingFBLogin) {
             return;
         }
-        var labelSprite = new cc.LabelTTF("You must login to Facebook to enable this feature->", "Helvetica", 22);
+        var labelSprite = new cc.LabelTTF("You must login to Facebook to enable this feature->", PiuPiuConsts.fontName, 22);
         labelSprite.anchorX = 1;
         labelSprite.setPosition(cc.p(0, 20));
         labelSprite.setFontFillColor(cc.color(255,220,80)); //Yellow

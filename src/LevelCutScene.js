@@ -15,7 +15,7 @@ var LevelCutSceneLayer = cc.Layer.extend({
         this.addChild(spriteBG);
 
         //  Add Level banner
-        var levelSprite = new cc.LabelTTF("Level " + PiuPiuGlobals.currentLevel, "Helvetica", PiuPiuConsts.fontSizeBig);
+        var levelSprite = new cc.LabelTTF("Level " + PiuPiuGlobals.currentLevel, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
         levelSprite.setFontFillColor(cc.color(255,220,80)); //  Yellow
         levelSprite.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
         levelSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - 120);

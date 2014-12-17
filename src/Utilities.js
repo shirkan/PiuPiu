@@ -173,7 +173,7 @@ function FBinit() {
     FBgetScore();
 }
 
-function FBlogin() {
+function FBlogin(target, success_callback, error_callback) {
     console.log("asking for  the following permissions: " +PiuPiuConsts.FBpermissionsNeeded);
     FBInstance.login(PiuPiuConsts.FBpermissionsNeeded, function(code, response){
         if(code == plugin.FacebookAgent.CODE_SUCCEED){
@@ -189,8 +189,10 @@ function FBlogin() {
             PiuPiuGlobals.FBpermissionsGranted = allowedPermissions;
             console.log("Has all permission?: " + FBcheckPermissions());
 
+            if (success_callback) { success_callback.call(target) }
         } else {
             console.log("Login failed, error #" + code + ": " + response);
+            if (error_callback) { error_callback.call(target) }
         }
     });
 }
@@ -202,9 +204,18 @@ function FBlogout() {
     console.log("Facebook logged out. IsloggedIn? " + FBisLoggedIn());
 }
 
-function FBisLoggedIn() {
-    return FBInstance.isLoggedIn();
-    //return FBInstance.isLoggedIn() && PiuPiuGlobals.FBhaveAllPermissions;
+function FBisLoggedIn( target, loggedInCallback, notLoggedInCallback) {
+    if (FBInstance.isLoggedIn()) {
+        if (target && loggedInCallback) {
+            loggedInCallback.call(target);
+        }
+        return true;
+    } else {
+        if (target && notLoggedInCallback) {
+            notLoggedInCallback.call(target);
+        }
+        return false;
+    }
 }
 
 function FBcheckPermissions() {
@@ -345,7 +356,8 @@ function FBgetPicture ( userid, target, cb ) {
         {"type" : "normal", "height" : PiuPiuGlobals.FBpictureSize, "width" : PiuPiuGlobals.FBpictureSize}, function (type, response) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
             console.log("FBgetPicture: " + JSON.stringify(response));
-            if (cb) { cb.call(target, userid, response.data.url) }
+            cc.loader.loadImg(response.data.url, function () { cb.call(target, userid, response.data.url)});
+            //if (cb) { cb.call(target, userid, response.data.url) }
         } else {
             console.log("FBgetPicture: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
         }

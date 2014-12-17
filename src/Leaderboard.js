@@ -16,7 +16,7 @@ var LeaderboardLayer = cc.Layer.extend({
         this.addChild(spriteBG);
 
         //  Add Loading Sprite
-        this.loadingLabel = new cc.LabelTTF("Loading...", "Helvetica", PiuPiuConsts.fontSizeBig);
+        this.loadingLabel = new cc.LabelTTF("Loading...", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
         this.loadingLabel.setFontFillColor(cc.color(255,220,80)); //  Yellow
         this.loadingLabel.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
         this.loadingLabel.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height/2);
@@ -25,7 +25,7 @@ var LeaderboardLayer = cc.Layer.extend({
     showErrorLabel : function () {
         this.removeChild(this.loadingLabel);
 
-        var errorLabel = new cc.LabelTTF("Error loading results... \nPlease check internet connectivity", "Helvetica", PiuPiuConsts.fontSizeStatus);
+        var errorLabel = new cc.LabelTTF("Error loading results... \nPlease check internet connectivity", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
         errorLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;
         errorLabel.setFontFillColor(cc.color(255,220,80)); //  Yellow
         errorLabel.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
@@ -37,7 +37,7 @@ var LeaderboardLayer = cc.Layer.extend({
         this.removeChild(this.loadingLabel);
 
         //  High score
-        var highScoreLabel = new cc.LabelTTF("High scores", "Helvetica", PiuPiuConsts.fontSizeStatus);
+        var highScoreLabel = new cc.LabelTTF("High scores", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
         highScoreLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;
         highScoreLabel.setFontFillColor(cc.color(255,220,80)); //  Yellow
         highScoreLabel.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
@@ -59,13 +59,21 @@ var LeaderboardLayer = cc.Layer.extend({
 
             //  Profile picture
             var pictureSprite = spritesArr[highscoresArr[i].id];
-            pictureSprite.setPosition( xPos, yPos);
-            this.addChild(pictureSprite);
+            var pictureStencil = new cc.Sprite(res.stencil_png);
+            var pictureClip = new cc.ClippingNode();
+            pictureClip.setInverted(true);
+            pictureClip.setStencil(pictureStencil);
+            pictureClip.addChild(pictureSprite, 1);
+            pictureClip.addChild(pictureStencil, 2);
+            pictureClip.setAlphaThreshold(0);
+            pictureClip.setContentSize(cc.size(pictureSprite.getContentSize().width/2, pictureSprite.getContentSize().height/2));
+            pictureClip.setPosition( xPos, yPos);
+            this.addChild(pictureClip);
             xPos += PiuPiuGlobals.FBpictureSize + 10;
             console.log("xPos2: " + xPos);
 
             //  Name
-            var labelName = new cc.LabelTTF(highscoresArr[i].name, "Helvetica", PiuPiuConsts.fontSizeStatus);
+            var labelName = new cc.LabelTTF(highscoresArr[i].name, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
             //labelName.textAlign = cc.TEXT_ALIGNMENT_CENTER;
 
             labelName.setFontFillColor(cc.color(255,220,80)); //  Yellow
@@ -79,7 +87,7 @@ var LeaderboardLayer = cc.Layer.extend({
             //  Score
             xPos = PiuPiuGlobals.winSize.width * 3 / 4;
             console.log("xPos3: " + xPos);
-            var labelScore = new cc.LabelTTF(highscoresArr[i].score, "Helvetica", PiuPiuConsts.fontSizeStatus);
+            var labelScore = new cc.LabelTTF(highscoresArr[i].score, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
             //labelScore.textAlign = cc.TEXT_ALIGNMENT_CENTER;
             labelScore.anchorX = 0;
             labelScore.setFontFillColor(cc.color(255,220,80)); //  Yellow
@@ -90,7 +98,7 @@ var LeaderboardLayer = cc.Layer.extend({
 
 
         ////  Total score
-        //var totalScoreLabel = new cc.LabelTTF("Total scores", "Helvetica", PiuPiuConsts.fontSizeStatus);
+        //var totalScoreLabel = new cc.LabelTTF("Total scores", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
         //totalScoreLabel.textAlign = cc.TEXT_ALIGNMENT_CENTER;
         //totalScoreLabel.setFontFillColor(cc.color(255,220,80)); //  Yellow
         //totalScoreLabel.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
@@ -171,10 +179,6 @@ var LeaderboardScene = cc.Scene.extend({
     },
 
     successGettingResults : function () {
-        cc.director.getScheduler().unscheduleCallbackForTarget(this, this.waitForResults);
-        this.backEnabled = true;
-
-        console.log("Showing table with data " + JSON.stringify(PiuPiuGlobals.FBallScoresData));
 
         this.loadDataCounter = Math.min(PiuPiuGlobals.FBallScoresData.length, PiuPiuConsts.FBleaderboardShowTop);
         this.highscoresArr = [];
@@ -195,6 +199,15 @@ var LeaderboardScene = cc.Scene.extend({
         }
         //this.layer.showTables(this.highscoresArr);
     },
+
+    testSprite : function ( tex ) {
+        tex = tex = "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/c23.101.380.380/s40x40/1185708_10151702829728197_1243295359_n.jpg?oh=1e0e9c55087076b0104f06f1848d8fec&oe=553EE8C0&__gda__=1427216806_967de4fa188d3d927b3b350615152f92"
+        console.log("in testSPrite with tex " + tex);
+        var s = new cc.Sprite(tex);
+        s.setPosition(100, 100);
+        this.addChild(s);
+    },
+
     addSpriteForUser : function (id, imageURL) {
         var sprite = new cc.Sprite(imageURL);
         this.spritesArr[id] = sprite;

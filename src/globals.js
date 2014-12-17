@@ -41,8 +41,9 @@ if (typeof PiuPiuConsts == "undefined") {
     var PiuPiuConsts = {};
 
     //  Styles
+    PiuPiuConsts.fontName = "ArcadeClassic";
     PiuPiuConsts.fontSizeNormal = 44;
-    PiuPiuConsts.fontStrokeSize = 3;
+    PiuPiuConsts.fontStrokeSize = 2;
     PiuPiuConsts.fontSizeStatus = 24;
     PiuPiuConsts.fontSizeBig = 80;
 
