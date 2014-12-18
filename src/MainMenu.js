@@ -184,13 +184,18 @@ var MenuLayer = cc.Layer.extend({
 
                 //Check the click area
                 if (cc.rectContainsPoint(rect, locationInNode)) {
-                    FBlogin(target, function () { this.removeChild(this.facebookSprite); });
+                    FBlogin(target, target.removeFacebookLogo);
                     return true;
                 }
                 return false;
             }
         });
         cc.eventManager.addListener(listener1, this.facebookSprite);
+    },
+
+    removeFacebookLogo : function (){
+        console.log("Ramoving logo...");
+        this.removeChild(this.facebookSprite);
     },
 
     animateLoginToFB : function () {
