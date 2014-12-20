@@ -49,6 +49,7 @@ var MenuLayer = cc.Layer.extend({
             this.labelSound.setString("Sound off");
         }
 
+
         var menuItemSound = new cc.MenuItemLabel(
             this.labelSound,
             this.onModifySound, this);

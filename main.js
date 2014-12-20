@@ -51,9 +51,6 @@ cc.game.onStart = function(){
     cc.view.adjustViewPort(true);
     cc.view.setDesignResolutionSize(640, 360, cc.ResolutionPolicy.SHOW_ALL);
 
-    plugin.PluginManager.getInstance().loadPlugin("facebook");
-    plugin.PluginManager.getInstance().loadPlugin("admob");
-
     //  Init globals
     initGlobals();
 
