@@ -30,7 +30,7 @@ var LeaderboardLayer = cc.Layer.extend({
         errorLabel.setFontFillColor(cc.color(255,220,80)); //  Yellow
         errorLabel.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
         errorLabel.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height/2);
-        this.layer.addChild(errorLabel);
+        this.addChild(errorLabel);
     },
 
     showTables : function ( highscoresArr, spritesArr ) {
@@ -46,16 +46,14 @@ var LeaderboardLayer = cc.Layer.extend({
 
         for (var i = 0; i < highscoresArr.length; i++) {
             var ordinalIndex = i+1;
-            var yPos = highScoreLabel.y - PiuPiuConsts.fontSizeNormal/2 - (PiuPiuGlobals.FBpictureSize + 5 ) *i - 10;
+            var yPos = highScoreLabel.y - PiuPiuConsts.fontSizeNormal/2 - (PiuPiuConsts.FBpictureSize * PiuPiuConsts.FBpictureScale + 5 ) *i - 10;
             var xPos = PiuPiuGlobals.winSize.width / 5;
-            console.log("xPos0: " + xPos);
 
             //  Trophy / medal logo
-            var placeSprite = new cc.Sprite(eval("res.place" + ordinalIndex +"_png"));
+            var placeSprite = new cc.Sprite("res/place" + ordinalIndex +".png");
             placeSprite.setPosition(xPos ,yPos);
             this.addChild(placeSprite);
             xPos += placeSprite.width + 10;
-            console.log("xPos1: " + xPos);
 
             //  Profile picture
             var pictureSprite = spritesArr[highscoresArr[i].id];
@@ -68,9 +66,9 @@ var LeaderboardLayer = cc.Layer.extend({
             pictureClip.setAlphaThreshold(0);
             pictureClip.setContentSize(cc.size(pictureSprite.getContentSize().width/2, pictureSprite.getContentSize().height/2));
             pictureClip.setPosition( xPos, yPos);
+            pictureClip.setScale(PiuPiuConsts.FBpictureScale);
             this.addChild(pictureClip);
-            xPos += PiuPiuGlobals.FBpictureSize + 10;
-            console.log("xPos2: " + xPos);
+            xPos += PiuPiuConsts.FBpictureSize + 10;
 
             //  Name
             var labelName = new cc.LabelTTF(highscoresArr[i].name, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
@@ -86,7 +84,6 @@ var LeaderboardLayer = cc.Layer.extend({
 
             //  Score
             xPos = PiuPiuGlobals.winSize.width * 3 / 4;
-            console.log("xPos3: " + xPos);
             var labelScore = new cc.LabelTTF(highscoresArr[i].score, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
             //labelScore.textAlign = cc.TEXT_ALIGNMENT_CENTER;
             labelScore.anchorX = 0;
@@ -114,6 +111,7 @@ var LeaderboardScene = cc.Scene.extend({
     highscoresArr: null,
     spritesArr: null,
     loadDataCounter:0,
+    secondsWaiting:0,
     onEnter:function () {
         this._super();
         this.layer = new LeaderboardLayer();
@@ -145,7 +143,8 @@ var LeaderboardScene = cc.Scene.extend({
             onTouchMoved: null,
             onTouchEnded: null}, this);
 
-
+        PiuPiuGlobals.FBallScoresData = [];
+        this.secondsWaiting = 0;
         FBgetAllScores( this, this.successGettingResults, this.errorGettingResults);
         cc.director.getScheduler().scheduleCallbackForTarget(this, this.waitForResults, 1, PiuPiuConsts.FBwaitForResultsInSeconds);
     },
@@ -153,17 +152,34 @@ var LeaderboardScene = cc.Scene.extend({
         if (!this.backEnabled) {
             return;
         }
+
+        if (this.spritesArr) {
+            for (var id in this.spritesArr) {
+                console.log("releasing id " + id);
+                this.spritesArr[id].release();
+            }
+        }
         cc.director.popScene();
     },
 
     waitForResults : function () {
-        this.secondsWaiting++;
         var loadStr = "Loading."
-
         for (var i=0; i < (this.secondsWaiting % 3); i++) {
             loadStr += ".";
+            //PiuPiuGlobals.FBallScoresData[i] = [];
+            //PiuPiuGlobals.FBallScoresData[i].user = [];
+            //
+            //PiuPiuGlobals.FBallScoresData[i].user.id = i;
+            //PiuPiuGlobals.FBallScoresData[i].user.name = "player "+i;
+            //PiuPiuGlobals.FBallScoresData[i].score = -i + 200;
         }
 
+        //if (this.secondsWaiting == 3) {
+        //    cc.director.getScheduler().unscheduleCallbackForTarget(this, this.waitForResults);
+        //    this.successGettingResults();
+        //}
+
+        this.secondsWaiting++;
         this.layer.loadingLabel.setString(loadStr);
 
         if (this.secondsWaiting > PiuPiuConsts.FBwaitForResultsInSeconds) {
@@ -195,7 +211,11 @@ var LeaderboardScene = cc.Scene.extend({
             this.highscoresArr[i].score = score;
 
             console.log("name: " + name + "     score: " +score );
-            FBgetPicture(id, this, this.addSpriteForUser);
+            if (cc.sys.isMobile) {
+                this.addSpriteForUser(id)
+            } else {
+                FBgetPicture(id, this, this.addSpriteForUser);
+            }
         }
         //this.layer.showTables(this.highscoresArr);
     },
@@ -209,8 +229,10 @@ var LeaderboardScene = cc.Scene.extend({
     },
 
     addSpriteForUser : function (id, imageURL) {
+        //var sprite = new cc.Sprite(res.Ball_png);
         var sprite = new cc.Sprite(imageURL);
         this.spritesArr[id] = sprite;
+        this.spritesArr[id].retain();
 
         console.log("addSpriteForUser added sprite for id " + id)
 

@@ -87,3 +87,15 @@ var OneUpPowerUp = PowerUp.extend({
         this._super(parentNode, res.Powerup1Up_png, onHit, period, location)
     }
 });
+
+var CaptainPowerUp = PowerUp.extend({
+    ctor: function (parentNode, onHit, period, location) {
+        this._super(parentNode, res.PowerupCaptain_png, onHit, period, location)
+    }
+});
+
+var StopwatchPowerUp = PowerUp.extend({
+    ctor: function (parentNode, onHit, period, location) {
+        this._super(parentNode, res.PowerupStopwatch_png, onHit, period, location)
+    }
+});

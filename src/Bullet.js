@@ -8,16 +8,25 @@ var Bullet = cc.Class.extend({
     body:null,
     shape:null,
     parentNode:null,
+    startingPos: null,
+    currentPos: null,
+    speed: null,
+    endPoint: null,
+    distanceLeftToPass: null,
 
     ctor: function( parentNode, endPoint, bulletStartPoint, endAngle, sound ) {
         this.space = parentNode.space;
         this.parentNode = parentNode;
+        this.currentPos = cc.p(bulletStartPoint);
+        this.startingPos = cc.p(bulletStartPoint);
+        this.endPoint = endPoint;
+        this.distanceLeftToPass = calculateLineLength(this.startingPos, this.endPoint);
 
         this.sprite = new cc.PhysicsSprite(res.Bullet_png);
 
         // init physics - body
         this.body = new cp.Body(1,1);
-        this.body.setPos(bulletStartPoint);
+        this.body.setPos(this.currentPos);
         this.body.setAngle(endAngle);
         this.sprite.setBody(this.body);
         this.space.addBody(this.body);
@@ -33,10 +42,10 @@ var Bullet = cc.Class.extend({
         this.parentNode.addChild(this.sprite, PiuPiuConsts.bulletLocalZOrder);
 
         //  Calculate how much time it should take the bullet to complete the action (so velocity will be the same for all bullets)
-        var moveDuration = calculateLineLength(bulletStartPoint, endPoint) / PiuPiuConsts.framesPerSeconds;
+        this.speed = PiuPiuGlobals.currentUpdateRate * calculateLineLength(bulletStartPoint, this.endPoint) / PiuPiuConsts.framesPerSeconds;
 
         //  Shooting bullet
-        var moveAction = cc.MoveTo.create(moveDuration, endPoint);
+        var moveAction = cc.MoveTo.create(this.speed, this.endPoint);
         var seq = new cc.Sequence(moveAction, new cc.CallFunc (this.reachedBounds, this));
 
         this.sprite.runAction(seq);
@@ -62,5 +71,19 @@ var Bullet = cc.Class.extend({
     onExit:function () {
         this._super();
         console.log("bullet exit");
+    },
+
+    updateSpeed : function ( multiplier ) {
+        this.sprite.stopAllActions();
+        var distancePassed = calculateLineLength(this.startingPos, this.currentPos);
+        this.speed = this.speed * (1 - (distancePassed / this.distanceLeftToPass));
+        this.speed *= multiplier;
+
+        LOG("Bullet updated speed " + this.speed);
+
+        var moveAction = cc.MoveTo.create(this.speed, this.endPoint);
+        var seq = new cc.Sequence(moveAction, new cc.CallFunc (this.reachedBounds, this));
+
+        this.sprite.runAction(seq);
     }
 });

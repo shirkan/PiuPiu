@@ -4,9 +4,10 @@
 
 var Enemy = cc.Class.extend({
     space:null,
-    startX:null,
-    startY:null,
+    startingPos:null,
+    currentPos:null,
     speed:null,
+    distanceLeftToPass: null,
     sprite:null,
     body:null,
     shapeBody:null,
@@ -16,20 +17,24 @@ var Enemy = cc.Class.extend({
         this.sprite = new cc.PhysicsSprite(res.Enemy_png);
 
         //  Set starting position
-        this.startX = PiuPiuGlobals.winSize.width;
+        startX = PiuPiuGlobals.winSize.width;
         if (specialNotationDoesContain("center")) {
-            this.startY = PiuPiuGlobals.winSize.height / 2;
+            startY = PiuPiuGlobals.winSize.height / 2;
         } else {
-            this.startY = Math.random() * (PiuPiuGlobals.winSize.height);
+            startY = Math.random() * (PiuPiuGlobals.winSize.height);
         }
-        var startingPoint = cc.p(this.startX, this.startY);
+        this.startingPos = cc.p(startX, startY);
+
+        //  This point will be attached to the body and will change during movement
+        this.currentPos = cc.p(startX, startY);
+        this.distanceLeftToPass = calculateLineLength(this.startingPos, PiuPiuConsts.enemyMoveToPoint);
 
         //  Set speed
-        this.speed = Math.random() * 3 + 1;
+        this.speed = PiuPiuGlobals.currentUpdateRate * (Math.random() * 3 + 1);
 
         // init physics
         this.body = new cp.Body(1,1);
-        this.body.setPos(startingPoint);
+        this.body.setPos(this.currentPos);
         this.sprite.setBody(this.body);
         this.space.addBody(this.body);
 
@@ -68,6 +73,14 @@ var Enemy = cc.Class.extend({
     onExit:function () {
         this._super();
         console.log("enemy exit");
+    },
+
+    updateSpeed : function ( multiplier ) {
+        this.sprite.stopAllActions();
+        var distancePassed = calculateLineLength(this.startingPos, this.currentPos);
+        this.speed = this.speed * (1 - (distancePassed / this.distanceLeftToPass));
+        this.speed *= multiplier;
+        this.sprite.runAction(cc.MoveTo.create(this.speed, PiuPiuConsts.enemyMoveToPoint));
     }
 
 });

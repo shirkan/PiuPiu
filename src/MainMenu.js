@@ -3,6 +3,7 @@ var MenuLayer = cc.Layer.extend({
     labelSound:null,
     facebookSprite:null,
     isAnimatingFBLogin:false,
+    isBouncingFBLogo:false,
     ctor : function(){
         //1. call super class's ctor function
         this._super();
@@ -89,14 +90,11 @@ var MenuLayer = cc.Layer.extend({
 
         menu.alignItemsVertically();
 
-        var centerpos = cc.p(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2);
-
-        menu.setPosition(centerpos);
+        menu.setPosition(cc.p(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height / 2 + 30 ));
         this.addChild(menu);
     },
 
     onPlay : function(){
-        PiuPiuGlobals.currentLevel++;
         cc.director.runScene(new IntroScene());
     },
 
@@ -106,7 +104,7 @@ var MenuLayer = cc.Layer.extend({
 
     onAchievements : function () {
         console.log("achievements clicked");
-
+        return;
         if (!FBisLoggedIn()) {
             this.animateLoginToFB();
         }
@@ -162,7 +160,7 @@ var MenuLayer = cc.Layer.extend({
     showFacebookLogo : function () {
 
         this.facebookSprite = new cc.Sprite(res.FB_png);
-        this.facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width - 20 , 20));
+        this.facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width - 30 , 50));
         this.addChild(this.facebookSprite);
 
         //var scoreSprite = new cc.LabelTTF("", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
@@ -177,6 +175,7 @@ var MenuLayer = cc.Layer.extend({
             onTouchBegan: function (touch, event) {
                 // event.getCurrentTarget() returns the *listener's* sceneGraphPriority node.
                 var target = event.getCurrentTarget();
+                var parent = target.parent;
 
                 //Get the position of the current point relative to the button
                 var locationInNode = target.convertToNodeSpace(touch.getLocation());
@@ -185,7 +184,7 @@ var MenuLayer = cc.Layer.extend({
 
                 //Check the click area
                 if (cc.rectContainsPoint(rect, locationInNode)) {
-                    FBlogin(target, target.removeFacebookLogo);
+                    FBlogin(parent, function () { this.removeChild(this.facebookSprite)} );
                     return true;
                 }
                 return false;
@@ -193,43 +192,52 @@ var MenuLayer = cc.Layer.extend({
         });
         cc.eventManager.addListener(listener1, this.facebookSprite);
     },
-
-    removeFacebookLogo : function (){
-        console.log("Ramoving logo...");
-        this.removeChild(this.facebookSprite);
-    },
+    //
+    //removeFacebookLogo : function (){
+    //    this.removeChild(this.facebookSprite);
+    //},
 
     animateLoginToFB : function () {
-        if (this.isAnimatingFBLogin) {
-            return;
+        if (! this.isBouncingFBLogo) {
+            //  Bouncing FB logo animation
+            var bouncingAnimation = new cc.Sequence(
+                cc.DelayTime.create(0),
+                cc.Repeat.create(new cc.Sequence(
+                    cc.MoveBy.create(0.1, cc.p(0,40)),
+                    cc.MoveBy.create(0.8, cc.p(0,-40)).easing(cc.easeBounceOut(1))
+                ), 3),
+                new cc.CallFunc(function() { this.isBouncingFBLogo = false}, this)
+            );
+            this.isBouncingFBLogo = true;
+            this.facebookSprite.runAction(bouncingAnimation);
         }
-        var labelSprite = new cc.LabelTTF("You must login to Facebook to enable this feature->", PiuPiuConsts.fontName, 22);
-        labelSprite.anchorX = 1;
-        labelSprite.setPosition(cc.p(0, 20));
-        labelSprite.setFontFillColor(cc.color(255,220,80)); //Yellow
-        labelSprite.enableStroke(cc.color(0,0,255), 2); // Blue
-        this.addChild(labelSprite);
+        if (!this.isAnimatingFBLogin) {
+            var labelSprite = new cc.LabelTTF("You must login to Facebook to enable this feature. We are *NOT* going to post anything on your wall/timeline without clearly stating so.",
+                PiuPiuConsts.fontName, PiuPiuConsts.fontSizeSmall);
+            labelSprite.anchorX = 0;
+            //labelSprite.anchorX = 1;
+            //labelSprite.setPosition(cc.p(0, 20));
+            labelSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width, 20));
+            labelSprite.setFontFillColor(cc.color(255,220,80)); //Yellow
+            labelSprite.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSizeSmall); // Blue
+            this.addChild(labelSprite);
 
-        var labelAnimation = new cc.Sequence(
-            cc.MoveBy.create(1, cc.p(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5), 0)).easing(cc.easeOut(3)),
-            cc.DelayTime.create(2.5),
-            cc.MoveBy.create(1.5, cc.p(-(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5)), 0)).easing(cc.easeIn(3)),
-            new cc.CallFunc(function() { this.removeFromParent()}, labelSprite),
-            new cc.CallFunc(function() { this.isAnimatingFBLogin = false}, this)
-        );
+            var labelAnimation = new cc.Sequence(
+                cc.MoveBy.create(15, cc.p(-(PiuPiuGlobals.winSize.width + labelSprite.width), 0)),
+                new cc.CallFunc(function() { this.removeFromParent()}, labelSprite),
+                new cc.CallFunc(function() { this.isAnimatingFBLogin = false}, this)
+            );
 
-        //  Bouncing FB logo animation
-        var bouncingAnimation = new cc.Sequence(
-            cc.DelayTime.create(1),
-            cc.Repeat.create(new cc.Sequence(
-                cc.MoveBy.create(0.1, cc.p(0,40)),
-                cc.MoveBy.create(0.8, cc.p(0,-40)).easing(cc.easeBounceOut(1))
-            ), 3)
-        );
-
-        labelSprite.runAction(labelAnimation);
-        this.facebookSprite.runAction(bouncingAnimation);
-        this.isAnimatingFBLogin = true;
+            //var labelAnimation = new cc.Sequence(
+            //    cc.MoveBy.create(1, cc.p(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5), 0)).easing(cc.easeOut(3)),
+            //    cc.DelayTime.create(2.5),
+            //    cc.MoveBy.create(1.5, cc.p(-(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5)), 0)).easing(cc.easeIn(3)),
+            //    new cc.CallFunc(function() { this.removeFromParent()}, labelSprite),
+            //    new cc.CallFunc(function() { this.isAnimatingFBLogin = false}, this)
+            //);
+            this.isAnimatingFBLogin = true;
+            labelSprite.runAction(labelAnimation);
+        }
     }
 
 });
@@ -244,7 +252,9 @@ var MenuScene = cc.Scene.extend({
 
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.Menu;
-        PiuPiuGlobals.currentLevel = 0;
+        PiuPiuGlobals.currentLevel = 4;
+        //  Load level settings
+        loadLevelSettings();
 
         //  Setup back button to exit for android
         cc.eventManager.addListener({
@@ -278,6 +288,7 @@ var MenuScene = cc.Scene.extend({
         //var tex = cc.textureCache.addImage(url);
         //sprite.setTexture(tex);
         sprite.setPosition(cc.p(110,110));
+        sprite.setScale(0.5);
         this.addChild(sprite);
     }
 });

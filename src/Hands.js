@@ -30,6 +30,14 @@ var Hands = cc.Class.extend({
 
     setHandsNormal: function () {
         this.sprite.setSpriteFrame("hands.png");
+    },
+
+    setHandsCaptain : function () {
+        this.sprite.setSpriteFrame("hands_captain.png");
+    },
+
+    setHandsMachineGunCaptain : function () {
+        this.sprite.setSpriteFrame("hands_machine_gun_captain.png");
     }
 
 });

@@ -2,6 +2,10 @@
  * Created by shirkan on 11/24/14.
  */
 
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 function calculateTrigonometry ( point ) {
     var endPoint = cc.p();
     var bulletStartPoint = cc.p();
@@ -101,6 +105,8 @@ function stopAllSounds () {
 function loadLevelSettings() {
     var fileName = "src/levels/level" + PiuPiuGlobals.currentLevel + ".json";
     cc.loader.loadJson(fileName, function(error, data){
+        //  Type of level
+        PiuPiuLevelSettings.levelType = data["levelType"] || levelType.EliminateAllEnemies;
         //  Enemies to spawn
         PiuPiuLevelSettings.totalEnemiesToKill = PiuPiuLevelSettings.totalEnemiesToSpawn = data["totalEnemies"];
         PiuPiuLevelSettings.enemiesVanished = 0;
@@ -118,7 +124,27 @@ function loadLevelSettings() {
 
         //  Special notations
         PiuPiuLevelSettings.specialNotations = data["specialNotations"] || [];
+        PiuPiuLevelSettings.hint = data["hint"] || "";
     });
+
+    console.log("Completed loading level " + PiuPiuGlobals.currentLevel);
+}
+
+function getLevelTypeString() {
+    switch (PiuPiuLevelSettings.levelType) {
+        case levelType.EliminateAllEnemies: {
+            return "Eliminate all enemies"
+        }
+        case levelType.Survival: {
+            return "Survive X time"
+        }
+        case levelType.ShootPowerups: {
+            return "Shoot powerups"
+        }
+        case levelType.TargetScore: {
+            return "Achieve X points"
+        }
+    }
 }
 
 function specialNotationDoesContain( item ) {
@@ -135,6 +161,10 @@ function isDebugMode() {
     return cc.game.config["debugMode"];
 }
 
+function LOG (str) {
+    console.log(str);
+}
+
 function ifDebugOn (statement) {
     return (isDebugMode() ? eval(statement) : false);
 }
@@ -149,6 +179,10 @@ function runPostStepCallbacks() {
     for (var i = 0; i < spaceCallbacks.length; ++i) {
         spaceCallbacks[i]();
     }
+    resetPostStepCallback();
+}
+
+function resetPostStepCallback() {
     spaceCallbacks = [];
 }
 
@@ -237,6 +271,10 @@ function FBpostScore ( score ) {
     }
 
     var updateHighScore = function () {
+        if (!isNumber(PiuPiuGlobals.FBplayerScoreData.score)){
+            console.log("PiuPiuGlobals.FBplayerScoreData.score is not a number " + PiuPiuGlobals.FBplayerScoreData.score);
+            return;
+        }
         if (PiuPiuGlobals.FBplayerScoreData.score < PiuPiuGlobals.highScore) {
             console.log("Updated high score!");
             FBpostHighScore();
@@ -353,10 +391,10 @@ function FBgetPicture ( userid, target, cb ) {
     }
 
     FBInstance.api("/" + userid + "/picture", plugin.FacebookAgent.HttpMethod.GET,
-        {"type" : "normal", "height" : PiuPiuGlobals.FBpictureSize, "width" : PiuPiuGlobals.FBpictureSize}, function (type, response) {
+        {"type" : "normal", "height" : PiuPiuConsts.FBpictureSize, "width" : PiuPiuConsts.FBpictureSize}, function (type, response) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
             console.log("FBgetPicture: " + JSON.stringify(response));
-            cc.loader.loadImg(response.data.url, function () { cb.call(target, userid, response.data.url)});
+            cc.loader.loadImg(response.data.url, {isCrossOrigin : true}, function () { cb.call(target, userid, response.data.url)});
             //if (cb) { cb.call(target, userid, response.data.url) }
         } else {
             console.log("FBgetPicture: Graph API request failed, error #" + type + ": " + JSON.stringify(response));

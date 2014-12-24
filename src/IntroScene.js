@@ -18,8 +18,22 @@ var IntroLayer = cc.Layer.extend({
         var levelSprite = new cc.LabelTTF("Level " + PiuPiuGlobals.currentLevel, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
         levelSprite.setFontFillColor(cc.color(255,220,80)); //  Yellow
         levelSprite.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
-        levelSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - 80);
+        levelSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - 50);
         this.addChild(levelSprite);
+
+        //  Add level type
+        var levelTypeSprite = new cc.LabelTTF(getLevelTypeString(), PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
+        levelTypeSprite.setFontFillColor(cc.color(255,220,80)); //  Yellow
+        levelTypeSprite.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
+        levelTypeSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - 80);
+        this.addChild(levelTypeSprite);
+
+        //  Add level hint
+        var levelHintSprite = new cc.LabelTTF(PiuPiuLevelSettings.hint, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeSmall);
+        levelHintSprite.setFontFillColor(cc.color(255,220,80)); //  Yellow
+        levelHintSprite.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSizeSmall); //Blue
+        levelHintSprite.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height - 100);
+        this.addChild(levelHintSprite);
 
         //  Add goal
         var goalSprite = new cc.Sprite(res.Goal_png);
@@ -70,9 +84,6 @@ var IntroScene = cc.Scene.extend({
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.Intro;
 
-        //  Load level settings
-        loadLevelSettings();
-
         //  Setup back button to exit for android
         cc.eventManager.addListener({
             event: cc.EventListener.KEYBOARD,
@@ -100,6 +111,9 @@ var IntroScene = cc.Scene.extend({
             onTouchEnded: null}, this);
     },
     moveToNextScene : function () {
+        //  Reset post step callbacks
+        resetPostStepCallback();
+
         var transition = new cc.TransitionFade(1, new PlayScene());
         cc.director.runScene(transition);
     }

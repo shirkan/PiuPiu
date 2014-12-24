@@ -13,7 +13,10 @@ var PlayScene = cc.Scene.extend({
     hitToUpdate:"",
     enemySM:null,
     powerupsSM:null,
-    autoFireFlag: false,
+    isMachineGunMode: false,
+    isCaptainMode: false,
+    isStopwatchMode: false,
+    canContinueToNextScene:false,
 
     ctor: function() {
         this._super();
@@ -71,8 +74,11 @@ var PlayScene = cc.Scene.extend({
         this._super();
 
         //  Game setup
-            //  Set machine gun mode off
+            //  Set machine gun mode off, captain mode off
             this.machineGunEnd();
+            this.captainEnd();
+            this.stopwatchEnd();
+            this.canContinueToNextScene = false;
 
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
@@ -137,6 +143,14 @@ var PlayScene = cc.Scene.extend({
                 var obj = new OneUpPowerUp(this.gameLayer, this.addLife.bind(this), PiuPiuConsts.powerupPeriod);
                 break;
             }
+            case "CaptainPowerUp": {
+                var obj = new CaptainPowerUp(this.gameLayer, this.captainStart.bind(this), PiuPiuConsts.powerupPeriod);
+                break;
+            }
+            case "StopwatchPowerUp": {
+                var obj = new StopwatchPowerUp(this.gameLayer, this.stopwatchStart.bind(this), PiuPiuConsts.powerupPeriod);
+                break;
+            }
         }
         this.gameLayer.addObject(obj);
         this.powerupSM.step();
@@ -158,6 +172,7 @@ var PlayScene = cc.Scene.extend({
     },
 
     stopPlayment : function () {
+        runPostStepCallbacks();
         this.gameLayer.removeAllObjects();
         this.enemySM.stop();
         this.powerupSM.stop();
@@ -173,6 +188,14 @@ var PlayScene = cc.Scene.extend({
             PiuPiuGlobals.gameState = GameStates.LevelCompleted;
             this.stopPlayment();
             this.statusLayer.showLevelCompleted();
+
+            PiuPiuGlobals.currentLevel++;
+            //  load next level settings, gotta use some of them in the cut scene
+            loadLevelSettings();
+
+            //  Enable pause for 2 seconds
+            cc.director.getScheduler().scheduleCallbackForTarget(this, function () {this.canContinueToNextScene = true}, 2, 0);
+
             return true;
         }
 
@@ -202,6 +225,10 @@ var PlayScene = cc.Scene.extend({
         if (transitToMainMenu) {
             var transition = new cc.TransitionFade(1, new MenuScene());
             cc.director.runScene(transition);
+        } else {
+            //  Enable pause for 2 seconds
+            cc.director.getScheduler().scheduleCallbackForTarget(this, function () {this.canContinueToNextScene = true}, 2, 0);
+
         }
     },
 
@@ -213,14 +240,64 @@ var PlayScene = cc.Scene.extend({
 
     //  Powerups callbacks
     machineGunStart : function () {
-        this.autoFireFlag = true;
-        this.gameLayer.hands.setHandsMachineGun();
+        this.isMachineGunMode = true;
+        this.updateHandsType();
         cc.director.getScheduler().scheduleCallbackForTarget(this, this.machineGunEnd, PiuPiuConsts.powerupMachineGunPeriod, 0);
     },
 
     machineGunEnd : function () {
-        this.gameLayer.hands.setHandsNormal();
-        this.autoFireFlag = false;
+        this.isMachineGunMode = false;
+        this.updateHandsType();
+    },
+
+    captainStart : function () {
+        this.isCaptainMode = true;
+        PiuPiuGlobals.currentPointsMultiplier = PiuPiuConsts.powerupCaptainMultiplier;
+        this.updateHandsType();
+        cc.director.getScheduler().scheduleCallbackForTarget(this, this.captainEnd, PiuPiuConsts.powerupCaptainPeriod, 0);
+    },
+
+    captainEnd : function () {
+        this.isCaptainMode = false;
+        PiuPiuGlobals.currentPointsMultiplier = PiuPiuConsts.pointsNormalMultiplier;
+        this.updateHandsType();
+    },
+
+    stopwatchStart: function () {
+        LOG("stopwatchStart");
+        this.isStopwatchMode = true;
+        PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.powerupStopwatchUpdateRate;
+        this.gameLayer.updateAllSpeeds(PiuPiuConsts.powerupStopwatchUpdateRate);
+        cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
+    },
+
+    stopwatchEnd: function () {
+        LOG("stopwatchEnd");
+        this.isStopwatchMode = false;
+        PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.normalUpdateRate;
+        this.gameLayer.updateAllSpeeds(1/PiuPiuConsts.powerupStopwatchUpdateRate);
+    },
+
+    updateHandsType : function () {
+        if (this.isMachineGunMode) {
+            //  Machine Gun mode on
+            if (this.isCaptainMode) {
+                //  Captain mode on
+                this.gameLayer.hands.setHandsMachineGunCaptain();
+            } else {
+                //  Captain Mode off
+                this.gameLayer.hands.setHandsMachineGun();
+            }
+        } else {
+            //  Machine Gun mode off
+            if (this.isCaptainMode) {
+                //  Captain mode on
+                this.gameLayer.hands.setHandsCaptain();
+            } else {
+                //  Captain Mode off
+                this.gameLayer.hands.setHandsNormal();
+            }
+        }
     },
 
     //  Touch handling
@@ -238,8 +315,13 @@ var PlayScene = cc.Scene.extend({
     },
 
     onTouchBegan: function (touch, event) {
+        var playScene = event.getCurrentTarget();
         //  If game over state, return to menu
         if (PiuPiuGlobals.gameState == GameStates.GameOver) {
+            if (!playScene.canContinueToNextScene) {
+                return true;
+            }
+
             var transition = new cc.TransitionFade(1, new MenuScene());
             cc.director.runScene(transition);
             return true;
@@ -247,10 +329,12 @@ var PlayScene = cc.Scene.extend({
 
         //  If level completed, continue to cut scene of next level
         if (PiuPiuGlobals.gameState == GameStates.LevelCompleted) {
-            PiuPiuGlobals.currentLevel++;
+            if (!playScene.canContinueToNextScene) {
+                return true;
+            }
 
             //  Hide level completed label from previous level
-            event.getCurrentTarget().statusLayer.hideLevelCompleted();
+            playScene.statusLayer.hideLevelCompleted();
 
             var transition = new cc.TransitionFade(1, new LevelCutScene());
             cc.director.pushScene(transition);
@@ -258,7 +342,6 @@ var PlayScene = cc.Scene.extend({
         }
 
         var pos = touch.getLocation();
-        var playScene = event.getCurrentTarget();
         playScene.autoFireFlag ? playScene.shootBullet(pos, res.sound_machineGun) : playScene.shootBullet(pos);
 
         return true;
@@ -338,21 +421,21 @@ var PlayScene = cc.Scene.extend({
         switch (this.hitToUpdate) {
             case hitType.BulletEnemy:
             {
-                this.points += PiuPiuConsts.pointsPerEnemyKill;
+                this.points += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyKill);
                 this.statusLayer.updatePoints(this.points);
 
-                PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyKill;
+                PiuPiuGlobals.totalPoints += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyKill);
                 PiuPiuGlobals.totalEnemyKilled++;
 
                 break;
             }
             case hitType.BulletEnemyHead:
             {
-                this.points += PiuPiuConsts.pointsPerEnemyHeadShot;
+                this.points += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyHeadShot);
                 this.statusLayer.updatePoints(this.points);
                 this.statusLayer.displayHeadShot();
 
-                PiuPiuGlobals.totalPoints += PiuPiuConsts.pointsPerEnemyHeadShot;
+                PiuPiuGlobals.totalPoints += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyHeadShot);
                 PiuPiuGlobals.totalEnemyKilled++;
                 PiuPiuGlobals.totalHeadShots++;
 

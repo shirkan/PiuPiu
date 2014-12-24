@@ -77,6 +77,14 @@ var GameLayer = cc.Layer.extend({
         this.objects = [];
     },
 
+    updateAllSpeeds : function ( multiplier ) {
+        for (var i = 0; i < this.objects.length; i++) {
+            if (this.objects[i].updateSpeed) {
+                this.objects[i].updateSpeed(multiplier);
+            }
+        }
+    },
+
     printSize : function () {
         console.log("size is " + this.objects.length);
     }

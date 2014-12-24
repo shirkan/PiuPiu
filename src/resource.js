@@ -33,6 +33,8 @@ var res = {
     //  Powerups
     PowerupMachineGun_png: "res/machineGun.png",
     Powerup1Up_png: "res/1up.png",
+    PowerupCaptain_png: "res/captain.png",
+    PowerupStopwatch_png: "res/stopwatch.png",
 
     //  Leaderboard sprites
     stencil_png: "res/stencil1.png",
@@ -50,7 +52,8 @@ var res = {
     sound_ohedNichnasLamigrash: "res/ohedNichnasLamigrash.mp3",
     sound_piu: "res/piu.mp3",
     sound_machineGun: "res/machineGun.mp3",
-    sound_headshot: "res/headshot.mp3"
+    sound_headshot: "res/headshot.mp3",
+    sound_achievement_complete: "res/achievement_complete.mp3"
 };
 
 var g_resources = [];

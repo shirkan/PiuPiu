@@ -37,19 +37,31 @@ if(typeof GameStates == "undefined") {
     GameStates.Leaderboard = 6;
 }
 
+if(typeof levelType == "undefined") {
+    var levelType = {};
+    levelType.EliminateAllEnemies = 0x0;
+    levelType.Survival = 0x1;
+    levelType.ShootPowerups = 0x2;
+    levelType.TargetScore = 0x4;
+}
+
 if (typeof PiuPiuConsts == "undefined") {
     var PiuPiuConsts = {};
 
     //  Styles
-    PiuPiuConsts.fontName = "ArcadeClassic";
-    PiuPiuConsts.fontSizeNormal = 44;
+    PiuPiuConsts.fontName = "Arcadepix";
+    PiuPiuConsts.fontSizeBig = 72;
+    PiuPiuConsts.fontSizeNormal = 36;
+    PiuPiuConsts.fontSizeSmall = 18;
     PiuPiuConsts.fontStrokeSize = 2;
+    PiuPiuConsts.fontStrokeSizeSmall = 1;
     PiuPiuConsts.fontSizeStatus = 24;
-    PiuPiuConsts.fontSizeBig = 80;
 
-    //  Points
+    //  Gameplay consts
     PiuPiuConsts.pointsPerEnemyKill = 7;
     PiuPiuConsts.pointsPerEnemyHeadShot = 10;
+    PiuPiuConsts.pointsNormalMultiplier = 1;
+    PiuPiuConsts.normalUpdateRate = 1;
 
     PiuPiuConsts.sourcePoint = cc.p(110, 255);
 
@@ -73,15 +85,21 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.powerupRadius = 7;
     PiuPiuConsts.powerupCenterPoint = cp.v(0,0);
     PiuPiuConsts.powerupPeriod = 3;
-    PiuPiuConsts.powerupTypes = ["MachineGunPowerup", "OneUpPowerUp"];
-    PiuPiuConsts.powerupMachineGunPeriod = 10;
     PiuPiuConsts.powerupLocalZOrder = 1;
+    PiuPiuConsts.powerupTypes = ["MachineGunPowerup", "OneUpPowerUp", "CaptainPowerUp", "StopwatchPowerUp"];
+    PiuPiuConsts.powerupMachineGunPeriod = 10;
+    PiuPiuConsts.powerupCaptainPeriod = 20;
+    PiuPiuConsts.powerupCaptainMultiplier = 2;
+    PiuPiuConsts.powerupStopwatchPeriod = 10;
+    PiuPiuConsts.powerupStopwatchUpdateRate = 5;
 
     //  Facebook
     PiuPiuConsts.FB_appid = "331202163734875";
     PiuPiuConsts.FBpermissionsNeeded = ["public_profile", "user_activities", "user_about_me", "user_friends", "publish_actions"];
     PiuPiuConsts.FBwaitForResultsInSeconds = 11;
     PiuPiuConsts.FBleaderboardShowTop = 7;
+    PiuPiuConsts.FBpictureSize = 80;
+    PiuPiuConsts.FBpictureScale = 0.5;
 }
 
 if (typeof PiuPiuGlobals == "undefined") {
@@ -92,6 +110,8 @@ if (typeof PiuPiuGlobals == "undefined") {
 
     //  Game vars
     PiuPiuGlobals.livesLeft = 0;
+    PiuPiuGlobals.currentPointsMultiplier = 1;
+    PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.normalUpdateRate;
     PiuPiuGlobals.highScore = 0;
     PiuPiuGlobals.gameState = GameStates.Menu;
     PiuPiuGlobals.currentLevel = 0;
@@ -109,13 +129,13 @@ if (typeof PiuPiuGlobals == "undefined") {
     PiuPiuGlobals.FBpermissionsGranted = [];
     PiuPiuGlobals.FBallScoresData = null;
     PiuPiuGlobals.FBplayerScoreData = null;
-    PiuPiuGlobals.FBpictureSize = 40;
 }
 
 if (typeof PiuPiuLevelSettings == "undefined") {
     var PiuPiuLevelSettings = {};
 
     //  Level vars
+    PiuPiuLevelSettings.levelType = 0;
     PiuPiuLevelSettings.totalEnemiesToSpawn = 0;
     PiuPiuLevelSettings.enemiesVanished = 0;
     PiuPiuLevelSettings.specialNotations = [];
@@ -123,5 +143,5 @@ if (typeof PiuPiuLevelSettings == "undefined") {
     PiuPiuLevelSettings.enemiesSpawnIntervalMin = 0;
     PiuPiuLevelSettings.enemiesSpawnIntervalMax = 0;
     PiuPiuLevelSettings.enemiesSpawnIntervalType = "";
-
+    PiuPiuLevelSettings.hint = "";
 }
