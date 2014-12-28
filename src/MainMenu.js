@@ -247,7 +247,7 @@ var MenuScene = cc.Scene.extend({
 
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.Menu;
-        PiuPiuGlobals.currentLevel = 4;
+        PiuPiuGlobals.currentLevel = 0;
         //  Load level settings
         loadLevelSettings();
 
