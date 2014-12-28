@@ -7,9 +7,6 @@ var LeaderboardLayer = cc.Layer.extend({
     secondsWaiting:0,
     ctor : function(){
         this._super();
-    },
-    init:function() {
-        this._super();
 
         //  Add background
         var spriteBG = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
@@ -20,6 +17,9 @@ var LeaderboardLayer = cc.Layer.extend({
         this.loadingLabel.setFontFillColor(cc.color(255,220,80)); //  Yellow
         this.loadingLabel.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
         this.loadingLabel.setPosition(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.height/2);
+    },
+    init:function() {
+        this._super();
         this.addChild(this.loadingLabel);
     },
     showErrorLabel : function () {
@@ -50,42 +50,41 @@ var LeaderboardLayer = cc.Layer.extend({
             var xPos = PiuPiuGlobals.winSize.width / 5;
 
             //  Trophy / medal logo
-            var placeSprite = new cc.Sprite("res/place" + ordinalIndex +".png");
+            var resourceSprite = eval("res.place" + ordinalIndex + "_png");
+            var placeSprite = new cc.Sprite(resourceSprite);
             placeSprite.setPosition(xPos ,yPos);
             this.addChild(placeSprite);
             xPos += placeSprite.width + 10;
 
             //  Profile picture
-            var pictureSprite = spritesArr[highscoresArr[i].id];
-            var pictureStencil = new cc.Sprite(res.stencil_png);
-            var pictureClip = new cc.ClippingNode();
-            pictureClip.setInverted(true);
-            pictureClip.setStencil(pictureStencil);
-            pictureClip.addChild(pictureSprite, 1);
-            pictureClip.addChild(pictureStencil, 2);
-            pictureClip.setAlphaThreshold(0);
-            pictureClip.setContentSize(cc.size(pictureSprite.getContentSize().width/2, pictureSprite.getContentSize().height/2));
-            pictureClip.setPosition( xPos, yPos);
-            pictureClip.setScale(PiuPiuConsts.FBpictureScale);
-            this.addChild(pictureClip);
-            xPos += PiuPiuConsts.FBpictureSize + 10;
+            if (!cc.sys.isMobile) {
+                var pictureSprite = spritesArr[highscoresArr[i].id];
+                var pictureStencil = new cc.Sprite(res.stencil_png);
+                var pictureClip = new cc.ClippingNode();
+                pictureClip.setInverted(true);
+                pictureClip.setStencil(pictureStencil);
+                pictureClip.addChild(pictureSprite, 1);
+                pictureClip.addChild(pictureStencil, 2);
+                pictureClip.setAlphaThreshold(0);
+                pictureClip.setContentSize(cc.size(pictureSprite.getContentSize().width / 2, pictureSprite.getContentSize().height / 2));
+                pictureClip.setPosition(xPos, yPos);
+                pictureClip.setScale(PiuPiuConsts.FBpictureScale);
+                this.addChild(pictureClip);
+            }
+            xPos += PiuPiuConsts.FBpictureSize * PiuPiuConsts.FBpictureScale + 10;
 
             //  Name
-            var labelName = new cc.LabelTTF(highscoresArr[i].name, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
-            //labelName.textAlign = cc.TEXT_ALIGNMENT_CENTER;
-
+            var labelName = new cc.LabelTTF(highscoresArr[i].name.toString(), PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
             labelName.setFontFillColor(cc.color(255,220,80)); //  Yellow
             labelName.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
             labelName.anchorX = 0;
-            //xPos = PiuPiuGlobals.winSize.width / 2 - labelName.width / 2;
             xPos = PiuPiuGlobals.winSize.width / 2 - highScoreLabel.width / 2;
             labelName.setPosition(xPos, yPos);
             this.addChild(labelName);
 
             //  Score
             xPos = PiuPiuGlobals.winSize.width * 3 / 4;
-            var labelScore = new cc.LabelTTF(highscoresArr[i].score, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
-            //labelScore.textAlign = cc.TEXT_ALIGNMENT_CENTER;
+            var labelScore = new cc.LabelTTF(highscoresArr[i].score.toString(), PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
             labelScore.anchorX = 0;
             labelScore.setFontFillColor(cc.color(255,220,80)); //  Yellow
             labelScore.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
@@ -102,7 +101,6 @@ var LeaderboardLayer = cc.Layer.extend({
         //totalScoreLabel.setPosition(PiuPiuGlobals.winSize.width * 3 / 4 , PiuPiuGlobals.winSize.height - PiuPiuConsts.fontSizeNormal / 2 - 10);
         //this.addChild(totalScoreLabel);
     }
-
 });
 
 var LeaderboardScene = cc.Scene.extend({
@@ -112,14 +110,10 @@ var LeaderboardScene = cc.Scene.extend({
     spritesArr: null,
     loadDataCounter:0,
     secondsWaiting:0,
-    onEnter:function () {
+    ctor:function () {
         this._super();
         this.layer = new LeaderboardLayer();
-        this.layer.init();
         this.addChild(this.layer);
-
-        //  Set game state as menu
-        PiuPiuGlobals.gameState = GameStates.Leaderboard;
 
         //  Setup back button to exit for android
         cc.eventManager.addListener({
@@ -127,7 +121,9 @@ var LeaderboardScene = cc.Scene.extend({
             onKeyReleased: function(keyCode, event){
                 if(keyCode == cc.KEY.back || keyCode == cc.KEY.backspace)
                 {
+                    LOG("LEADERBOARD back");
                     event.getCurrentTarget().moveToNextScene();
+                    return true;
                 }
             }
         }, this);
@@ -136,17 +132,29 @@ var LeaderboardScene = cc.Scene.extend({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: function (touch, event) {
-                stopAllSounds();
+                LOG("LEADERBOARD touch click");
                 event.getCurrentTarget().moveToNextScene();
                 return true;
             },
             onTouchMoved: null,
             onTouchEnded: null}, this);
+    },
+    onEnter:function () {
+        this._super();
+        this.layer.init();
 
-        PiuPiuGlobals.FBallScoresData = [];
-        this.secondsWaiting = 0;
-        FBgetAllScores( this, this.successGettingResults, this.errorGettingResults);
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.waitForResults, 1, PiuPiuConsts.FBwaitForResultsInSeconds);
+        //  Set game state as menu
+        PiuPiuGlobals.gameState = GameStates.Leaderboard;
+
+        if (cc.sys.platform != cc.sys.ANDROID) {
+            //  Get FB data
+            PiuPiuGlobals.FBallScoresData = [];
+            this.secondsWaiting = 0;
+            FBgetAllScores(this, this.successGettingResults, this.errorGettingResults);
+            cc.director.getScheduler().scheduleCallbackForTarget(this, this.waitForResults, 1, PiuPiuConsts.FBwaitForResultsInSeconds);
+        } else {
+            this.successGettingResults();
+        }
     },
     moveToNextScene : function () {
         if (!this.backEnabled) {
@@ -155,29 +163,19 @@ var LeaderboardScene = cc.Scene.extend({
 
         if (this.spritesArr) {
             for (var id in this.spritesArr) {
-                console.log("releasing id " + id);
+                LOG("releasing id " + id);
                 this.spritesArr[id].release();
             }
         }
-        cc.director.popScene();
+        var transition = new cc.TransitionFade(1, new MenuScene());
+        cc.director.runScene(transition);
     },
 
     waitForResults : function () {
         var loadStr = "Loading."
         for (var i=0; i < (this.secondsWaiting % 3); i++) {
             loadStr += ".";
-            //PiuPiuGlobals.FBallScoresData[i] = [];
-            //PiuPiuGlobals.FBallScoresData[i].user = [];
-            //
-            //PiuPiuGlobals.FBallScoresData[i].user.id = i;
-            //PiuPiuGlobals.FBallScoresData[i].user.name = "player "+i;
-            //PiuPiuGlobals.FBallScoresData[i].score = -i + 200;
         }
-
-        //if (this.secondsWaiting == 3) {
-        //    cc.director.getScheduler().unscheduleCallbackForTarget(this, this.waitForResults);
-        //    this.successGettingResults();
-        //}
 
         this.secondsWaiting++;
         this.layer.loadingLabel.setString(loadStr);
@@ -196,11 +194,13 @@ var LeaderboardScene = cc.Scene.extend({
 
     successGettingResults : function () {
 
+        LOG("Leaderbboard parse results:\n" + PiuPiuGlobals.FBallScoresData.length);
         this.loadDataCounter = Math.min(PiuPiuGlobals.FBallScoresData.length, PiuPiuConsts.FBleaderboardShowTop);
         this.highscoresArr = [];
         this.spritesArr = [];
         //var totalscores = [];
-        for (var i = 0; (i < PiuPiuGlobals.FBallScoresData.length) && (i < PiuPiuConsts.FBleaderboardShowTop); i++) {
+        for (var i = 0; (i < this.loadDataCounter); i++) {
+            LOG("Leaderbboard parse results for " + i + ":\n" + PiuPiuGlobals.FBallScoresData[i]);
             this.highscoresArr[i] = [];
             var id = PiuPiuGlobals.FBallScoresData[i].user.id;
             var name = PiuPiuGlobals.FBallScoresData[i].user.name;
@@ -210,14 +210,17 @@ var LeaderboardScene = cc.Scene.extend({
             this.highscoresArr[i].name = name;
             this.highscoresArr[i].score = score;
 
-            console.log("name: " + name + "     score: " +score );
-            if (cc.sys.isMobile) {
-                this.addSpriteForUser(id)
-            } else {
+            LOG("name: " + name + "     score: " +score );
+            if (!cc.sys.isMobile) {
                 FBgetPicture(id, this, this.addSpriteForUser);
             }
         }
-        //this.layer.showTables(this.highscoresArr);
+
+        if (cc.sys.isMobile) {
+            cc.director.getScheduler().unscheduleCallbackForTarget(this, this.waitForResults);
+            this.layer.showTables(this.highscoresArr, this.spritesArr);
+            this.backEnabled = true;
+        }
     },
 
     testSprite : function ( tex ) {
@@ -229,7 +232,6 @@ var LeaderboardScene = cc.Scene.extend({
     },
 
     addSpriteForUser : function (id, imageURL) {
-        //var sprite = new cc.Sprite(res.Ball_png);
         var sprite = new cc.Sprite(imageURL);
         this.spritesArr[id] = sprite;
         this.spritesArr[id].retain();

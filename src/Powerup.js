@@ -10,6 +10,7 @@ var PowerUp = cc.Class.extend({
     body:null,
     shape:null,
     parentNode:null,
+    canBeRedeemed:true,
     ctor: function( parentNode, sprite, onHit, period, location) {
         this.space = parentNode.space;
         this.onHit = onHit;
@@ -25,7 +26,8 @@ var PowerUp = cc.Class.extend({
         }
 
         //  Register collision
-        this.space.addCollisionHandler(SpriteTag.Bullet, SpriteTag.Powerup,
+        var tag = Date.now();
+        this.space.addCollisionHandler(SpriteTag.Bullet, tag,
             this.callback.bind(this), null, null, null);
 
         // init physics
@@ -36,7 +38,7 @@ var PowerUp = cc.Class.extend({
 
         //  Calculate body shape
         this.shape = new cp.CircleShape(this.body, PiuPiuConsts.powerupRadius, PiuPiuConsts.powerupCenterPoint);
-        this.shape.setCollisionType(SpriteTag.Powerup);
+        this.shape.setCollisionType(tag);
         this.shape.setSensor(true);
         this.space.addShape(this.shape);
 
@@ -62,6 +64,10 @@ var PowerUp = cc.Class.extend({
     },
 
     callback : function() {
+        if (!this.canBeRedeemed) {
+            return;
+        }
+        this.canBeRedeemed = false;
         //  Update stats
         PiuPiuGlobals.totalPowerUps++;
 
@@ -76,7 +82,7 @@ var PowerUp = cc.Class.extend({
     }
 });
 
-var MachineGunPowerup = PowerUp.extend({
+var MachineGunPowerUp = PowerUp.extend({
     ctor: function (parentNode, onHit, period, location) {
         this._super(parentNode, res.PowerupMachineGun_png, onHit, period, location)
     }

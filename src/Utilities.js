@@ -83,6 +83,10 @@ function loadStats () {
             eval("PiuPiuGlobals." + PiuPiuGlobals.statsNames[i] +"= val");
         }
     }
+    //  Check for highscore
+    if (cc.sys.localStorage.highScore) {
+        PiuPiuGlobals.highScore = cc.sys.localStorage.highScore;
+    }
 }
 
 function updateStats() {
@@ -212,16 +216,16 @@ function FBlogin(target, success_callback, error_callback) {
     FBInstance.login(PiuPiuConsts.FBpermissionsNeeded, function(code, response){
         if(code == plugin.FacebookAgent.CODE_SUCCEED){
             console.log("login succeeded");
-            console.log("AccessToken: " + response["accessToken"]);
+            LOG("FBonLoginUpdates AccessToken: " + response["accessToken"]);
             var allowedPermissions = response["permissions"];
             var str = "";
             for (var i = 0; i < allowedPermissions.length; ++i) {
                 str += allowedPermissions[i] + " ";
             }
-            console.log("Permissions: " + str);
-
+            LOG("FBonLoginUpdates Permissions: " + str);
             PiuPiuGlobals.FBpermissionsGranted = allowedPermissions;
-            console.log("Has all permission?: " + FBcheckPermissions());
+
+            FBonLoginUpdates();
 
             if (success_callback) { success_callback.call(target) }
         } else {
@@ -229,6 +233,17 @@ function FBlogin(target, success_callback, error_callback) {
             if (error_callback) { error_callback.call(target) }
         }
     });
+}
+
+function FBonLoginUpdates() {
+
+    LOG("FBonLoginUpdates Has all permission?: " + FBcheckPermissions());
+
+    LOG("Getting score");
+    FBgetScore();
+
+    LOG("Getting all scores");
+    FBgetAllScores();
 }
 
 function FBlogout() {
@@ -327,8 +342,16 @@ function FBgetScore( target, success_callback, error_callback) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
             console.log("FBgetScore: " + JSON.stringify(response));
             PiuPiuGlobals.FBplayerScoreData = response.data;
+
+            //  Check if score exists
             if (!PiuPiuGlobals.FBplayerScoreData.score) {
                 PiuPiuGlobals.FBplayerScoreData.score = 0;
+            }
+
+            //  Check if need to update local high score
+            if (PiuPiuGlobals.FBplayerScoreData.score > PiuPiuGlobals.highScore) {
+                PiuPiuGlobals.highScore = PiuPiuGlobals.FBplayerScoreData.score;
+                cc.sys.localStorage.setItem("highScore", PiuPiuGlobals.highScore);
             }
             if (success_callback) { success_callback.call(target) }
         } else {

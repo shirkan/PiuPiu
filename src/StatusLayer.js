@@ -36,6 +36,7 @@ var StatusLayer = cc.Scene.extend({
         this.labelLives = new cc.LabelTTF("X0", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeStatus);
         this.labelLives.setFontFillColor(cc.color(255,220,80)); //  Yellow
         this.labelLives.enableStroke(cc.color(0,0,255), 2); //Blue
+        this.labelLives.anchorX = 0;
         this.labelLives.setPosition(yGap + gapBetweenLives +livesSprite.width, PiuPiuGlobals.winSize.height - livesSprite.height/2);
         this.addChild(this.labelLives);
     },

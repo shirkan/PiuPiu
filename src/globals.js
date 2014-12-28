@@ -50,6 +50,9 @@ if (typeof PiuPiuConsts == "undefined") {
 
     //  Styles
     PiuPiuConsts.fontName = "Arcadepix";
+    if (cc.sys.platform == cc.sys.ANDROID) {
+        PiuPiuConsts.fontName = "res/fonts/arcadepi.ttf";
+    }
     PiuPiuConsts.fontSizeBig = 72;
     PiuPiuConsts.fontSizeNormal = 36;
     PiuPiuConsts.fontSizeSmall = 18;
@@ -86,7 +89,8 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.powerupCenterPoint = cp.v(0,0);
     PiuPiuConsts.powerupPeriod = 3;
     PiuPiuConsts.powerupLocalZOrder = 1;
-    PiuPiuConsts.powerupTypes = ["MachineGunPowerup", "OneUpPowerUp", "CaptainPowerUp", "StopwatchPowerUp"];
+    PiuPiuConsts.powerupTypes = ["MachineGunPowerUp", "OneUpPowerUp", "CaptainPowerUp", "StopwatchPowerUp"];
+    //PiuPiuConsts.powerupTypes = ["MachineGunPowerup", "OneUpPowerUp", "CaptainPowerUp", "StopwatchPowerUp"];
     PiuPiuConsts.powerupMachineGunPeriod = 10;
     PiuPiuConsts.powerupCaptainPeriod = 20;
     PiuPiuConsts.powerupCaptainMultiplier = 2;

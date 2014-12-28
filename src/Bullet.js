@@ -55,12 +55,16 @@ var Bullet = cc.Class.extend({
     },
 
     removeFromParent:function () {
-        this.space.removeShape(this.shape);
-        this.shape = null;
-        this.space.removeBody(this.body);
-        this.body = null;
-        this.sprite.removeFromParent();
-        this.sprite = null;
+        try {
+            this.space.removeShape(this.shape);
+            this.shape = null;
+            this.space.removeBody(this.body);
+            this.body = null;
+            this.sprite.removeFromParent();
+            this.sprite = null;
+        } catch (err) {
+            LOG("Bullet removeFromParent caught error: " + err);
+        }
     },
 
     reachedBounds: function () {
@@ -78,8 +82,6 @@ var Bullet = cc.Class.extend({
         var distancePassed = calculateLineLength(this.startingPos, this.currentPos);
         this.speed = this.speed * (1 - (distancePassed / this.distanceLeftToPass));
         this.speed *= multiplier;
-
-        LOG("Bullet updated speed " + this.speed);
 
         var moveAction = cc.MoveTo.create(this.speed, this.endPoint);
         var seq = new cc.Sequence(moveAction, new cc.CallFunc (this.reachedBounds, this));

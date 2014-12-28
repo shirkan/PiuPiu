@@ -12,11 +12,6 @@ var MenuLayer = cc.Layer.extend({
         //call super class's super function
         this._super();
 
-        //  Check for highscore
-        if (cc.sys.localStorage.highScore) {
-            PiuPiuGlobals.highScore = cc.sys.localStorage.highScore;
-        }
-
         //  Add background
         var spriteBG = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
         this.addChild(spriteBG);
@@ -25,7 +20,7 @@ var MenuLayer = cc.Layer.extend({
         this.createMenu();
 
         //  Check if need to add facebook login image
-        FBisLoggedIn(this, null, this.showFacebookLogo);
+        FBisLoggedIn(this, FBonLoginUpdates(), this.showFacebookLogo);
     },
 
     createMenu : function () {
@@ -104,11 +99,11 @@ var MenuLayer = cc.Layer.extend({
 
     onAchievements : function () {
         console.log("achievements clicked");
-        return;
+
         if (!FBisLoggedIn()) {
             this.animateLoginToFB();
         }
-
+        return;
         var transition = new cc.TransitionFade(1, new AchievementsScene());
         cc.director.pushScene(transition);
     },
@@ -288,7 +283,6 @@ var MenuScene = cc.Scene.extend({
         //var tex = cc.textureCache.addImage(url);
         //sprite.setTexture(tex);
         sprite.setPosition(cc.p(110,110));
-        sprite.setScale(0.5);
         this.addChild(sprite);
     }
 });

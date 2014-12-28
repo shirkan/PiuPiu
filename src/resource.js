@@ -1,59 +1,64 @@
 var res = {
     //  Font
-    arcade_font: "arcade.ttf",
+    arcade_font: "res/fonts/arcade.ttf",
+    arcadepi_font: "res/fonts/arcadepi.ttf",
 
     //  Maps
-    grass1_tmx : "res/grass1.tmx",
-    grass1_lowtmx : "res/grass1_low.tmx",
-    grass2_tmx : "res/grass2.tmx",
-    grass3_tmx : "res/grass3.tmx",
-    grass4_tmx : "res/grass4.tmx",
-    grass5_tmx : "res/grass5.tmx",
-    grass6_tmx : "res/grass6.tmx",
-    grass7_tmx : "res/grass7.tmx",
-    grass8_tmx : "res/grass8.tmx",
-    grass9_tmx : "res/grass9.tmx",
-    grass10_tmx : "res/grass10.tmx",
+    grass1_tmx : "res/sprites/maps/grass1.tmx",
+    grass1_lowtmx : "res/sprites/maps/grass1_low.tmx",
+    grass2_tmx : "res/sprites/maps/grass2.tmx",
+    grass3_tmx : "res/sprites/maps/grass3.tmx",
+    grass4_tmx : "res/sprites/maps/grass4.tmx",
+    grass5_tmx : "res/sprites/maps/grass5.tmx",
+    grass6_tmx : "res/sprites/maps/grass6.tmx",
+    grass7_tmx : "res/sprites/maps/grass7.tmx",
+    grass8_tmx : "res/sprites/maps/grass8.tmx",
+    grass9_tmx : "res/sprites/maps/grass9.tmx",
+    grass10_tmx : "res/sprites/maps/grass10.tmx",
+    Field_png : "res/sprites/maps/field.png",
 
-    //  Sprites
-    EnemyBig_png : "res/enemy.png",
-    Enemy_png : "res/enemy_small.png",
-    Field_png : "res/field.png",
-    Player_png : "res/player.png",
-    Hands_png : "res/handsSprites.png",
-    Hands_plist: "res/hands.plist",
-    BulletBig_png: "res/bullet.png",
-    Bullet_png: "res/bullet_small2.png",
-    LifeBig_png : "res/life.png",
-    Life_png : "res/life_small.png",
-    Goal_png: "res/goal.png",
-    Ball_png: "res/ball.png",
-    FB_png: "res/facebook.png",
-
+    //  Game
+    EnemyBig_png : "res/sprites/game/enemy.png",
+    Enemy_png : "res/sprites/game/enemy_small.png",
+    Player_png : "res/sprites/game/player.png",
+    Hands_png : "res/sprites/game/handsSprites.png",
+    Hands_plist: "res/sprites/game/hands.plist",
+    BulletBig_png: "res/sprites/game/bullet.png",
+    Bullet_png: "res/sprites/game/bullet_small2.png",
+    LifeBig_png : "res/sprites/game/life.png",
+    Life_png : "res/sprites/game/life_small.png",
     //  Powerups
-    PowerupMachineGun_png: "res/machineGun.png",
-    Powerup1Up_png: "res/1up.png",
-    PowerupCaptain_png: "res/captain.png",
-    PowerupStopwatch_png: "res/stopwatch.png",
+    PowerupMachineGun_png: "res/sprites/game/machineGun.png",
+    Powerup1Up_png: "res/sprites/game/1up.png",
+    PowerupCaptain_png: "res/sprites/game/captain.png",
+    PowerupStopwatch_png: "res/sprites/game/stopwatch.png",
+
+
+    //  Animations
+    Goal_png: "res/sprites/anim/goal.png",
+    Ball_png: "res/sprites/anim/ball.png",
+
+    //  Main Menu
+    FB_png: "res/sprites/mainmenu/facebook.png",
 
     //  Leaderboard sprites
-    stencil_png: "res/stencil1.png",
-    place1_png : "res/place1.png",
-    place2_png : "res/place2.png",
-    place3_png : "res/place3.png",
-    place4_png : "res/place4.png",
-    place5_png : "res/place5.png",
-    place6_png : "res/place6.png",
-    place7_png : "res/place7.png",
+    stencil_png: "res/sprites/leaderboard/stencil1.png",
+    place1_png : "res/sprites/leaderboard/place1.png",
+    place2_png : "res/sprites/leaderboard/place2.png",
+    place3_png : "res/sprites/leaderboard/place3.png",
+    place4_png : "res/sprites/leaderboard/place4.png",
+    place5_png : "res/sprites/leaderboard/place5.png",
+    place6_png : "res/sprites/leaderboard/place6.png",
+    place7_png : "res/sprites/leaderboard/place7.png",
 
     //  Sounds
-    sound_hineZeBa: "res/hineZeBa.mp3",
-    sound_shaar: "res/shaar.mp3",
-    sound_ohedNichnasLamigrash: "res/ohedNichnasLamigrash.mp3",
-    sound_piu: "res/piu.mp3",
-    sound_machineGun: "res/machineGun.mp3",
-    sound_headshot: "res/headshot.mp3",
-    sound_achievement_complete: "res/achievement_complete.mp3"
+    sound_hineZeBa: "res/sounds/hineZeBa.mp3",
+    sound_shaar: "res/sounds/shaar.mp3",
+    sound_ohedNichnasLamigrash: "res/sounds/ohedNichnasLamigrash.mp3",
+    sound_piu: "res/sounds/piu.mp3",
+    sound_machineGun: "res/sounds/machineGun.mp3",
+    sound_headshot: "res/sounds/headshot.mp3",
+    sound_achievement_complete: "res/sounds/achievement_complete.mp3"
 };
 
 var g_resources = [];

@@ -135,8 +135,8 @@ var PlayScene = cc.Scene.extend({
         var powerup = PiuPiuLevelSettings.powerupsTypes[Math.floor(Math.random() * PiuPiuLevelSettings.powerupsTypes.length)];
 
         switch (powerup) {
-            case "MachineGunPowerup": {
-                var obj = new MachineGunPowerup(this.gameLayer, this.machineGunStart.bind(this), PiuPiuConsts.powerupPeriod);
+            case "MachineGunPowerUp": {
+                var obj = new MachineGunPowerUp(this.gameLayer, this.machineGunStart.bind(this), PiuPiuConsts.powerupPeriod);
                 break;
             }
             case "OneUpPowerUp": {
@@ -152,7 +152,9 @@ var PlayScene = cc.Scene.extend({
                 break;
             }
         }
-        this.gameLayer.addObject(obj);
+        if (obj) {
+            this.gameLayer.addObject(obj);
+        }
         this.powerupSM.step();
     },
 
@@ -240,9 +242,14 @@ var PlayScene = cc.Scene.extend({
 
     //  Powerups callbacks
     machineGunStart : function () {
-        this.isMachineGunMode = true;
-        this.updateHandsType();
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.machineGunEnd, PiuPiuConsts.powerupMachineGunPeriod, 0);
+        if (this.isMachineGunMode) {
+            cc.director.getScheduler().unscheduleCallbackForTarget(this, this.machineGunEnd);
+            cc.director.getScheduler().scheduleCallbackForTarget(this, this.machineGunEnd, PiuPiuConsts.powerupMachineGunPeriod, 0);
+        } else {
+            this.isMachineGunMode = true;
+            this.updateHandsType();
+            cc.director.getScheduler().scheduleCallbackForTarget(this, this.machineGunEnd, PiuPiuConsts.powerupMachineGunPeriod, 0);
+        }
     },
 
     machineGunEnd : function () {
@@ -251,10 +258,15 @@ var PlayScene = cc.Scene.extend({
     },
 
     captainStart : function () {
-        this.isCaptainMode = true;
-        PiuPiuGlobals.currentPointsMultiplier = PiuPiuConsts.powerupCaptainMultiplier;
-        this.updateHandsType();
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.captainEnd, PiuPiuConsts.powerupCaptainPeriod, 0);
+        if (this.isCaptainMode) {
+            cc.director.getScheduler().unscheduleCallbackForTarget(this, this.captainEnd);
+            cc.director.getScheduler().scheduleCallbackForTarget(this, this.captainEnd, PiuPiuConsts.powerupCaptainPeriod, 0);
+        } else {
+            this.isCaptainMode = true;
+            PiuPiuGlobals.currentPointsMultiplier = PiuPiuConsts.powerupCaptainMultiplier;
+            this.updateHandsType();
+            cc.director.getScheduler().scheduleCallbackForTarget(this, this.captainEnd, PiuPiuConsts.powerupCaptainPeriod, 0);
+        }
     },
 
     captainEnd : function () {
@@ -264,15 +276,18 @@ var PlayScene = cc.Scene.extend({
     },
 
     stopwatchStart: function () {
-        LOG("stopwatchStart");
-        this.isStopwatchMode = true;
-        PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.powerupStopwatchUpdateRate;
-        this.gameLayer.updateAllSpeeds(PiuPiuConsts.powerupStopwatchUpdateRate);
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
+        if (this.isStopwatchMode) {
+            //cc.director.getScheduler().unscheduleCallbackForTarget(this, this.stopwatchEnd);
+            //cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
+        } else {
+            this.isStopwatchMode = true;
+            PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.powerupStopwatchUpdateRate;
+            this.gameLayer.updateAllSpeeds(PiuPiuConsts.powerupStopwatchUpdateRate);
+            //cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
+        }
     },
 
     stopwatchEnd: function () {
-        LOG("stopwatchEnd");
         this.isStopwatchMode = false;
         PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.normalUpdateRate;
         this.gameLayer.updateAllSpeeds(1/PiuPiuConsts.powerupStopwatchUpdateRate);
@@ -342,7 +357,7 @@ var PlayScene = cc.Scene.extend({
         }
 
         var pos = touch.getLocation();
-        playScene.autoFireFlag ? playScene.shootBullet(pos, res.sound_machineGun) : playScene.shootBullet(pos);
+        playScene.isMachineGunMode ? playScene.shootBullet(pos, res.sound_machineGun) : playScene.shootBullet(pos);
 
         return true;
     },
@@ -350,7 +365,7 @@ var PlayScene = cc.Scene.extend({
     onTouchMoved: function (touch, event) {
         var playScene = event.getCurrentTarget();
 
-        if (playScene.autoFireFlag &&
+        if (playScene.isMachineGunMode &&
             PiuPiuGlobals.gameState == GameStates.Playing) {
             var pos = touch.getLocation();
             playScene.shootBullet(pos, res.sound_machineGun);

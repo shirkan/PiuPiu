@@ -72,7 +72,9 @@ var GameLayer = cc.Layer.extend({
 
     removeAllObjects : function () {
         for (var i = 0; i < this.objects.length; i++) {
-            this.objects[i].removeFromParent();
+            if (this.objects[i]) {
+                this.objects[i].removeFromParent();
+            }
         }
         this.objects = [];
     },

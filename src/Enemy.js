@@ -60,14 +60,18 @@ var Enemy = cc.Class.extend({
     },
 
     removeFromParent:function () {
-        this.space.removeShape(this.shape);
-        this.shape = null;
-        this.space.removeShape(this.shapeHead);
-        this.shapeHead = null;
-        this.space.removeBody(this.body);
-        this.body = null;
-        this.sprite.removeFromParent();
-        this.sprite = null;
+        try {
+            this.space.removeShape(this.shape);
+            this.shape = null;
+            this.space.removeShape(this.shapeHead);
+            this.shapeHead = null;
+            this.space.removeBody(this.body);
+            this.body = null;
+            this.sprite.removeFromParent();
+            this.sprite = null;
+        } catch (err) {
+            LOG("Enemy removeFromParent caught error: " + err);
+        }
     },
 
     onExit:function () {
