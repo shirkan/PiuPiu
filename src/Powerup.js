@@ -2,106 +2,104 @@
  * Created by shirkan on 12/8/14.
  */
 
-var PowerUp = cc.Class.extend({
-    space:null,
-    onHit:null,
-    period:null,
-    sprite:null,
-    body:null,
-    shape:null,
-    parentNode:null,
-    canBeRedeemed:true,
-    ctor: function( parentNode, sprite, onHit, period, location) {
-        this.space = parentNode.space;
-        this.onHit = onHit;
-        this.parentNode = parentNode;
-        this.sprite = new cc.PhysicsSprite(sprite);
+function PowerUp(type, parentNode, sprite, onHit, period, location) {
+    this.type = type;
+    this.parentNode = parentNode;
+    this.sprite = new cc.PhysicsSprite(sprite);
+    this.onHit = onHit;
+    this.isRemoved = false;    //Bug fix: can be removed by time/collision
+    this.canBeRedeemed = true;
 
-        //  Set starting position
-        if (location == undefined) {
-            //  Random location on last Q of screen
-            var x = Math.random() * (PiuPiuGlobals.winSize.width / 2) + (PiuPiuGlobals.winSize.width / 2 - this.sprite.width);
-            var y = Math.random() * (PiuPiuGlobals.winSize.height - this.sprite.height) + this.sprite.height / 2;
-            location = cc.p(x,y);
-        }
+    this.space = parentNode.space;
+    this.onHit = onHit;
 
-        //  Register collision
-        var tag = Date.now();
-        this.space.addCollisionHandler(SpriteTag.Bullet, tag,
-            this.callback.bind(this), null, null, null);
 
-        // init physics
-        this.body = new cp.Body(1,1);
-        this.body.setPos(location);
-        this.sprite.setBody(this.body);
-        this.space.addBody(this.body);
+    //  Set starting position
+    if (location == undefined) {
+        //  Random location on last Q of screen
+        this.x = Math.random() * (PiuPiuGlobals.winSize.width / 2) + (PiuPiuGlobals.winSize.width / 2 - this.sprite.width);
+        this.y = Math.random() * (PiuPiuGlobals.winSize.height - this.sprite.height) + this.sprite.height / 2;
+        location = cc.p(this.x, this.y);
+    }
 
-        //  Calculate body shape
-        this.shape = new cp.CircleShape(this.body, PiuPiuConsts.powerupRadius, PiuPiuConsts.powerupCenterPoint);
-        this.shape.setCollisionType(tag);
-        this.shape.setSensor(true);
-        this.space.addShape(this.shape);
+    //  Set tag to the powerup
+    this.tag = getTag();
 
-        //  Display power up
-        this.parentNode.addChild(this.sprite, PiuPiuConsts.powerupLocalZOrder);
+    //  Register collision
+    this.space.addCollisionHandler(SpriteTag.Bullet, this.tag,
+        this.callback.bind(this), null, null, null);
 
-        //  Remove powerup in "period" seconds
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.scheduleRemoveFromParent, period, 0);
-    },
+    // init physics
+    this.body = new cp.Body(1, 1);
+    this.body.setPos(location);
+    this.sprite.setBody(this.body);
+    this.space.addBody(this.body);
 
-    scheduleRemoveFromParent: function () {
-        addPostStepCallback(this.removeFromParent.bind(this));
-    },
+    //  Calculate body shape
+    this.shape = new cp.CircleShape(this.body, PiuPiuConsts.powerupRadius, PiuPiuConsts.powerupCenterPoint);
+    this.shape.setCollisionType(this.tag);
+    this.shape.setSensor(true);
+    this.space.addShape(this.shape);
 
-    removeFromParent:function () {
-        this.parentNode.removeObject(this.body);
+    //  Display power up
+    this.parentNode.addChild(this.sprite, PiuPiuConsts.powerupLocalZOrder);
+
+    //  Remove powerup in "period" seconds
+    cc.director.getScheduler().scheduleCallbackForTarget(this, this.timeUp.bind(this), 0, 0, period);
+};
+
+PowerUp.prototype.timeUp = function (  ) {
+    LOG("timeup for " + this.tag)
+    if (this.isRemoved) {
+        return;
+    }
+    this.parentNode.removeObject(this.body);
+    this.removeFromParent();
+};
+
+PowerUp.prototype.removeFromParent = function (  ) {
+    if (this.isRemoved) {
+        return;
+    }
+    try {
+        this.isRemoved = true;
         this.space.removeShape(this.shape);
         this.shape = null;
         this.space.removeBody(this.body);
         this.body = null;
         this.sprite.removeFromParent();
         this.sprite = null;
-    },
-
-    callback : function() {
-        if (!this.canBeRedeemed) {
-            return;
-        }
-        this.canBeRedeemed = false;
-        //  Update stats
-        PiuPiuGlobals.totalPowerUps++;
-
-        //  Unschedule auto remove from parent
-        cc.director.getScheduler().unscheduleCallbackForTarget(this, this.scheduleRemoveFromParent);
-
-        //  Schedule remove from parent on space post step
-        this.scheduleRemoveFromParent();
-
-        //  Invoke callback
-        this.onHit();
+    } catch (err) {
+        LOG("Powerup removeFromParent caught error: " + err);
     }
-});
+};
 
-var MachineGunPowerUp = PowerUp.extend({
-    ctor: function (parentNode, onHit, period, location) {
-        this._super(parentNode, res.PowerupMachineGun_png, onHit, period, location)
-    }
-});
+PowerUp.prototype.getTag = function() {
+    return this.tag;
+};
 
-var OneUpPowerUp = PowerUp.extend({
-    ctor: function (parentNode, onHit, period, location) {
-        this._super(parentNode, res.Powerup1Up_png, onHit, period, location)
+PowerUp.prototype.callback = function(arbiter, space) {
+    if (!this.canBeRedeemed){
+        return;
     }
-});
+    this.canBeRedeemed = false;
 
-var CaptainPowerUp = PowerUp.extend({
-    ctor: function (parentNode, onHit, period, location) {
-        this._super(parentNode, res.PowerupCaptain_png, onHit, period, location)
-    }
-});
+    //LOG("redeemed power up with type " + this.type + " and tag " + this.tag);
+    ////  Unschedule auto remove from parent
+    //cc.director.getScheduler().unscheduleCallbackForTarget(this, PowerUp.prototype.timeUp);
 
-var StopwatchPowerUp = PowerUp.extend({
-    ctor: function (parentNode, onHit, period, location) {
-        this._super(parentNode, res.PowerupStopwatch_png, onHit, period, location)
+    //  Update stats
+    PiuPiuGlobals.totalPowerUps++;
+
+    //  Schedule remove powerup and bullet from parent on space post step
+    var cleanUp = function () {
+        LOG("cleaning up bullet-powerup collision " + this.tag + " with arbiter " + arbiter);
+        var shapes = arbiter.getShapes();
+        this.parentNode.removeObjectByBody(shapes[0].body);
+        this.parentNode.removeObjectByBody(shapes[1].body);
     }
-});
+    addPostStepCallback(cleanUp.bind(this));
+
+    //  Invoke callback
+    this.onHit();
+};

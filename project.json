@@ -18,6 +18,7 @@
     },
 
     "jsList" : [
+        "src/globals.js",
         "src/Utilities.js",
         "src/SpawningMechanism.js",
         "src/MainMenu.js",
@@ -35,7 +36,6 @@
         "src/Enemy.js",
         "src/Powerup.js",
         "src/Statistics.js",
-        "src/globals.js",
         "src/resource.js"
     ]
 }

@@ -158,10 +158,6 @@ var MenuLayer = cc.Layer.extend({
         this.facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width - 30 , 50));
         this.addChild(this.facebookSprite);
 
-        //var scoreSprite = new cc.LabelTTF("", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
-        //scoreSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width * 0.85, PiuPiuGlobals.winSize.height * 0.1));
-        //this.addChild(scoreSprite);
-
         var listener1 = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             // When "swallow touches" is true, then returning 'true' from the onTouchBegan method will "swallow" the touch event, preventing other listeners from using it.
@@ -187,10 +183,6 @@ var MenuLayer = cc.Layer.extend({
         });
         cc.eventManager.addListener(listener1, this.facebookSprite);
     },
-    //
-    //removeFacebookLogo : function (){
-    //    this.removeChild(this.facebookSprite);
-    //},
 
     animateLoginToFB : function () {
         if (! this.isBouncingFBLogo) {
@@ -223,13 +215,6 @@ var MenuLayer = cc.Layer.extend({
                 new cc.CallFunc(function() { this.isAnimatingFBLogin = false}, this)
             );
 
-            //var labelAnimation = new cc.Sequence(
-            //    cc.MoveBy.create(1, cc.p(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5), 0)).easing(cc.easeOut(3)),
-            //    cc.DelayTime.create(2.5),
-            //    cc.MoveBy.create(1.5, cc.p(-(PiuPiuGlobals.winSize.width - (this.facebookSprite.width + 10 + 5)), 0)).easing(cc.easeIn(3)),
-            //    new cc.CallFunc(function() { this.removeFromParent()}, labelSprite),
-            //    new cc.CallFunc(function() { this.isAnimatingFBLogin = false}, this)
-            //);
             this.isAnimatingFBLogin = true;
             labelSprite.runAction(labelAnimation);
         }
@@ -247,7 +232,7 @@ var MenuScene = cc.Scene.extend({
 
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.Menu;
-        PiuPiuGlobals.currentLevel = 0;
+        PiuPiuGlobals.currentLevel = 1;
         //  Load level settings
         loadLevelSettings();
 

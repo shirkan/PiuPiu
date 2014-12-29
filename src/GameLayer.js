@@ -47,6 +47,11 @@ var GameLayer = cc.Layer.extend({
         this.hands.rotateHands(endAngle);
     },
 
+    addPowerUp: function (type, parentNode, sprite, onHit, period, location) {
+        var powerup = new PowerUp(type, parentNode, sprite, onHit, period, location);
+        this.addObject(powerup);
+    },
+
     addObject : function (obj) {
         this.objects.push(obj);
     },
@@ -88,6 +93,13 @@ var GameLayer = cc.Layer.extend({
     },
 
     printSize : function () {
-        console.log("size is " + this.objects.length);
+        LOG("size is " + this.objects.length);
+        str = ""
+        for (var i = 0; i < this.objects.length; i++) {
+            if (this.objects[i].tag) {
+                str += this.objects[i].tag + " "
+            }
+        }
+        LOG(str);
     }
 });

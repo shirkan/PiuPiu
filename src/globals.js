@@ -15,6 +15,7 @@ if(typeof hitType == "undefined") {
     hitType.BulletEnemy = 1;
     hitType.BulletEnemyHead = 2;
     hitType.EnemyPlayer = 3;
+    hitType.BulletPowerUp = 4;
 };
 
 if(typeof SpriteTag == "undefined") {
@@ -23,7 +24,8 @@ if(typeof SpriteTag == "undefined") {
     SpriteTag.Bullet = 1;
     SpriteTag.Enemy = 2;
     SpriteTag.EnemyHead = 3;
-    SpriteTag.Powerup = 4;
+
+    SpriteTag.MinPowerup = 4;
 };
 
 if(typeof GameStates == "undefined") {
@@ -53,12 +55,12 @@ if (typeof PiuPiuConsts == "undefined") {
     if (cc.sys.platform == cc.sys.ANDROID) {
         PiuPiuConsts.fontName = "res/fonts/arcadepi.ttf";
     }
-    PiuPiuConsts.fontSizeBig = 72;
-    PiuPiuConsts.fontSizeNormal = 36;
-    PiuPiuConsts.fontSizeSmall = 18;
+    PiuPiuConsts.fontSizeBig = 48;
+    PiuPiuConsts.fontSizeNormal = 28;
+    PiuPiuConsts.fontSizeSmall = 10;
     PiuPiuConsts.fontStrokeSize = 2;
     PiuPiuConsts.fontStrokeSizeSmall = 1;
-    PiuPiuConsts.fontSizeStatus = 24;
+    PiuPiuConsts.fontSizeStatus = 16;
 
     //  Gameplay consts
     PiuPiuConsts.pointsPerEnemyKill = 7;

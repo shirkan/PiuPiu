@@ -74,11 +74,6 @@ var Enemy = cc.Class.extend({
         }
     },
 
-    onExit:function () {
-        this._super();
-        console.log("enemy exit");
-    },
-
     updateSpeed : function ( multiplier ) {
         this.sprite.stopAllActions();
         var distancePassed = calculateLineLength(this.startingPos, this.currentPos);

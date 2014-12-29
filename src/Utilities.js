@@ -106,6 +106,11 @@ function stopAllSounds () {
     cc.audioEngine.stopAllEffects();
 }
 
+var powerupTag = SpriteTag.MinPowerup;
+function getTag() {
+    return powerupTag++;
+}
+
 function loadLevelSettings() {
     var fileName = "src/levels/level" + PiuPiuGlobals.currentLevel + ".json";
     cc.loader.loadJson(fileName, function(error, data){
@@ -229,7 +234,7 @@ function FBlogin(target, success_callback, error_callback) {
 
             if (success_callback) { success_callback.call(target) }
         } else {
-            console.log("Login failed, error #" + code + ": " + response);
+            console.log("Login failed, error #" + code + ": " + JSON.stringify(response));
             if (error_callback) { error_callback.call(target) }
         }
     });
@@ -290,6 +295,7 @@ function FBpostScore ( score ) {
             console.log("PiuPiuGlobals.FBplayerScoreData.score is not a number " + PiuPiuGlobals.FBplayerScoreData.score);
             return;
         }
+        LOG("FB: " + PiuPiuGlobals.FBplayerScoreData.score + " < local: "+ PiuPiuGlobals.highScore);
         if (PiuPiuGlobals.FBplayerScoreData.score < PiuPiuGlobals.highScore) {
             console.log("Updated high score!");
             FBpostHighScore();
@@ -341,7 +347,7 @@ function FBgetScore( target, success_callback, error_callback) {
     FBInstance.api("/me/scores", plugin.FacebookAgent.HttpMethod.GET, function (type, response) {
         if (type == plugin.FacebookAgent.CODE_SUCCEED) {
             console.log("FBgetScore: " + JSON.stringify(response));
-            PiuPiuGlobals.FBplayerScoreData = response.data;
+            PiuPiuGlobals.FBplayerScoreData = response.data[0];
 
             //  Check if score exists
             if (!PiuPiuGlobals.FBplayerScoreData.score) {

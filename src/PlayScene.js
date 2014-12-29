@@ -136,25 +136,23 @@ var PlayScene = cc.Scene.extend({
 
         switch (powerup) {
             case "MachineGunPowerUp": {
-                var obj = new MachineGunPowerUp(this.gameLayer, this.machineGunStart.bind(this), PiuPiuConsts.powerupPeriod);
+                this.gameLayer.addPowerUp("mg", this.gameLayer, res.PowerupMachineGun_png, this.machineGunStart.bind(this), PiuPiuConsts.powerupPeriod);
                 break;
             }
             case "OneUpPowerUp": {
-                var obj = new OneUpPowerUp(this.gameLayer, this.addLife.bind(this), PiuPiuConsts.powerupPeriod);
+                this.gameLayer.addPowerUp("1up", this.gameLayer, res.Powerup1Up_png, this.addLife.bind(this), PiuPiuConsts.powerupPeriod);
                 break;
             }
             case "CaptainPowerUp": {
-                var obj = new CaptainPowerUp(this.gameLayer, this.captainStart.bind(this), PiuPiuConsts.powerupPeriod);
+                this.gameLayer.addPowerUp("cap", this.gameLayer, res.PowerupCaptain_png, this.captainStart.bind(this), PiuPiuConsts.powerupPeriod);
                 break;
             }
             case "StopwatchPowerUp": {
-                var obj = new StopwatchPowerUp(this.gameLayer, this.stopwatchStart.bind(this), PiuPiuConsts.powerupPeriod);
+                this.gameLayer.addPowerUp("sw", this.gameLayer, res.PowerupStopwatch_png, this.stopwatchStart.bind(this), PiuPiuConsts.powerupPeriod);
                 break;
             }
         }
-        if (obj) {
-            this.gameLayer.addObject(obj);
-        }
+
         this.powerupSM.step();
     },
 
@@ -173,11 +171,11 @@ var PlayScene = cc.Scene.extend({
         }
     },
 
-    stopPlayment : function () {
-        runPostStepCallbacks();
-        this.gameLayer.removeAllObjects();
+    stopPlaying : function () {
         this.enemySM.stop();
         this.powerupSM.stop();
+        runPostStepCallbacks();
+        this.gameLayer.removeAllObjects();
     },
 
     checkLevelComplete : function () {
@@ -188,7 +186,7 @@ var PlayScene = cc.Scene.extend({
         if (PiuPiuLevelSettings.totalEnemiesToSpawn == 0 &&
             PiuPiuLevelSettings.enemiesVanished >= PiuPiuLevelSettings.totalEnemiesToKill) {
             PiuPiuGlobals.gameState = GameStates.LevelCompleted;
-            this.stopPlayment();
+            this.stopPlaying();
             this.statusLayer.showLevelCompleted();
 
             PiuPiuGlobals.currentLevel++;
@@ -196,7 +194,7 @@ var PlayScene = cc.Scene.extend({
             loadLevelSettings();
 
             //  Enable pause for 2 seconds
-            cc.director.getScheduler().scheduleCallbackForTarget(this, function () {this.canContinueToNextScene = true}, 2, 0);
+            cc.director.getScheduler().scheduleCallbackForTarget(this, function () {this.canContinueToNextScene = true}, 0, 0, 2);
 
             return true;
         }
@@ -210,7 +208,7 @@ var PlayScene = cc.Scene.extend({
 
         //  Change game state
         PiuPiuGlobals.gameState = GameStates.GameOver;
-        this.stopPlayment();
+        this.stopPlaying();
 
         //  Show game over banner
         if (showGameOverBanner) {
@@ -277,13 +275,13 @@ var PlayScene = cc.Scene.extend({
 
     stopwatchStart: function () {
         if (this.isStopwatchMode) {
-            //cc.director.getScheduler().unscheduleCallbackForTarget(this, this.stopwatchEnd);
-            //cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
+            cc.director.getScheduler().unscheduleCallbackForTarget(this, this.stopwatchEnd);
+            cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
         } else {
             this.isStopwatchMode = true;
             PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.powerupStopwatchUpdateRate;
             this.gameLayer.updateAllSpeeds(PiuPiuConsts.powerupStopwatchUpdateRate);
-            //cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
+            cc.director.getScheduler().scheduleCallbackForTarget(this, this.stopwatchEnd, PiuPiuConsts.powerupStopwatchPeriod, 0);
         }
     },
 
