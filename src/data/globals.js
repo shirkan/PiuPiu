@@ -37,6 +37,7 @@ if(typeof GameStates == "undefined") {
     GameStates.CutScene = 4;
     GameStates.LevelCompleted = 5;
     GameStates.Leaderboard = 6;
+    GameStates.SplashScreen = 7;
 }
 
 if(typeof levelType == "undefined") {

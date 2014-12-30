@@ -24,6 +24,7 @@
         "src/utilities/Utilities.js",
         "src/utilities/SpawningMechanism.js",
 
+        "src/scenes/Splash.js",
         "src/scenes/MainMenu.js",
         "src/scenes/IntroScene.js",
         "src/scenes/LevelCutScene.js",
