@@ -37,7 +37,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemPlay);
 
         //  Sound on/off
-        this.labelSound = new cc.LabelTTF("Sound on", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
+        this.labelSound = new cc.LabelTTF("Sound on", "res/fonts/arcadepi.ttf", PiuPiuConsts.fontSizeNormal);
         this.labelSound.setFontFillColor(cc.color(255,220,80)); //Yellow
         this.labelSound.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize); //Blue
 
@@ -52,7 +52,7 @@ var MenuLayer = cc.Layer.extend({
         menuItems.push(menuItemSound);
 
         //  Statistics
-        var labelStatistics = new cc.LabelTTF("Statistics", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeNormal);
+        var labelStatistics = new cc.LabelTTF("Statistics", "assets/res/fonts/arcadepi.ttf", PiuPiuConsts.fontSizeNormal);
         labelStatistics.setFontFillColor(cc.color(255,220,80)); //Yellow
         labelStatistics.enableStroke(cc.color(0,0,255), PiuPiuConsts.fontStrokeSize);
 

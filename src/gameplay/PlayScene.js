@@ -162,12 +162,12 @@ var PlayScene = cc.Scene.extend({
     },
 
     removeLife : function () {
-        PiuPiuGlobals.livesLeft--;
-        //this.statusLayer.removeLife();
-        this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
-
-        if (PiuPiuGlobals.livesLeft == 0) {
+        if (PiuPiuGlobals.livesLeft < 0) {
             this.endGame( true, false);
+
+        } else {
+            PiuPiuGlobals.livesLeft--;
+            this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
         }
     },
 
@@ -430,8 +430,11 @@ var PlayScene = cc.Scene.extend({
         //  Update level settings
         PiuPiuLevelSettings.enemiesVanished++;
 
+        var currentHitType = this.hitToUpdate;
+        this.hitToUpdate = hitType.NoHit;
+
         //  Update stats according to hit type
-        switch (this.hitToUpdate) {
+        switch (currentHitType) {
             case hitType.BulletEnemy:
             {
                 this.points += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyKill);
@@ -459,7 +462,6 @@ var PlayScene = cc.Scene.extend({
                 this.removeLife();
             }
         }
-        this.hitToUpdate = hitType.NoHit;
         this.checkLevelComplete();
     },
 

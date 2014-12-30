@@ -18,24 +18,27 @@
     },
 
     "jsList" : [
-        "src/globals.js",
-        "src/Utilities.js",
-        "src/SpawningMechanism.js",
-        "src/MainMenu.js",
-        "src/BackgroundLayer.js",
-        "src/GameLayer.js",
-        "src/StatusLayer.js",
-        "src/PlayScene.js",
-        "src/IntroScene.js",
-        "src/LevelCutScene.js",
-        "src/Leaderboard.js",
-        "src/Achievements.js",
-        "src/Player.js",
-        "src/Hands.js",
-        "src/Bullet.js",
-        "src/Enemy.js",
-        "src/Powerup.js",
-        "src/Statistics.js",
-        "src/resource.js"
+        "src/data/globals.js",
+        "src/data/resource.js",
+
+        "src/utilities/Utilities.js",
+        "src/utilities/SpawningMechanism.js",
+
+        "src/scenes/MainMenu.js",
+        "src/scenes/IntroScene.js",
+        "src/scenes/LevelCutScene.js",
+        "src/scenes/Leaderboard.js",
+        "src/scenes/Achievements.js",
+        "src/scenes/Statistics.js",
+
+        "src/gameplay/BackgroundLayer.js",
+        "src/gameplay/GameLayer.js",
+        "src/gameplay/StatusLayer.js",
+        "src/gameplay/PlayScene.js",
+        "src/gameplay/Player.js",
+        "src/gameplay/Hands.js",
+        "src/gameplay/Bullet.js",
+        "src/gameplay/Enemy.js",
+        "src/gameplay/Powerup.js"
     ]
 }

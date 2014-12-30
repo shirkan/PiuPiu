@@ -6,6 +6,22 @@ function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function isFileExist(filename)
+{
+    if (!filename) {
+        return false;
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', filename, false);
+    xhr.send();
+
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 function calculateTrigonometry ( point ) {
     var endPoint = cc.p();
     var bulletStartPoint = cc.p();

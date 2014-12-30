@@ -83,7 +83,7 @@ if (typeof PiuPiuConsts == "undefined") {
     //  Player
     PiuPiuConsts.handsAnchor = cc.p(30,184);
     PiuPiuConsts.handsLength = 83;
-    PiuPiuConsts.livesOnGameStart = 3;
+    PiuPiuConsts.livesOnGameStart = 2;
     PiuPiuConsts.maxLives = 5;
 
     //  Powerups
@@ -92,7 +92,6 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.powerupPeriod = 3;
     PiuPiuConsts.powerupLocalZOrder = 1;
     PiuPiuConsts.powerupTypes = ["MachineGunPowerUp", "OneUpPowerUp", "CaptainPowerUp", "StopwatchPowerUp"];
-    //PiuPiuConsts.powerupTypes = ["MachineGunPowerup", "OneUpPowerUp", "CaptainPowerUp", "StopwatchPowerUp"];
     PiuPiuConsts.powerupMachineGunPeriod = 10;
     PiuPiuConsts.powerupCaptainPeriod = 20;
     PiuPiuConsts.powerupCaptainMultiplier = 2;
