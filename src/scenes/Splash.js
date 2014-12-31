@@ -71,6 +71,9 @@ var SplashScene = cc.Scene.extend({
         //  Load stats
         loadStats();
 
+        //  Load all levels
+        loadAllLevels();
+
         //  Init Facebook
         FBinit();
 

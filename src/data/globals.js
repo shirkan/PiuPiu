@@ -151,3 +151,7 @@ if (typeof PiuPiuLevelSettings == "undefined") {
     PiuPiuLevelSettings.enemiesSpawnIntervalType = "";
     PiuPiuLevelSettings.hint = "";
 }
+
+if (typeof PiuPiuLevels == "undefined") {
+    var PiuPiuLevels = {};
+}

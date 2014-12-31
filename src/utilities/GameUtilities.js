@@ -126,32 +126,40 @@ function getTag() {
     return powerupTag++;
 }
 
+function loadAllLevels() {
+    var i = 1;
+    var fileName = "src/levels/level" + i + ".json";
+    while (isFileExist(fileName)) {
+        LOG("loadAllLevels: loading level " + i);
+        cc.loader.loadJson(fileName,function(error, data){
+            PiuPiuLevels[i] = {};
+            //  Type of level
+            PiuPiuLevels[i].levelType = data["levelType"] || levelType.EliminateAllEnemies;
+            //  Enemies to spawn
+            PiuPiuLevels[i].totalEnemiesToKill = PiuPiuLevels[i].totalEnemiesToSpawn = data["totalEnemies"];
+            PiuPiuLevels[i].enemiesVanished = 0;
+            PiuPiuLevels[i].enemiesSpawnInterval = data["enemiesSpawnInterval"] || 2;
+            PiuPiuLevels[i].enemiesSpawnIntervalMin = data["enemiesSpawnIntervalMin"] || 0;
+            PiuPiuLevels[i].enemiesSpawnIntervalMax = data["enemiesSpawnIntervalMax"] || 0;
+            PiuPiuLevels[i].enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "constantTempo";
+
+            //  Power ups policy
+            PiuPiuLevels[i].powerupsSpawnInterval = data["powerupsSpawnInterval"] || 2;
+            PiuPiuLevels[i].powerupsSpawnIntervalMin = data["powerupsSpawnIntervalMin"] || 0;
+            PiuPiuLevels[i].powerupsSpawnIntervalMax = data["powerupsSpawnIntervalMax"] || 0;
+            PiuPiuLevels[i].powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "none";
+            PiuPiuLevels[i].powerupsTypes = data["powerupsTypes"] || "";
+
+            //  Special notations
+            PiuPiuLevels[i].specialNotations = data["specialNotations"] || [];
+            PiuPiuLevels[i].hint = data["hint"] || "";
+        });
+        var fileName = "src/levels/level" + (++i) + ".json";
+    }
+}
+
 function loadLevelSettings() {
-    var fileName = "src/levels/level" + PiuPiuGlobals.currentLevel + ".json";
-    cc.loader.loadJson(fileName, function(error, data){
-        //  Type of level
-        PiuPiuLevelSettings.levelType = data["levelType"] || levelType.EliminateAllEnemies;
-        //  Enemies to spawn
-        PiuPiuLevelSettings.totalEnemiesToKill = PiuPiuLevelSettings.totalEnemiesToSpawn = data["totalEnemies"];
-        PiuPiuLevelSettings.enemiesVanished = 0;
-        PiuPiuLevelSettings.enemiesSpawnInterval = data["enemiesSpawnInterval"] || 2;
-        PiuPiuLevelSettings.enemiesSpawnIntervalMin = data["enemiesSpawnIntervalMin"] || 0;
-        PiuPiuLevelSettings.enemiesSpawnIntervalMax = data["enemiesSpawnIntervalMax"] || 0;
-        PiuPiuLevelSettings.enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "constantTempo";
-
-        //  Power ups policy
-        PiuPiuLevelSettings.powerupsSpawnInterval = data["powerupsSpawnInterval"] || 2;
-        PiuPiuLevelSettings.powerupsSpawnIntervalMin = data["powerupsSpawnIntervalMin"] || 0;
-        PiuPiuLevelSettings.powerupsSpawnIntervalMax = data["powerupsSpawnIntervalMax"] || 0;
-        PiuPiuLevelSettings.powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "none";
-        PiuPiuLevelSettings.powerupsTypes = data["powerupsTypes"] || "";
-
-        //  Special notations
-        PiuPiuLevelSettings.specialNotations = data["specialNotations"] || [];
-        PiuPiuLevelSettings.hint = data["hint"] || "";
-    });
-
-    console.log("Completed loading level " + PiuPiuGlobals.currentLevel);
+    PiuPiuLevelSettings = PiuPiuLevels[PiuPiuGlobals.currentLevel];
 }
 
 function getLevelTypeString() {
