@@ -20,7 +20,7 @@ var MenuLayer = cc.Layer.extend({
         this.createMenu();
 
         //  Check if need to add facebook login image
-        FBisLoggedIn(this, FBonLoginUpdates(), this.showFacebookLogo);
+        FBisLoggedIn(this, null, this.showFacebookLogo);
     },
 
     createMenu : function () {

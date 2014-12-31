@@ -12,15 +12,11 @@ var SplashLayer = cc.LayerColor.extend({
         this._super();
 
         //  Show logo
-        var neeverland = new cc.LabelTTF("Neeverland", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
-        neeverland.setFontFillColor(cc.color(255,255,255)); //White
-        neeverland.setPosition(cc.p(PiuPiuGlobals.winSize.width / 2 , PiuPiuGlobals.winSize.height / 2));
-        this.addChild(neeverland);
-
-        var studios =  new cc.LabelTTF("Studios", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
-        studios.setFontFillColor(cc.color(255,255,255)); //White
-        studios.setPosition(cc.p(PiuPiuGlobals.winSize.width / 2 , PiuPiuGlobals.winSize.height / 2 - 50));
-        this.addChild(studios);
+        var logoSprite = new cc.LabelTTF("Neeverland\nStudios", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
+        logoSprite.setFontFillColor(cc.color(255,255,255)); //White
+        logoSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width / 2 , PiuPiuGlobals.winSize.height / 2));
+        logoSprite.textAlign = cc.TEXT_ALIGNMENT_CENTER;
+        this.addChild(logoSprite);
     }
 });
 
@@ -59,12 +55,25 @@ var SplashScene = cc.Scene.extend({
 
         cc.director.getScheduler().scheduleCallbackForTarget(this, function () { this.canContinue = true}, 0, 0, 2);
         cc.director.getScheduler().scheduleCallbackForTarget(this, this.moveToNextScene, 0, 0, 3);
+        this.loadAll();
     },
+
     moveToNextScene : function () {
         if (!this.canContinue) {
-            return;
+            return false;
         }
         var transition = new cc.TransitionFade(1, new MenuScene());
         cc.director.runScene(transition);
+        return true;
+    },
+
+    loadAll : function () {
+        //  Load stats
+        loadStats();
+
+        //  Init Facebook
+        FBinit();
+
+        handleHighScore();
     }
 });

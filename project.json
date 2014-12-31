@@ -22,6 +22,8 @@
         "src/data/resource.js",
 
         "src/utilities/Utilities.js",
+        "src/utilities/GameUtilities.js",
+        "src/utilities/FButilities.js",
         "src/utilities/SpawningMechanism.js",
 
         "src/scenes/Splash.js",
