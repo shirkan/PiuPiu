@@ -214,11 +214,10 @@ function FBgetPicture ( userid, target, cb ) {
     FBInstance.api("/" + userid + "/picture", plugin.FacebookAgent.HttpMethod.GET,
         {"type" : "normal", "height" : PiuPiuConsts.FBpictureSize, "width" : PiuPiuConsts.FBpictureSize}, function (type, response) {
             if (type == plugin.FacebookAgent.CODE_SUCCEED) {
-                console.log("FBgetPicture: " + JSON.stringify(response));
-                cc.loader.loadImg(response.data.url, {isCrossOrigin : true}, function () { cb.call(target, userid, response.data.url)});
-                //if (cb) { cb.call(target, userid, response.data.url) }
+                LOG("FBgetPicture: " + JSON.stringify(response));
+                if (cb) { cb.call(target, userid, response.data.url) }
             } else {
-                console.log("FBgetPicture: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
+                LOG("FBgetPicture: Graph API request failed, error #" + type + ": " + JSON.stringify(response));
             }
         });
 }

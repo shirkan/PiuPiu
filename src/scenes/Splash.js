@@ -52,7 +52,7 @@ var SplashScene = cc.Scene.extend({
             onTouchBegan: this.moveToNextScene.bind(this),
             onTouchMoved: function () {},
             onTouchEnded: function () {}}, this);
-
+        this.canContinue = true
         cc.director.getScheduler().scheduleCallbackForTarget(this, function () { this.canContinue = true}, 0, 0, 2);
         cc.director.getScheduler().scheduleCallbackForTarget(this, this.moveToNextScene, 0, 0, 3);
         this.loadAll();
@@ -71,12 +71,17 @@ var SplashScene = cc.Scene.extend({
         //  Load stats
         loadStats();
 
-        //  Load all levels
-        loadAllLevels();
+        //  Loads hands
+        LOG("adding sprites frame for hands");
+        cc.spriteFrameCache.addSpriteFrames(res.Hands_plist);
 
         //  Init Facebook
         FBinit();
 
         handleHighScore();
+
+        //  Load all levels
+        //  PAY ATTENTION! THIS CAUSE A FAILURE AND STOPS LOADING OTHER THINGS AFTERWARDS!
+        loadAllLevels();
     }
 });

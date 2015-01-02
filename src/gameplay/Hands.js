@@ -8,18 +8,14 @@ var Hands = cc.Class.extend({
         this.init( parentNode );
     },
     init: function( parentNode ) {
-        cc.spriteFrameCache.addSpriteFrames(res.Hands_plist);
         this.sprite = new cc.Sprite("#hands.png");
-        //this.sprite = new cc.Sprite(res.Hands_png);
 
         this.sprite.anchorX = 0;
         this.sprite.setPosition(PiuPiuConsts.handsAnchor);
         parentNode.addChild(this.sprite);
     },
     rotateHands: function( angle ) {
-    //console.log(angle);
     angle = angle * (180 / Math.PI) * -1;
-    //console.log(angle);
 
     var rotateAction = cc.RotateTo.create(0, angle);
     this.sprite.runAction(rotateAction);

@@ -42,6 +42,8 @@
         "src/gameplay/Hands.js",
         "src/gameplay/Bullet.js",
         "src/gameplay/Enemy.js",
-        "src/gameplay/Powerup.js"
+        "src/gameplay/Powerup.js",
+
+        "src/anim/MainMenuAnim.js"
     ]
 }

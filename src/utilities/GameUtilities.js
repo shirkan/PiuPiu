@@ -7,11 +7,8 @@ function calculateTrigonometry ( point ) {
     var bulletStartPoint = cc.p();
     var endAngle = 0;
 
-    var dx = point.x - PiuPiuConsts.handsAnchor.x;
-    var dy = point.y - PiuPiuConsts.handsAnchor.y;
-
     //  Calculating ax+b = 0
-    var a = dy / dx ;
+    var a = calculateGradient(point, PiuPiuConsts.handsAnchor);
     var b = point.y - (a * point.x);
 
     //  Calculating end point
@@ -60,6 +57,46 @@ function calculateTrigonometry ( point ) {
 
 function calculateLineLength( p1, p2) {
     return Math.sqrt( Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
+}
+
+function calculateGradient (p1, p2) {
+    var dx = p1.x - p2.x;
+    var dy = p1.y - p2.y;
+    return (dy / dx);
+}
+
+function calculateHalfCirclePath( ps, pe, steps, direction, clockwise) {
+    if (steps < 3) {
+        return;
+    }
+
+    direction = (direction ? 1 : -1);
+    clockwise = (clockwise ? 1 : -1);
+
+    var points = [];
+    var r = calculateLineLength(ps, pe) / 2;
+    var beta = Math.atan(calculateGradient(ps, pe)) * 180 / Math.PI;
+    var betaDiagonal = (90 - beta) / 180 * Math.PI ;
+    beta = beta / 180 * Math.PI;
+    var pm = cc.p((ps.x + pe.x) / 2, (ps.y + pe.y) / 2);
+
+    for (var i=1; i <= steps; i++) {
+        var alpha = i/steps * Math.PI;
+
+        var rCosAlpha = Math.cos(alpha) * r;
+        var rSinAlpha = Math.sin(alpha) * r;
+
+        var xOnLine = clockwise * pm.x - rCosAlpha * Math.cos(beta) * direction;
+        var yOnLine = clockwise * pm.y - rCosAlpha * Math.sin(beta) * direction;
+
+        var x = clockwise * xOnLine - rSinAlpha * Math.cos(betaDiagonal) * direction;
+        var y = clockwise * yOnLine + rSinAlpha * Math.sin(betaDiagonal) * direction;
+
+        var point = cc.p(x, y);
+        points.push(point);
+    }
+
+    return points;
 }
 
 function initGlobals() {
@@ -127,38 +164,43 @@ function getTag() {
 }
 
 function loadAllLevels() {
+    var self = this;
     var i = 1;
     var fileName = "src/levels/level" + i + ".json";
-    while (isFileExist(fileName)) {
-        LOG("loadAllLevels: loading level " + i);
-        cc.loader.loadJson(fileName,function(error, data){
-            PiuPiuLevels[i] = {};
-            //  Type of level
-            PiuPiuLevels[i].levelType = data["levelType"] || levelType.EliminateAllEnemies;
-            //  Enemies to spawn
-            PiuPiuLevels[i].totalEnemiesToKill = PiuPiuLevels[i].totalEnemiesToSpawn = data["totalEnemies"];
-            PiuPiuLevels[i].enemiesVanished = 0;
-            PiuPiuLevels[i].enemiesSpawnInterval = data["enemiesSpawnInterval"] || 2;
-            PiuPiuLevels[i].enemiesSpawnIntervalMin = data["enemiesSpawnIntervalMin"] || 0;
-            PiuPiuLevels[i].enemiesSpawnIntervalMax = data["enemiesSpawnIntervalMax"] || 0;
-            PiuPiuLevels[i].enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "constantTempo";
+    while (isFileExist(fileName) && i <=4) {
+        (function (_i) {
+            cc.loader.loadJson(fileName, function (error, data) {
+                LOG("loadAllLevels: loading level " + _i);
+                PiuPiuLevels[_i] = {};
+                //  Type of level
+                PiuPiuLevels[_i].levelType = data["levelType"] || levelType.EliminateAllEnemies;
+                //  Enemies to spawn
+                PiuPiuLevels[_i].totalEnemiesToKill = PiuPiuLevels[_i].totalEnemiesToSpawn = data["totalEnemies"];
+                PiuPiuLevels[_i].enemiesVanished = 0;
+                PiuPiuLevels[_i].enemiesSpawnInterval = data["enemiesSpawnInterval"] || 2;
+                PiuPiuLevels[_i].enemiesSpawnIntervalMin = data["enemiesSpawnIntervalMin"] || 0;
+                PiuPiuLevels[_i].enemiesSpawnIntervalMax = data["enemiesSpawnIntervalMax"] || 0;
+                PiuPiuLevels[_i].enemiesSpawnIntervalType = data["enemiesSpawnIntervalType"] || "constantTempo";
 
-            //  Power ups policy
-            PiuPiuLevels[i].powerupsSpawnInterval = data["powerupsSpawnInterval"] || 2;
-            PiuPiuLevels[i].powerupsSpawnIntervalMin = data["powerupsSpawnIntervalMin"] || 0;
-            PiuPiuLevels[i].powerupsSpawnIntervalMax = data["powerupsSpawnIntervalMax"] || 0;
-            PiuPiuLevels[i].powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "none";
-            PiuPiuLevels[i].powerupsTypes = data["powerupsTypes"] || "";
+                //  Power ups policy
+                PiuPiuLevels[_i].powerupsSpawnInterval = data["powerupsSpawnInterval"] || 2;
+                PiuPiuLevels[_i].powerupsSpawnIntervalMin = data["powerupsSpawnIntervalMin"] || 0;
+                PiuPiuLevels[_i].powerupsSpawnIntervalMax = data["powerupsSpawnIntervalMax"] || 0;
+                PiuPiuLevels[_i].powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "none";
+                PiuPiuLevels[_i].powerupsTypes = data["powerupsTypes"] || "";
 
-            //  Special notations
-            PiuPiuLevels[i].specialNotations = data["specialNotations"] || [];
-            PiuPiuLevels[i].hint = data["hint"] || "";
-        });
+                //  Special notations
+                PiuPiuLevels[_i].specialNotations = data["specialNotations"] || [];
+                PiuPiuLevels[_i].hint = data["hint"] || "";
+            });
+        })(i);
+
         var fileName = "src/levels/level" + (++i) + ".json";
     }
 }
 
 function loadLevelSettings() {
+    LOG("loadLevelSettings: loading level " + PiuPiuGlobals.currentLevel);
     PiuPiuLevelSettings = PiuPiuLevels[PiuPiuGlobals.currentLevel];
 }
 
