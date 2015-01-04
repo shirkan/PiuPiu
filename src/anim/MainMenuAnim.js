@@ -5,9 +5,10 @@
 var MainMenuAnim = cc.Layer.extend({
     TIME_shootToEnemy: 0.2,
     TIME_enemyOut: 1.5,
-    TIME_delayUntilNextShot: 5,
+    TIME_delayUntilNextShot: 6,
     TIME_enter: 2.5,
     TIME_ballSpinAfterShoot: 3,
+    TIME_enemyReentrantDelay: 5,
     ctor : function(){
         this._super();
         //  Add background
@@ -39,22 +40,14 @@ var MainMenuAnim = cc.Layer.extend({
 
         //  Add enemy
         this.enemy = new cc.Sprite(res.Enemy_png);
-        //enemy.setScale(0.5);
-        //this.enemy.setAnchorPoint(0,0);
-        var enemyStartPos = cc.p(PiuPiuGlobals.winSize.width + this.enemy.width / 2, this.enemy.height + PiuPiuConsts.fontSizeSmall);
-        this.enemy.setPosition(enemyStartPos);
+        this.enemyStartPos = cc.p(PiuPiuGlobals.winSize.width + this.enemy.width / 2, this.enemy.height + PiuPiuConsts.fontSizeSmall);
+        this.enemy.setPosition(this.enemyStartPos);
         this.addChild(this.enemy);
 
         //  Generate animation
         var playerAnimation = cc.MoveBy.create(this.TIME_enter, cc.p(100, 0));
 
-        var enemyAnimation = new cc.RepeatForever(new cc.Sequence(
-            cc.MoveBy.create(this.TIME_enter, cc.p(-100, 0)),
-            new cc.DelayTime(this.TIME_shootToEnemy),
-            new cc.Spawn(cc.RotateBy.create(this.TIME_enemyOut, 720), cc.MoveTo.create(this.TIME_enemyOut, enemyStartPos)),
-            new cc.DelayTime(this.TIME_ballSpinAfterShoot + this.TIME_delayUntilNextShot - this.TIME_enter - this.TIME_enemyOut)
-        ));
-
+        var enemyAnimation = cc.MoveBy.create(this.TIME_enter, cc.p(-100, 0));
 
         var ballAnimation = new cc.Sequence(
             new cc.Spawn(cc.MoveBy.create(this.TIME_enter, cc.p(100,0)), cc.RotateBy.create(this.TIME_enter, 720)),
@@ -85,6 +78,7 @@ var MainMenuAnim = cc.Layer.extend({
         var shootToEnemy = new cc.Sequence(
             new cc.Spawn(cc.MoveTo.create(this.TIME_shootToEnemy, p2),
                          cc.RotateBy.create(this.TIME_shootToEnemy, 360)),
+            new cc.CallFunc(this.triggerEnemy.bind(this), this),
             new cc.CallFunc(function () { playSound(res.sound_ballHitGround)}, this)
         );
 
@@ -103,6 +97,15 @@ var MainMenuAnim = cc.Layer.extend({
             new cc.Sequence(shootToEnemy, swingBackRotate, new cc.DelayTime(this.TIME_delayUntilNextShot))
         );
         ball.runAction(ballAnimation);
+    },
+
+    triggerEnemy : function() {
+        var ballHitsEnemy = new cc.Sequence(
+            new cc.Spawn(cc.RotateBy.create(this.TIME_enemyOut, 720), cc.MoveTo.create(this.TIME_enemyOut, this.enemyStartPos)),
+            new cc.DelayTime(this.TIME_enemyReentrantDelay),
+            cc.MoveBy.create(this.TIME_enter, cc.p(-100, 0))
+        );
+        this.enemy.runAction(ballHitsEnemy);
     }
 
 });
