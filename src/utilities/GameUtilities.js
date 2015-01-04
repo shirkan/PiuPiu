@@ -285,7 +285,6 @@ function playMusic (music) {
     }
 
     if (cc.audioEngine.isMusicPlaying()) {
-        LOG("music is playing");
         return;
     }
 
