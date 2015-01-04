@@ -82,8 +82,11 @@ var MainMenuAnim = cc.Layer.extend({
         this.addChild(ball);
 
         //  Shoot and rotate the ball towards enemy
-        var shootToEnemy = new cc.Spawn(cc.MoveTo.create(this.TIME_shootToEnemy, p2),
-            cc.RotateBy.create(this.TIME_shootToEnemy, 360));
+        var shootToEnemy = new cc.Sequence(
+            new cc.Spawn(cc.MoveTo.create(this.TIME_shootToEnemy, p2),
+                         cc.RotateBy.create(this.TIME_shootToEnemy, 360)),
+            new cc.CallFunc(function () { playSound(res.sound_ballHitGround)}, this)
+        );
 
         //  Swing the ball back to player
         var points = calculateHalfCirclePathFrom2Points(p1, p2, 30, true, false);

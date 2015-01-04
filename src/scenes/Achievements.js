@@ -77,7 +77,6 @@ var AchievementsScene = cc.Scene.extend({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: function (touch, event) {
-                stopAllSounds();
                 event.getCurrentTarget().moveToNextScene();
                 return true;
             },

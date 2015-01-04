@@ -17,8 +17,10 @@ function PowerUp(type, parentNode, sprite, onHit, period, location) {
     //  Set starting position
     if (location == undefined) {
         //  Random location on last Q of screen
-        this.x = Math.random() * (PiuPiuGlobals.winSize.width / 2) + (PiuPiuGlobals.winSize.width / 2 - this.sprite.width);
-        this.y = Math.random() * (PiuPiuGlobals.winSize.height - this.sprite.height) + this.sprite.height / 2;
+        this.x = randomNumber(PiuPiuGlobals.winSize.width / 2, PiuPiuGlobals.winSize.width - this.sprite.width);
+        this.y = randomNumber(this.sprite.height / 2, PiuPiuGlobals.winSize.height - this.sprite.height / 2);
+        //this.x = Math.random() * (PiuPiuGlobals.winSize.width / 2) + (PiuPiuGlobals.winSize.width / 2 - this.sprite.width);
+        //this.y = Math.random() * (PiuPiuGlobals.winSize.height - this.sprite.height) + this.sprite.height / 2;
         location = cc.p(this.x, this.y);
     }
 

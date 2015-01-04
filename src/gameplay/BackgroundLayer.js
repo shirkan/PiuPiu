@@ -14,7 +14,8 @@ var BackgroundLayer = cc.Layer.extend({
         this._super();
 
         //  Set field as BG
-        var mapNum = Math.floor(Math.random() * 6) + 1;
+        var mapNum = Math.floor(randomNumber(1, 7));
+        //var mapNum = Math.floor(Math.random() * 6) + 1;
         var mapTMX = res["grass" + mapNum + "_tmx"];
 
         this.map = new cc.TMXTiledMap(mapTMX);

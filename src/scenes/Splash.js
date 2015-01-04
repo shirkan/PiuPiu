@@ -57,7 +57,7 @@ var SplashScene = cc.Scene.extend({
             onTouchEnded: function () {}}, this);
         this.canContinue = true
         cc.director.getScheduler().scheduleCallbackForTarget(this, function () { this.canContinue = true}, 0, 0, 2);
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.moveToNextScene, 0, 0, 6);
+        cc.director.getScheduler().scheduleCallbackForTarget(this, this.moveToNextScene, 0, 0, 7);
         this.loadAll();
     },
 
@@ -77,6 +77,8 @@ var SplashScene = cc.Scene.extend({
         //  Loads hands
         LOG("adding sprites frame for hands");
         cc.spriteFrameCache.addSpriteFrames(res.Hands_plist);
+
+        cc.audioEngine.setMusicVolume(PiuPiuConsts.musicVolume);
 
         //  Init Facebook
         FBinit();

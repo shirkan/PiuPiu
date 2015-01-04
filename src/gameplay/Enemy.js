@@ -21,7 +21,8 @@ var Enemy = cc.Class.extend({
         if (specialNotationDoesContain("center")) {
             startY = PiuPiuGlobals.winSize.height / 2;
         } else {
-            startY = Math.random() * (PiuPiuGlobals.winSize.height);
+            startY = randomNumber(0, PiuPiuGlobals.winSize.height);
+            //startY = Math.random() * (PiuPiuGlobals.winSize.height);
         }
         this.startingPos = cc.p(startX, startY);
 
@@ -30,7 +31,8 @@ var Enemy = cc.Class.extend({
         this.distanceLeftToPass = calculateDistanceBetween2Points(this.startingPos, PiuPiuConsts.enemyMoveToPoint);
 
         //  Set speed
-        this.speed = PiuPiuGlobals.currentUpdateRate * (Math.random() * 3 + 1);
+        this.speed = PiuPiuGlobals.currentUpdateRate * randomNumber(1, 3);
+        //this.speed = PiuPiuGlobals.currentUpdateRate * (Math.random() * 3 + 1);
 
         // init physics
         this.body = new cp.Body(1,1);

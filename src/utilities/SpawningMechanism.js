@@ -63,7 +63,8 @@ SpawningMechanism.prototype.init = function(target, cb, intervalType, intervalSt
         {
             if (!this.validate()) { return; }
             this.availableSpawnTimings = this.intervalStep;
-            this.count = Math.floor(Math.random() * (this.intervalMax - this.intervalMin + 1) + this.intervalMin);
+            this.count = Math.floor(randomNumber(this.intervalMin, this.intervalMax));
+            //this.count = Math.floor(Math.random() * (this.intervalMax - this.intervalMin + 1) + this.intervalMin);
             return;
         }
         case ("none"):
@@ -112,7 +113,7 @@ SpawningMechanism.prototype.step = function () {
         }
         case ("rangeTime"):
         {
-            var interval = this.availableSpawnTimings[(Math.floor(Math.random() * this.availableSpawnTimings.length))];
+            var interval = this.availableSpawnTimings[(Math.floor(randomNumber(0, this.availableSpawnTimings.length)))];
             if (isDebugMode()) { console.log("interval is " + interval); }
             cc.director.getScheduler().scheduleCallbackForTarget(this.target, this.callback, interval, cc.REPEAT_FOREVER);
             return;

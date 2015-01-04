@@ -30,6 +30,12 @@ function LOG (str) {
     console.log(str);
 }
 
+function randomNumber (min, max) {
+    min = min || 0;
+    max = max || 0;
+    var range = max - min;
+    return (Math.random() * range + min);
+}
 
 //  This is a walkaround until this.space.addPostStepCallback() will be ready (already check in, check out cocos2d-js v3.2
 var spaceCallbacks = [];

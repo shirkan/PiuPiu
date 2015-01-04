@@ -132,7 +132,8 @@ var PlayScene = cc.Scene.extend({
     },
 
     spawnPowerup : function () {
-        var powerup = PiuPiuLevelSettings.powerupsTypes[Math.floor(Math.random() * PiuPiuLevelSettings.powerupsTypes.length)];
+        var powerup = PiuPiuLevelSettings.powerupsTypes[Math.floor(randomNumber(0, PiuPiuLevelSettings.powerupsTypes.length))];
+        //var powerup = PiuPiuLevelSettings.powerupsTypes[Math.floor(Math.random() * PiuPiuLevelSettings.powerupsTypes.length)];
 
         switch (powerup) {
             case "MachineGunPowerUp": {
@@ -162,11 +163,11 @@ var PlayScene = cc.Scene.extend({
     },
 
     removeLife : function () {
+        PiuPiuGlobals.livesLeft--;
         if (PiuPiuGlobals.livesLeft < 0) {
             this.endGame( true, false);
 
         } else {
-            PiuPiuGlobals.livesLeft--;
             this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
         }
     },
@@ -216,8 +217,10 @@ var PlayScene = cc.Scene.extend({
         }
 
         //  Update high score
-        this.updateHighScore();
+        //this.updateHighScore();
         //  Update stats
+        handleHighScore();
+
         updateStats();
         //  Update Facebook stats
         FBpostScore();
@@ -229,12 +232,6 @@ var PlayScene = cc.Scene.extend({
             //  Enable pause for 2 seconds
             cc.director.getScheduler().scheduleCallbackForTarget(this, function () {this.canContinueToNextScene = true}, 2, 0);
 
-        }
-    },
-
-    updateHighScore : function() {
-        if (this.points > PiuPiuGlobals.highScore) {
-            cc.sys.localStorage.highScore = PiuPiuGlobals.highScore = this.points;
         }
     },
 

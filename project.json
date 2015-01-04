@@ -18,8 +18,8 @@
     },
 
     "jsList" : [
-        "src/data/globals.js",
         "src/data/resource.js",
+        "src/data/globals.js",
 
         "src/utilities/Utilities.js",
         "src/utilities/GameUtilities.js",

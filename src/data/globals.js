@@ -62,6 +62,15 @@ if (typeof PiuPiuConsts == "undefined") {
     PiuPiuConsts.fontStrokeSize = 2;
     PiuPiuConsts.fontStrokeSizeSmall = 1;
     PiuPiuConsts.fontSizeStatus = 16;
+    
+    //  Music
+    PiuPiuConsts.musicFiles = [res.music_arsenal1, res.music_athletico1, res.music_barca1, res.music_barca2, res.music_barca3,
+        res.music_bayern1, res.music_boca1, res.music_boca2, res.music_chelsea1, res.music_chelsea2, res.music_dortmund1,
+        res.music_hapoel1, res.music_juve1, res.music_juve2, res.music_liverpool1, res.music_liverpool2, res.music_maccabi1,
+        res.music_maccabi2, res.music_mancity1, res.music_manutd1, res.music_manutd2, res.music_manutd3, res.music_milan1,
+        res.music_olympiakos1, res.music_pana1, res.music_paok1, res.music_psg1, res.music_realmadrid1, res.music_realmadrid2,
+        res.music_realmadrid3];
+    PiuPiuConsts.musicVolume = 0.5;
 
     //  Gameplay consts
     PiuPiuConsts.pointsPerEnemyKill = 7;

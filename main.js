@@ -54,9 +54,6 @@ cc.game.onStart = function(){
     //  Init globals
     initGlobals();
 
-    //  Load stats
-    loadStats();
-
     cc.view.resizeWithBrowserSize(true);
     //load resources
     cc.LoaderScene.preload(g_resources, function () {

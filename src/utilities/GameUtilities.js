@@ -99,7 +99,7 @@ function calculateHalfCirclePathFrom2Points( ps, pe, steps, direction, clockwise
     beta = beta / 180 * Math.PI;
     var pm = cc.p((ps.x + pe.x) / 2, (ps.y + pe.y) / 2);
 
-    for (var i=1; i <= (steps - 1) ; i++) {
+    for (var i=1; i <= (steps) ; i++) {
         var alpha = i/(steps) * Math.PI;
 
         var rCosAlpha = Math.cos(alpha) * r;
@@ -115,7 +115,6 @@ function calculateHalfCirclePathFrom2Points( ps, pe, steps, direction, clockwise
         points.push(point);
     }
 
-    points.push(pe);
     return points;
 }
 
@@ -269,14 +268,46 @@ function handleHighScore() {
     }
 }
 
-function playSound ( sound ) {
-    if (PiuPiuGlobals.soundEnabled) {
+function playSound ( sound, force ) {
+    if (force || PiuPiuGlobals.soundEnabled) {
         cc.audioEngine.playEffect(sound);
     }
 }
 
 function stopAllSounds () {
     cc.audioEngine.stopAllEffects();
+}
+
+function playMusic (music) {
+    if (!PiuPiuGlobals.soundEnabled) {
+        stopMusic();
+        return;
+    }
+
+    if (cc.audioEngine.isMusicPlaying()) {
+        LOG("music is playing");
+        return;
+    }
+
+    if (typeof music != "string") {
+        music = "";
+    }
+
+    if (!music) {
+        music = PiuPiuConsts.musicFiles[Math.floor(randomNumber(0, PiuPiuConsts.musicFiles.length))];
+    }
+
+    cc.audioEngine.playMusic(music);
+}
+
+function stopMusic() {
+    cc.audioEngine.pauseMusic();
+    cc.director.getScheduler().unscheduleCallbackForTarget(this, playMusic);
+}
+
+function startMusic() {
+    playMusic();
+    cc.director.getScheduler().scheduleCallbackForTarget(this, playMusic, 1.5, cc.REPEAT_FOREVER);
 }
 
 var powerupTag = SpriteTag.MinPowerup;

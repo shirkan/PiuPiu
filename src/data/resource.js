@@ -58,7 +58,41 @@ var res = {
     sound_piu: "res/sounds/piu.mp3",
     sound_machineGun: "res/sounds/machineGun.mp3",
     sound_headshot: "res/sounds/headshot.mp3",
-    sound_achievement_complete: "res/sounds/achievement_complete.mp3"
+    sound_ballHitGround: "res/sounds/ballHitGround.mp3",
+    sound_achievement_complete: "res/sounds/achievement_complete.mp3",
+
+    //  Chants
+
+    music_aresnal1: "res/music/arsenal1.mp3",
+    music_athletico1: "res/music/athletico1.mp3",
+    music_barca1: "res/music/barca1.mp3",
+    music_barca2: "res/music/barca2.mp3",
+    music_barca3: "res/music/barca3.mp3",
+    music_bayern1: "res/music/bayern1.mp3",
+    music_boca1: "res/music/boca1.mp3",
+    music_boca2: "res/music/boca2.mp3",
+    music_chelsea1: "res/music/chelsea1.mp3",
+    music_chelsea2: "res/music/chelsea2.mp3",
+    music_dortmund1: "res/music/dortmund1.mp3",
+    music_hapoel1: "res/music/hapoel1.mp3",
+    music_juve1: "res/music/juve1.mp3",
+    music_juve2: "res/music/juve2.mp3",
+    music_liverpool1: "res/music/liverpool1.mp3",
+    music_liverpool2: "res/music/liverpool2.mp3",
+    music_maccabi1: "res/music/maccabi1.mp3",
+    music_maccabi2: "res/music/maccabi2.mp3",
+    music_mancity1: "res/music/mancity1.mp3",
+    music_manutd1: "res/music/manutd1.mp3",
+    music_manutd2: "res/music/manutd2.mp3",
+    music_manutd3: "res/music/manutd3.mp3",
+    music_milan1: "res/music/milan1.mp3",
+    music_olympiakos1: "res/music/olympiakos1.mp3",
+    music_pana1: "res/music/pana1.mp3",
+    music_paok1: "res/music/paok1.mp3",
+    music_psg1: "res/music/psg1.mp3",
+    music_realmadrid1: "res/music/realmadrid1.mp3",
+    music_realmadrid2: "res/music/realmadrid2.mp3",
+    music_realmadrid3: "res/music/realmadrid3.mp3"
 };
 
 var g_resources = [];

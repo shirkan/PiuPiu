@@ -3,7 +3,8 @@ var MenuLayer = cc.Layer.extend({
     labelSound:null,
     facebookSprite:null,
     isAnimatingFBLogin:false,
-    isBouncingFBLogo:false,
+    isVibratingFBLogo:false,
+    FBlogoPos:null,
     ctor : function(){
         //1. call super class's ctor function
         this._super();
@@ -11,10 +12,6 @@ var MenuLayer = cc.Layer.extend({
     init:function(){
         //call super class's super function
         this._super();
-
-        //  Add background
-        var spriteBG = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
-        this.addChild(spriteBG);
 
         //  Setup menu items
         this.createMenu();
@@ -147,15 +144,19 @@ var MenuLayer = cc.Layer.extend({
         cc.sys.localStorage.soundEnabled = PiuPiuGlobals.soundEnabled = 1 - PiuPiuGlobals.soundEnabled;
         if (PiuPiuGlobals.soundEnabled == 0) {
             this.labelSound.setString("Sound off");
+            stopAllSounds();
+            stopMusic();
         } else {
             this.labelSound.setString("Sound on");
+            startMusic();
         }
     },
 
     showFacebookLogo : function () {
 
         this.facebookSprite = new cc.Sprite(res.FB_png);
-        this.facebookSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width - 30 , 50));
+        this.FBlogoPos = cc.p(PiuPiuGlobals.winSize.width/2 , 100);
+        this.facebookSprite.setPosition(this.FBlogoPos);
         this.addChild(this.facebookSprite);
 
         var listener1 = cc.EventListener.create({
@@ -185,18 +186,34 @@ var MenuLayer = cc.Layer.extend({
     },
 
     animateLoginToFB : function () {
-        if (! this.isBouncingFBLogo) {
+        //  Code for bouncing logo
+        //if (! this.isBouncingFBLogo) {
+        //    //  Bouncing FB logo animation
+        //    var bouncingAnimation = new cc.Sequence(
+        //        cc.Repeat.create(new cc.Sequence(
+        //            cc.MoveBy.create(0.1, cc.p(0,40)),
+        //            cc.MoveBy.create(0.8, cc.p(0,-40)).easing(cc.easeBounceOut(1))
+        //        ), 3),
+        //        new cc.CallFunc(function() { this.isBouncingFBLogo = false}, this)
+        //    );
+        //    this.isBouncingFBLogo = true;
+        //    this.facebookSprite.runAction(bouncingAnimation);
+        //}
+
+        //  Code for vibrating logo
+        if (! this.isVibratingFBLogo) {
             //  Bouncing FB logo animation
-            var bouncingAnimation = new cc.Sequence(
-                cc.DelayTime.create(0),
+            this.isVibratingFBLogo = true;
+            var vibratingAnimation = new cc.Sequence(
                 cc.Repeat.create(new cc.Sequence(
-                    cc.MoveBy.create(0.1, cc.p(0,40)),
-                    cc.MoveBy.create(0.8, cc.p(0,-40)).easing(cc.easeBounceOut(1))
+                    cc.MoveBy.create(0.05, cc.p(-5,0)),
+                    cc.MoveBy.create(0.05, cc.p(5,0)),
+                    cc.MoveBy.create(0.05, cc.p(5,0)),
+                    cc.MoveTo.create(0.05, this.FBlogoPos)
                 ), 3),
-                new cc.CallFunc(function() { this.isBouncingFBLogo = false}, this)
+                new cc.CallFunc(function() { this.isVibratingFBLogo = false}, this)
             );
-            this.isBouncingFBLogo = true;
-            this.facebookSprite.runAction(bouncingAnimation);
+            this.facebookSprite.runAction(vibratingAnimation);
         }
         if (!this.isAnimatingFBLogin) {
             var labelSprite = new cc.LabelTTF("You must login to Facebook to enable this feature. We are *NOT* going to post anything on your wall/timeline without clearly stating so.",
@@ -225,6 +242,12 @@ var MenuLayer = cc.Layer.extend({
 var MenuScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
+
+        //  Add animation
+        var animLayer = new MainMenuAnim();
+        animLayer.init();
+        this.addChild(animLayer);
+
         var layer = new MenuLayer();
         layer.init();
         layer.bake();
@@ -236,28 +259,45 @@ var MenuScene = cc.Scene.extend({
         //  Load level settings
         loadLevelSettings();
 
+        //  Play music
+        startMusic();
+
         //  Setup back button to exit for android
         cc.eventManager.addListener({
             event: cc.EventListener.KEYBOARD,
-            onKeyReleased: function(keyCode, event){
-                if(keyCode == cc.KEY.back || keyCode == cc.KEY.backspace)
-                {
+            onKeyReleased: function (keyCode, event) {
+                if (keyCode == cc.KEY.back || keyCode == cc.KEY.backspace) {
                     event.getCurrentTarget().onExitClicked();
                 }
 
                 //FACEBOOK logout walkaround
-                if(keyCode == cc.KEY.l) {
+                if (keyCode == cc.KEY.l) {
                     FBlogout();
                 }
-                if(keyCode == cc.KEY.d) {
+                if (keyCode == cc.KEY.d) {
                     FBdeleteMe();
                 }
-                if(keyCode == cc.KEY.p) {
+                if (keyCode == cc.KEY.p) {
                     FBgetPicture("me", event.getCurrentTarget(), event.getCurrentTarget().addimage);
 
                 }
             }
         }, this);
+
+        cc.eventManager.addListener({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: this.onBackClicked,
+            onTouchMoved: function () {},
+            onTouchEnded: function () {}
+        }, this);
+    },
+
+    onBackClicked : function (touch, event) {
+        var pos = touch.getLocation();
+        LOG("pos is " + pos.x + " " + pos.y);
+        return true;
+
     },
     onExitClicked : function () {
         cc.director.end();

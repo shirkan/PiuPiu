@@ -30,13 +30,13 @@ var SplashAnim = cc.LayerColor.extend({
         var p2 = cc.p(PiuPiuGlobals.winSize.width * this.X_firstHit, this.Y_Floor);
 
         //  Top point for second bounce
-        var p23 = cc.p(PiuPiuGlobals.winSize.width * (this.X_firstHit + this.X_secondHit)/2, this.Y_Floor * 4);
+        //var p23 = cc.p(PiuPiuGlobals.winSize.width * (this.X_firstHit + this.X_secondHit)/2, this.Y_Floor * 4);
 
         //  Second hit = 1/3
         var p3 = cc.p(PiuPiuGlobals.winSize.width * this.X_secondHit, this.Y_Floor);
 
         //  Top point for second bounce
-        var p34 = cc.p(PiuPiuGlobals.winSize.width * (this.X_thirdHit + this.X_secondHit)/2, this.Y_Floor * 2);
+        //var p34 = cc.p(PiuPiuGlobals.winSize.width * (this.X_thirdHit + this.X_secondHit)/2, this.Y_Floor * 2);
 
         //  Third hit = 1/6
         var p4 = cc.p(PiuPiuGlobals.winSize.width * this.X_thirdHit , this.Y_Floor);
@@ -56,18 +56,21 @@ var SplashAnim = cc.LayerColor.extend({
         for (var i=0; i<this.FPS; i++){
             anim1.push(cc.MoveTo.create(1/this.FPS * this.TIME_firstBounce, points1[i]));
         }
+        anim1.push(new cc.CallFunc(function() { playSound(res.sound_ballHitGround, true) }, this));
 
         var points2 = calculateHalfCirclePathFrom2Points(p2, p3, this.FPS, true, true);
         var anim2 = [];
         for (var i=0; i<this.FPS; i++){
             anim2.push(cc.MoveTo.create(1/this.FPS * this.TIME_secondBounce, points2[i]));
         }
+        anim2.push(new cc.CallFunc(function() { playSound(res.sound_ballHitGround, true) }, this));
 
         var points3 = calculateHalfCirclePathFrom2Points(p3, p4, this.FPS, true, true);
         var anim3 = [];
         for (var i=0; i<this.FPS; i++){
             anim3.push(cc.MoveTo.create(1/this.FPS * this.TIME_thirdBounce, points3[i]));
         }
+        anim3.push(new cc.CallFunc(function() { playSound(res.sound_ballHitGround, true) }, this));
 
         var ballAnimation = new cc.Sequence(
             new cc.Spawn(new cc.Sequence(anim1), cc.RotateBy.create(this.TIME_firstBounce, 360 * this.BOUNCE_firstHit)),

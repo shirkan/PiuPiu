@@ -213,6 +213,9 @@ var LeaderboardScene = cc.Scene.extend({
             LOG("name: " + name + "     score: " +score );
             if (!cc.sys.isMobile) {
                 FBgetPicture(id, this, this.addSpriteForUser);
+            } else {
+
+                this.alteraddSpriteForUser(id);
             }
         }
 
@@ -223,16 +226,8 @@ var LeaderboardScene = cc.Scene.extend({
         }
     },
 
-    testSprite : function ( tex ) {
-        tex = tex = "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/c23.101.380.380/s40x40/1185708_10151702829728197_1243295359_n.jpg?oh=1e0e9c55087076b0104f06f1848d8fec&oe=553EE8C0&__gda__=1427216806_967de4fa188d3d927b3b350615152f92"
-        console.log("in testSPrite with tex " + tex);
-        var s = new cc.Sprite(tex);
-        s.setPosition(100, 100);
-        this.addChild(s);
-    },
-
-    addSpriteForUser : function (id, imageURL) {
-        var sprite = new cc.Sprite(imageURL);
+    alteraddSpriteForUser : function (id, imageURL) {
+        var sprite = new cc.Sprite();
         this.spritesArr[id] = sprite;
         this.spritesArr[id].retain();
 
@@ -240,6 +235,21 @@ var LeaderboardScene = cc.Scene.extend({
 
         this.loadDataCounter--;
         this.isCompleteResults();
+    },
+
+    addSpriteForUser : function (id, imageURL) {
+        var self = this;
+
+        cc.loader.loadImg(imageURL, {isCrossOrigin : true}, function(err, texture)
+        {
+            self.spritesArr[id] = new cc.Sprite(imageURL);
+            self.spritesArr[id].retain();
+
+            LOG("addSpriteForUser added sprite for id " + id)
+
+            self.loadDataCounter--;
+            self.isCompleteResults();
+        });
     },
 
     isCompleteResults : function () {
