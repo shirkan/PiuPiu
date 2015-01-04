@@ -86,7 +86,7 @@ var MainMenuAnim = cc.Layer.extend({
             cc.RotateBy.create(this.TIME_shootToEnemy, 360));
 
         //  Swing the ball back to player
-        var points = calculateHalfCirclePath(p1, p2, 30, true, false);
+        var points = calculateHalfCirclePathFrom2Points(p1, p2, 30, true, false);
         var swingBack = [];
         for (var i=0; i<30; i++){
             swingBack.push(cc.MoveTo.create(1/15, points[i]));

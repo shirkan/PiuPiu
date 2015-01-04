@@ -2,7 +2,7 @@
  * Created by shirkan on 12/31/14.
  */
 
-var SplashLayer = cc.LayerColor.extend({
+var SplashLayer = cc.Layer.extend({
     ctor : function(){
         //1. call super class's ctor function
         this._super();
@@ -12,7 +12,7 @@ var SplashLayer = cc.LayerColor.extend({
         this._super();
 
         //  Show logo
-        var logoSprite = new cc.LabelTTF("Neeverland\nStudios", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
+        var logoSprite = new cc.LabelTTF("Meganeev\nStudios", PiuPiuConsts.fontName, PiuPiuConsts.fontSizeBig);
         logoSprite.setFontFillColor(cc.color(255,255,255)); //White
         logoSprite.setPosition(cc.p(PiuPiuGlobals.winSize.width / 2 , PiuPiuGlobals.winSize.height / 2));
         logoSprite.textAlign = cc.TEXT_ALIGNMENT_CENTER;
@@ -23,6 +23,12 @@ var SplashLayer = cc.LayerColor.extend({
 var SplashScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
+
+        //  Add animation
+        this.animLayer = new SplashAnim();
+        this.animLayer.init();
+        this.addChild(this.animLayer);
+
         var layer = new SplashLayer();
         layer.init();
         layer.bake();
@@ -30,9 +36,6 @@ var SplashScene = cc.Scene.extend({
 
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.SplashScreen;
-
-        //  Load level settings
-        //loadLevelSettings();
 
         //  Setup back button to exit for android
         cc.eventManager.addListener({
@@ -54,7 +57,7 @@ var SplashScene = cc.Scene.extend({
             onTouchEnded: function () {}}, this);
         this.canContinue = true
         cc.director.getScheduler().scheduleCallbackForTarget(this, function () { this.canContinue = true}, 0, 0, 2);
-        cc.director.getScheduler().scheduleCallbackForTarget(this, this.moveToNextScene, 0, 0, 3);
+        cc.director.getScheduler().scheduleCallbackForTarget(this, this.moveToNextScene, 0, 0, 6);
         this.loadAll();
     },
 

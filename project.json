@@ -44,6 +44,7 @@
         "src/gameplay/Enemy.js",
         "src/gameplay/Powerup.js",
 
-        "src/anim/MainMenuAnim.js"
+        "src/anim/MainMenuAnim.js",
+        "src/anim/SplashAnim.js"
     ]
 }

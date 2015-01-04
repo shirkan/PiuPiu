@@ -20,7 +20,7 @@ var Bullet = cc.Class.extend({
         this.currentPos = cc.p(bulletStartPoint);
         this.startingPos = cc.p(bulletStartPoint);
         this.endPoint = endPoint;
-        this.distanceLeftToPass = calculateLineLength(this.startingPos, this.endPoint);
+        this.distanceLeftToPass = calculateDistanceBetween2Points(this.startingPos, this.endPoint);
 
         this.sprite = new cc.PhysicsSprite(res.Bullet_png);
 
@@ -42,7 +42,7 @@ var Bullet = cc.Class.extend({
         this.parentNode.addChild(this.sprite, PiuPiuConsts.bulletLocalZOrder);
 
         //  Calculate how much time it should take the bullet to complete the action (so velocity will be the same for all bullets)
-        this.speed = PiuPiuGlobals.currentUpdateRate * calculateLineLength(bulletStartPoint, this.endPoint) / PiuPiuConsts.framesPerSeconds;
+        this.speed = PiuPiuGlobals.currentUpdateRate * calculateDistanceBetween2Points(bulletStartPoint, this.endPoint) / PiuPiuConsts.framesPerSeconds;
 
         //  Shooting bullet
         var moveAction = cc.MoveTo.create(this.speed, this.endPoint);
@@ -79,7 +79,7 @@ var Bullet = cc.Class.extend({
 
     updateSpeed : function ( multiplier ) {
         this.sprite.stopAllActions();
-        var distancePassed = calculateLineLength(this.startingPos, this.currentPos);
+        var distancePassed = calculateDistanceBetween2Points(this.startingPos, this.currentPos);
         this.speed = this.speed * (1 - (distancePassed / this.distanceLeftToPass));
         this.speed *= multiplier;
 

@@ -27,7 +27,7 @@ var Enemy = cc.Class.extend({
 
         //  This point will be attached to the body and will change during movement
         this.currentPos = cc.p(startX, startY);
-        this.distanceLeftToPass = calculateLineLength(this.startingPos, PiuPiuConsts.enemyMoveToPoint);
+        this.distanceLeftToPass = calculateDistanceBetween2Points(this.startingPos, PiuPiuConsts.enemyMoveToPoint);
 
         //  Set speed
         this.speed = PiuPiuGlobals.currentUpdateRate * (Math.random() * 3 + 1);
@@ -76,7 +76,7 @@ var Enemy = cc.Class.extend({
 
     updateSpeed : function ( multiplier ) {
         this.sprite.stopAllActions();
-        var distancePassed = calculateLineLength(this.startingPos, this.currentPos);
+        var distancePassed = calculateDistanceBetween2Points(this.startingPos, this.currentPos);
         this.speed = this.speed * (1 - (distancePassed / this.distanceLeftToPass));
         this.speed *= multiplier;
         this.sprite.runAction(cc.MoveTo.create(this.speed, PiuPiuConsts.enemyMoveToPoint));
