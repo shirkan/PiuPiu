@@ -87,7 +87,8 @@ var MenuLayer = cc.Layer.extend({
     },
 
     onPlay : function(){
-        cc.director.runScene(new IntroScene());
+        var transition = new cc.TransitionFade(1, PiuPiuGlobals.scenes.introScene);
+        cc.director.pushScene(transition);
     },
 
     onExitClicked : function () {

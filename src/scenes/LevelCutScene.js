@@ -39,6 +39,11 @@ var LevelCutSceneLayer = cc.Layer.extend({
 });
 
 var LevelCutScene = cc.Scene.extend({
+    listeners:null,
+    init : function ( newLayer ){
+        this._super();
+        this.addChild(newLayer);
+    },
     onEnter:function () {
         this._super();
         var layer = new LevelCutSceneLayer();
@@ -48,8 +53,11 @@ var LevelCutScene = cc.Scene.extend({
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.CutScene;
 
+        this.listeners = [];
+
         //  Setup back button to exit for android
-        cc.eventManager.addListener({
+        this.listeners.push(cc.eventManager.addListener({
+            swallowTouches: true,
             event: cc.EventListener.KEYBOARD,
             onKeyReleased: function(keyCode, event){
                 if(keyCode == cc.KEY.back || keyCode == cc.KEY.backspace)
@@ -57,9 +65,9 @@ var LevelCutScene = cc.Scene.extend({
                     event.getCurrentTarget().moveToNextScene();
                 }
             }
-        }, this);
+        }, this));
 
-        cc.eventManager.addListener({
+        this.listeners.push(cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: function (touch, event) {
@@ -68,12 +76,19 @@ var LevelCutScene = cc.Scene.extend({
                 return true;
             },
             onTouchMoved: null,
-            onTouchEnded: null}, this);
+            onTouchEnded: null}, this));
     },
     moveToNextScene : function () {
         //  Reset post step callbacks
         resetPostStepCallback();
-
-        cc.director.popScene();
+        this.onExit();
+        var transition = new cc.TransitionFade(1, new PlayScene());
+        cc.director.runScene(transition);
+    },
+    onExit : function (){
+        LOG("exiting levelcut")
+        for (var i = 0; i < this.listeners.length; i++) {
+            cc.eventManager.removeListener(this.listeners[i]);
+        }
     }
 });

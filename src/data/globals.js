@@ -46,6 +46,7 @@ if(typeof levelType == "undefined") {
     levelType.Survival = 0x1;
     levelType.ShootPowerups = 0x2;
     levelType.TargetScore = 0x4;
+    levelType.IntroducingNewThing = 0x8;
 }
 
 if (typeof PiuPiuConsts == "undefined") {
@@ -122,6 +123,7 @@ if (typeof PiuPiuGlobals == "undefined") {
 
     //  Application vars
     PiuPiuGlobals.winSize = "";
+    PiuPiuGlobals.scenes = [];
 
     //  Game vars
     PiuPiuGlobals.livesLeft = 0;

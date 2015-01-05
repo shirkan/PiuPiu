@@ -28,7 +28,6 @@
 
         "src/scenes/Splash.js",
         "src/scenes/MainMenu.js",
-        "src/scenes/IntroScene.js",
         "src/scenes/LevelCutScene.js",
         "src/scenes/Leaderboard.js",
         "src/scenes/Achievements.js",
@@ -44,6 +43,7 @@
         "src/gameplay/Enemy.js",
         "src/gameplay/Powerup.js",
 
+        "src/anim/IntroAnim.js",
         "src/anim/MainMenuAnim.js",
         "src/anim/SplashAnim.js"
     ]

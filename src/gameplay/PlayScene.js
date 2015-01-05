@@ -55,8 +55,6 @@ var PlayScene = cc.Scene.extend({
         //  Create new spawning mechanisms
         this.enemySM = new SpawningMechanism();
         this.powerupSM = new SpawningMechanism();
-
-        //var m = new MachineGunPowerup(this.gameLayer, this.autoFireStart.bind(this), 19);
     },
 
     initPhysics:function() {
@@ -84,12 +82,6 @@ var PlayScene = cc.Scene.extend({
             if (PiuPiuGlobals.currentLevel == 1) {
                 PiuPiuGlobals.livesLeft = PiuPiuConsts.livesOnGameStart;
                 this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
-                //PiuPiuGlobals.livesLeft = 0;
-                //
-                ////  Add lives for start
-                //for (var i=0; i<PiuPiuConsts.livesOnGameStart; i++) {
-                //    this.addLife();
-                //}
                 playSound(res.sound_ohedNichnasLamigrash);
             }
         PiuPiuGlobals.gameState = GameStates.Playing;
@@ -226,8 +218,7 @@ var PlayScene = cc.Scene.extend({
         FBpostScore();
 
         if (transitToMainMenu) {
-            var transition = new cc.TransitionFade(1, new MenuScene());
-            cc.director.runScene(transition);
+            cc.director.popScene();
         } else {
             //  Enable pause for 2 seconds
             cc.director.getScheduler().scheduleCallbackForTarget(this, function () {this.canContinueToNextScene = true}, 2, 0);
@@ -332,8 +323,7 @@ var PlayScene = cc.Scene.extend({
                 return true;
             }
 
-            var transition = new cc.TransitionFade(1, new MenuScene());
-            cc.director.runScene(transition);
+            cc.director.popScene();
             return true;
         }
 
@@ -346,8 +336,8 @@ var PlayScene = cc.Scene.extend({
             //  Hide level completed label from previous level
             playScene.statusLayer.hideLevelCompleted();
 
-            var transition = new cc.TransitionFade(1, new LevelCutScene());
-            cc.director.pushScene(transition);
+            var transition = new cc.TransitionFade(1, PiuPiuGlobals.scenes.levelCutScene);
+            cc.director.runScene(transition);
             return true;
         }
 

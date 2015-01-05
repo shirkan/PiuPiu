@@ -352,7 +352,7 @@ function loadAllLevels() {
 
 function loadLevelSettings() {
     LOG("loadLevelSettings: loading level " + PiuPiuGlobals.currentLevel);
-    PiuPiuLevelSettings = PiuPiuLevels[PiuPiuGlobals.currentLevel];
+    PiuPiuLevelSettings = JSON.parse(JSON.stringify(PiuPiuLevels[PiuPiuGlobals.currentLevel]));
 }
 
 function getLevelTypeString() {
