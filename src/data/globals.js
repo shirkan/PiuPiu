@@ -55,7 +55,7 @@ if (typeof PiuPiuConsts == "undefined") {
     //  Styles
     //PiuPiuConsts.fontName = "ArcadeClassic";
     PiuPiuConsts.fontName = "Arcadepix";
-    if (cc.sys.platform == cc.sys.ANDROID) {
+    if (isRunningOnAndroid()) {
         PiuPiuConsts.fontName = "res/fonts/arcadepi.ttf";
     }
     PiuPiuConsts.fontSizeBig = 48;

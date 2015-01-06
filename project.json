@@ -18,11 +18,13 @@
     },
 
     "jsList" : [
+        "src/utilities/Utilities.js",
+
         "src/data/resource.js",
         "src/data/globals.js",
 
-        "src/utilities/Utilities.js",
         "src/utilities/GameUtilities.js",
+        "src/utilities/PMutilities.js",
         "src/utilities/FButilities.js",
         "src/utilities/SpawningMechanism.js",
 

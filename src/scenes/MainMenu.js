@@ -98,6 +98,20 @@ var MenuLayer = cc.Layer.extend({
     onAchievements : function () {
         console.log("achievements clicked");
 
+        if (isRunningOnMobile()){
+            //var admob = plugin.PluginManager.getInstance().loadPlugin("AdsAdmob");
+            //admob.callFuncWithParam("configDeveloperInfo", new plugin.PluginParam(plugin.PluginParam.ParamType.TypeString, "123456"));
+            //admob.callFuncWithParam("configDeveloperInfo", new plugin.PluginParam(plugin.PluginParam.ParamType.TypeStringMap, {"AdmobID":"ca-app-pub-5934662800023467/9146146881"}));
+            LOG("IAPINIT")
+            IAPinit();
+            LOG("IAPINIT DONE")
+            LOG("REQUESTPRODUCTS")
+            IAPrequestProducts(["1","2"]);
+            LOG("REQUESTPRODUCTS DONE")
+        }
+
+        return;
+
         if (!FBisLoggedIn()) {
             this.animateLoginToFB();
         }

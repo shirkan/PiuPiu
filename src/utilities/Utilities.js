@@ -22,6 +22,18 @@ function isFileExist(filename)
     }
 }
 
+function isRunningOnAndroid() {
+    return (cc.sys.platform == cc.sys.ANDROID);
+}
+
+function isRunningOniOS() {
+    return (cc.sys.platform == cc.sys.IPAD || cc.sys.platform == cc.sys.IPHONE);
+}
+
+function isRunningOnMobile() {
+    return (cc.sys.isMobile);
+}
+
 function isDebugMode() {
     return cc.game.config["debugMode"];
 }
