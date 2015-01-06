@@ -63,7 +63,7 @@ var res = {
 
     //  Chants
 
-    music_aresnal1: "res/music/arsenal1.mp3",
+    music_arsenal1: "res/music/arsenal1.mp3",
     music_athletico1: "res/music/athletico1.mp3",
     music_barca1: "res/music/barca1.mp3",
     music_barca2: "res/music/barca2.mp3",

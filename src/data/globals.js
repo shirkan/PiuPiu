@@ -53,6 +53,7 @@ if (typeof PiuPiuConsts == "undefined") {
     var PiuPiuConsts = {};
 
     //  Styles
+    //PiuPiuConsts.fontName = "ArcadeClassic";
     PiuPiuConsts.fontName = "Arcadepix";
     if (cc.sys.platform == cc.sys.ANDROID) {
         PiuPiuConsts.fontName = "res/fonts/arcadepi.ttf";

@@ -40,15 +40,22 @@ var LevelCutSceneLayer = cc.Layer.extend({
 
 var LevelCutScene = cc.Scene.extend({
     listeners:null,
-    init : function ( newLayer ){
+    init : function ( ){
         this._super();
-        this.addChild(newLayer);
     },
     onEnter:function () {
         this._super();
         var layer = new LevelCutSceneLayer();
         layer.init();
         this.addChild(layer);
+
+        //  Add animation layer
+        var anim = PiuPiuLevelSettings.animation;
+        if (typeof anim != "undefined") {
+            eval("var animLayer = new " + anim + "()");
+            animLayer.init();
+            this.addChild(animLayer);
+        }
 
         //  Set game state as menu
         PiuPiuGlobals.gameState = GameStates.CutScene;

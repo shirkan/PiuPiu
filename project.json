@@ -45,6 +45,7 @@
 
         "src/anim/IntroAnim.js",
         "src/anim/MainMenuAnim.js",
-        "src/anim/SplashAnim.js"
+        "src/anim/SplashAnim.js",
+        "src/anim/Level1Anim.js"
     ]
 }

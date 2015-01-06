@@ -340,6 +340,9 @@ function loadAllLevels() {
                 PiuPiuLevels[_i].powerupsSpawnIntervalType = data["powerupsSpawnIntervalType"] || "none";
                 PiuPiuLevels[_i].powerupsTypes = data["powerupsTypes"] || "";
 
+                //  Animation
+                PiuPiuLevels[_i].animation = data["animation"] || "";
+
                 //  Special notations
                 PiuPiuLevels[_i].specialNotations = data["specialNotations"] || [];
                 PiuPiuLevels[_i].hint = data["hint"] || "";
