@@ -8,6 +8,7 @@ var PlayScene = cc.Scene.extend({
     statusLayer:null,
     gameLayer:null,
     backgroundLayer:null,
+    achievementsLayer: null,
     points:0,
     clearAllObjectsFlag:false,
     hitToUpdate:"",
@@ -28,10 +29,12 @@ var PlayScene = cc.Scene.extend({
         this.gameLayer = (new GameLayer(this.space));
         this.backgroundLayer = new BackgroundLayer();
         this.statusLayer = new StatusLayer();
+        this.achievementsLayer = new AchievementsLayer();
 
         this.addChild(this.backgroundLayer, 0, TagOfLayer.Background);
         this.addChild(this.gameLayer, 0, TagOfLayer.Game);
         this.addChild(this.statusLayer, 0, TagOfLayer.Status);
+        this.addChild(this.achievementsLayer, 0, TagOfLayer.Achievements);
 
         //  Touch handler
         cc.eventManager.addListener({
@@ -81,9 +84,10 @@ var PlayScene = cc.Scene.extend({
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
                 PiuPiuGlobals.livesLeft = PiuPiuConsts.livesOnGameStart;
-                this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
                 playSound(res.sound_ohedNichnasLamigrash);
             }
+
+        this.statusLayer.setLives(PiuPiuGlobals.livesLeft);
         PiuPiuGlobals.gameState = GameStates.Playing;
 
         //  Init & start enemies spwaning
@@ -103,6 +107,8 @@ var PlayScene = cc.Scene.extend({
 
         //  Start space updating
         this.scheduleUpdate();
+
+        cc.director.getScheduler().scheduleCallbackForTarget(this, function () {this.achievementsLayer.showAchievement(PiuPiuAchievements.firestarter.text);}, 0, 0, 2);
     },
 
     //  Gameplay handling
@@ -336,7 +342,7 @@ var PlayScene = cc.Scene.extend({
             //  Hide level completed label from previous level
             playScene.statusLayer.hideLevelCompleted();
 
-            var transition = new cc.TransitionFade(1, PiuPiuGlobals.scenes.levelCutScene);
+            var transition = new cc.TransitionFade(1, new LevelCutScene());
             cc.director.runScene(transition);
             return true;
         }

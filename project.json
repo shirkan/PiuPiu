@@ -26,6 +26,7 @@
         "src/utilities/GameUtilities.js",
         "src/utilities/PMutilities.js",
         "src/utilities/FButilities.js",
+        "src/utilities/AchievementsUtilities.js",
         "src/utilities/SpawningMechanism.js",
 
         "src/scenes/Splash.js",
@@ -36,6 +37,7 @@
         "src/scenes/Statistics.js",
 
         "src/gameplay/BackgroundLayer.js",
+        "src/gameplay/AchievementsLayer.js",
         "src/gameplay/GameLayer.js",
         "src/gameplay/StatusLayer.js",
         "src/gameplay/PlayScene.js",

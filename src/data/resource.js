@@ -27,6 +27,8 @@ var res = {
     Bullet_png: "res/sprites/game/bullet_small2.png",
     LifeBig_png : "res/sprites/game/life.png",
     Life_png : "res/sprites/game/life_small.png",
+    Achievement_png : "res/sprites/game/achievement_unlocked.png",
+
     //  Powerups
     PowerupMachineGun_png: "res/sprites/game/machineGun.png",
     Powerup1Up_png: "res/sprites/game/1up.png",

@@ -7,6 +7,7 @@ if(typeof TagOfLayer == "undefined") {
     TagOfLayer.Background = 0;
     TagOfLayer.Game = 1;
     TagOfLayer.Status = 2;
+    TagOfLayer.Achievements = 3;
 };
 
 if(typeof hitType == "undefined") {
