@@ -6,7 +6,7 @@ const yGap = 30;
 const xGap = 100;
 const gapBetweenLives = 3;
 
-var StatusLayer = cc.Scene.extend({
+var StatusLayer = cc.Layer.extend({
     labelPoints:null,
     labelHighScore:null,
     labelLevelCompleted:null,

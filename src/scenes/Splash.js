@@ -80,9 +80,6 @@ var SplashScene = cc.Scene.extend({
 
         cc.audioEngine.setMusicVolume(PiuPiuConsts.musicVolume);
 
-        PiuPiuGlobals.scenes.introScene = new IntroScene();
-        PiuPiuGlobals.scenes.levelCutScene = new LevelCutScene();
-
         //  Init Facebook
         FBinit();
 

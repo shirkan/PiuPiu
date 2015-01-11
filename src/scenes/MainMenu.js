@@ -87,7 +87,7 @@ var MenuLayer = cc.Layer.extend({
     },
 
     onPlay : function(){
-        var transition = new cc.TransitionFade(1, PiuPiuGlobals.scenes.introScene);
+        var transition = new cc.TransitionFade(1, new IntroScene());
         cc.director.pushScene(transition);
     },
 
@@ -99,15 +99,13 @@ var MenuLayer = cc.Layer.extend({
         console.log("achievements clicked");
 
         if (isRunningOnMobile()){
-            //var admob = plugin.PluginManager.getInstance().loadPlugin("AdsAdmob");
-            //admob.callFuncWithParam("configDeveloperInfo", new plugin.PluginParam(plugin.PluginParam.ParamType.TypeString, "123456"));
-            //admob.callFuncWithParam("configDeveloperInfo", new plugin.PluginParam(plugin.PluginParam.ParamType.TypeStringMap, {"AdmobID":"ca-app-pub-5934662800023467/9146146881"}));
-            LOG("IAPINIT")
-            IAPinit();
-            LOG("IAPINIT DONE")
-            LOG("REQUESTPRODUCTS")
-            IAPrequestProducts(["1","2"]);
-            LOG("REQUESTPRODUCTS DONE")
+            var admob = plugin.PluginManager.getInstance().loadPlugin("AdsAdmob");
+            admob.configDeveloperInfo({"AdmobID":"ca-app-pub-5934662800023467/3099613280"});
+            admob.preLoadInterstitial();
+            cc.director.getScheduler().scheduleCallbackForTarget(this, function () { admob.showAds({"AdmobType":"2", "AdmobSizeEnum":"2"})}, 0, 0, 5);
+            //ads.showAds({"AdmobType":"2", "AdmobSizeEnum":"2"});
+            //IAPinit();
+            //IAPrequestProducts(["1","2"]);
         }
 
         return;

@@ -121,9 +121,8 @@ var IntroScene = cc.Scene.extend({
         //  Reset post step callbacks
         resetPostStepCallback();
 
-        //cc.eventManager.removeListener(this.listener);
         this.onExit();
-        var transition = new cc.TransitionFade(1, PiuPiuGlobals.scenes.levelCutScene);
+        var transition = new cc.TransitionFade(1, new LevelCutScene());
         cc.director.runScene(transition);
     },
     onExit : function (){

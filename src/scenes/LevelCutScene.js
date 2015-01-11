@@ -51,7 +51,7 @@ var LevelCutScene = cc.Scene.extend({
 
         //  Add animation layer
         var anim = PiuPiuLevelSettings.animation;
-        if (typeof anim != "undefined") {
+        if (typeof anim != "undefined" && anim != "") {
             eval("var animLayer = new " + anim + "()");
             animLayer.init();
             this.addChild(animLayer);

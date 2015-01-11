@@ -69,7 +69,6 @@ var MainMenuAnim = cc.Layer.extend({
 
         var p1 = cc.p(-this.player.width + ball.width + 100, ball.height / 2 + PiuPiuConsts.fontSizeSmall);
         var p2 = cc.p(PiuPiuGlobals.winSize.width - 100 + this.enemy.width / 2, this.enemy.height * 1.5 + PiuPiuConsts.fontSizeSmall - 5);
-        LOG("p2 is " + p2.x + " " + p2.y)
 
         ball.setPosition(p1);
         this.addChild(ball);
