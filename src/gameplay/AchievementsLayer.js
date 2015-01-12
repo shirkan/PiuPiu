@@ -21,7 +21,7 @@ var AchievementsLayer = cc.Layer.extend({
         this.addChild(this.sprite);
 
         this.label = new cc.LabelTTF(text, PiuPiuConsts.fontName, PiuPiuConsts.fontSizeSmall);
-        this.label.setFontFillColor(cc.color(0,220,80)); //  Yellow
+        this.label.setFontFillColor(cc.color(255,220,80)); //  Yellow
         this.label.enableStroke(cc.color(0,0,255), 2); //Blue
         this.label.setPosition(PiuPiuGlobals.winSize.width / 2, this.sprite.y);
         this.addChild(this.label);

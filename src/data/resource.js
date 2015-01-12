@@ -16,6 +16,16 @@ var res = {
     grass9_tmx : "res/sprites/maps/grass9.tmx",
     grass10_tmx : "res/sprites/maps/grass10.tmx",
     Field_png : "res/sprites/maps/field.png",
+    BG_grass1_png : "res/sprites/maps/BG-Grass-1.png",
+    BG_grass2_png : "res/sprites/maps/BG-Grass-2.png",
+    BG_grass3_png : "res/sprites/maps/BG-Grass-3.png",
+    BG_grass4_png : "res/sprites/maps/BG-Grass-4.png",
+    BG_grass5_png : "res/sprites/maps/BG-Grass-5.png",
+    BG_grass6_png : "res/sprites/maps/BG-Grass-6.png",
+    BG_grass7_png : "res/sprites/maps/BG-Grass-7.png",
+    BG_grass8_png : "res/sprites/maps/BG-Grass-8.png",
+    BG_grass9_png : "res/sprites/maps/BG-Grass-9.png",
+    BG_grass10_png : "res/sprites/maps/BG-Grass-10.png",
 
     //  Game
     EnemyBig_png : "res/sprites/game/enemy.png",

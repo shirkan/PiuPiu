@@ -12,7 +12,7 @@ var StatsLayer = cc.Layer.extend({
         }
 
         //  Add background
-        var spritebg = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
+        var spritebg = new cc.Sprite(PiuPiuGlobals.commonGrassMap);
         this.addChild(spritebg);
 
         //  Show Stats

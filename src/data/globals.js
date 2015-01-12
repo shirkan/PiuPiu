@@ -129,6 +129,7 @@ if (typeof PiuPiuGlobals == "undefined") {
 
     //  Game vars
     PiuPiuGlobals.livesLeft = 0;
+    PiuPiuGlobals.currentScore = 0;
     PiuPiuGlobals.currentPointsMultiplier = 1;
     PiuPiuGlobals.currentUpdateRate = PiuPiuConsts.normalUpdateRate;
     PiuPiuGlobals.highScore = 0;

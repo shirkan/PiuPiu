@@ -14,7 +14,7 @@ var IntroAnim = cc.Layer.extend({
         this._super();
 
         //  Add background
-        var spriteBG = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
+        var spriteBG = new cc.Sprite(PiuPiuGlobals.commonGrassMap);
         this.addChild(spriteBG);
 
         //  Add goal

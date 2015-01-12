@@ -221,7 +221,6 @@ function calculateCircularPathFrom3PointsAndR(ps, pe, pc, steps) {
 
 function initGlobals() {
     PiuPiuGlobals.winSize = cc.director.getWinSize();
-    PiuPiuGlobals.commonGrassMap = res.grass9_tmx;
     PiuPiuGlobals.currentLevel = 0;
     PiuPiuGlobals.soundEnabled = parseInt(cc.sys.localStorage.soundEnabled);
     if (PiuPiuGlobals.soundEnabled === undefined || isNaN(PiuPiuGlobals.soundEnabled)) {
@@ -268,6 +267,12 @@ function handleHighScore() {
     }
 }
 
+function randomMap() {
+    var mapNum = Math.floor(randomNumber(1, 10));
+    return res["BG_grass" + mapNum + "_png"];
+}
+
+//  Music & sounds
 function playSound ( sound, force ) {
     if (force || PiuPiuGlobals.soundEnabled) {
         cc.audioEngine.playEffect(sound);
@@ -314,6 +319,7 @@ function getTag() {
     return powerupTag++;
 }
 
+//  Levels load
 function loadAllLevels() {
     var self = this;
     var i = 1;

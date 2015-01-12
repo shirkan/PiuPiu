@@ -9,7 +9,7 @@ var LeaderboardLayer = cc.Layer.extend({
         this._super();
 
         //  Add background
-        var spriteBG = new cc.TMXTiledMap(PiuPiuGlobals.commonGrassMap);
+        var spriteBG = new cc.Sprite(PiuPiuGlobals.commonGrassMap);
         this.addChild(spriteBG);
 
         //  Add Loading Sprite
@@ -211,12 +211,12 @@ var LeaderboardScene = cc.Scene.extend({
             this.highscoresArr[i].score = score;
 
             LOG("name: " + name + "     score: " +score );
-            if (!cc.sys.isMobile) {
+            //if (!cc.sys.isMobile) {
                 FBgetPicture(id, this, this.addSpriteForUser);
-            } else {
+            //} else {
 
-                this.alteraddSpriteForUser(id);
-            }
+                //this.alteraddSpriteForUser(id);
+            //}
         }
 
         if (cc.sys.isMobile) {

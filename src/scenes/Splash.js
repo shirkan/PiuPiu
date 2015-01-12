@@ -80,6 +80,8 @@ var SplashScene = cc.Scene.extend({
 
         cc.audioEngine.setMusicVolume(PiuPiuConsts.musicVolume);
 
+        PiuPiuGlobals.commonGrassMap = randomMap();
+
         //  Init Facebook
         FBinit();
 

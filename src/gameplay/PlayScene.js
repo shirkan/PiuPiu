@@ -9,7 +9,6 @@ var PlayScene = cc.Scene.extend({
     gameLayer:null,
     backgroundLayer:null,
     achievementsLayer: null,
-    points:0,
     clearAllObjectsFlag:false,
     hitToUpdate:"",
     enemySM:null,
@@ -83,6 +82,7 @@ var PlayScene = cc.Scene.extend({
 
             //  Game beginning initialization, occurs only on level 1
             if (PiuPiuGlobals.currentLevel == 1) {
+                PiuPiuGlobals.currentScore = 0;
                 PiuPiuGlobals.livesLeft = PiuPiuConsts.livesOnGameStart;
                 playSound(res.sound_ohedNichnasLamigrash);
             }
@@ -430,8 +430,8 @@ var PlayScene = cc.Scene.extend({
         switch (currentHitType) {
             case hitType.BulletEnemy:
             {
-                this.points += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyKill);
-                this.statusLayer.updatePoints(this.points);
+                PiuPiuGlobals.currentScore += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyKill);
+                this.statusLayer.updatePoints(PiuPiuGlobals.currentScore);
 
                 PiuPiuGlobals.totalPoints += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyKill);
                 PiuPiuGlobals.totalEnemyKilled++;
@@ -440,8 +440,8 @@ var PlayScene = cc.Scene.extend({
             }
             case hitType.BulletEnemyHead:
             {
-                this.points += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyHeadShot);
-                this.statusLayer.updatePoints(this.points);
+                PiuPiuGlobals.currentScore += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyHeadShot);
+                this.statusLayer.updatePoints(PiuPiuGlobals.currentScore);
                 this.statusLayer.displayHeadShot();
 
                 PiuPiuGlobals.totalPoints += (PiuPiuGlobals.currentPointsMultiplier * PiuPiuConsts.pointsPerEnemyHeadShot);
